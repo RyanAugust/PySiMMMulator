@@ -1,0 +1,33 @@
+basic_parms:
+  years: 5
+  channels_impressions: ["Amazon", "TV", "Long-Form Video"]
+  channels_clicks: ["Search"]
+  frequency_of_campaigns: 1
+  start_date: "2017/1/1"
+  true_cvr:
+  revenue_per_conv:
+
+baseline_parms:
+  base_p: 100
+  trend_p: 2
+  temp_var: 8
+  temp_coef_mean: 50000
+  temp_coef_sd: 5000
+  error_std: 90
+
+ad_spend:
+  campaign_spend_mean: 329000
+  campaign_spend_std: 100000
+  max_min_proportion_on_each_channel:
+    Amazon:
+      min: 0.10
+      max: 0.35
+    TV:
+      min: 0.05
+      max: 0.30
+    Long-Form Video:
+      min: 0.00
+      max: 0.10
+    Search:
+      min: 0.10
+      max: 0.30
