@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PySiMMMulator"
+version = "0.1.0"
+description = "Python package for generating MMM (Marketing Mix Model) input data"
+dependencies = [
+  "numpy",
+  "pandas",
+  "logging",
+]
+requires-python = ">=3.8"
+authors = [
+  { name="Ryan Duecker", email="ryan.duecker@yahoo.com" },
+]
+readme = "README.md"
+license = {file = 'LICENSE'}
+keywords = ["Marketing", "Media", "Model", "MMM", "Simulate", "SiMMMulator"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+testing = ["pytest"]
+linting = ["flake8", "pylint"]
