@@ -1,5 +1,5 @@
 import yaml
-from src.helpers import (
+from PySiMMMulator.helpers import (
     basic_parameters,
     baseline
 )

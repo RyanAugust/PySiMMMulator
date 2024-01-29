@@ -1,11 +1,11 @@
-from src.helpers import basic_parameters
+from pysimmulator.helpers import basic_parameters
 
 import numpy as np
 import pandas as pd
 
 import logging
 # import logging.config
-logging.config.fileConfig("./src/logging.conf")
+logging.config.fileConfig("./src/pysimmulator/logging.conf")
 logger = logging.getLogger("datapipeline")
 
 
@@ -49,9 +49,7 @@ class simmmulate:
         logging.info("You have completed running step 2: Simulating ad spend.")
 
 
-
-
     def run_with_config(self):
-        import src.load_parameters as load_params
+        import pysimmulator.load_parameters as load_params
         
         self.simulate_ad_spend(**load_params.cfg['ad_spend'])

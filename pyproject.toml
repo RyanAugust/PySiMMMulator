@@ -1,15 +1,14 @@
 [build-system]
-requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools ~=63.2.0"]
 
 [project]
-name = "PySiMMMulator"
+name = "pysimmmulator"
 version = "0.1.0"
 description = "Python package for generating MMM (Marketing Mix Model) input data"
 dependencies = [
   "numpy",
-  "pandas",
-  "logging",
+  "pandas"
 ]
 requires-python = ">=3.8"
 authors = [
