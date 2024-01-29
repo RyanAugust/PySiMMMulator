@@ -30,6 +30,7 @@ where = ["src"]  # list of folders that contain the packages (["."] by default)
 [project.optional-dependencies]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
+dev = ["black","flake8","pylint","pytest"]
 
 [tool.coverage.run]
 source = ["src"]
