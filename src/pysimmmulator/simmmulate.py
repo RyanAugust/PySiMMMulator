@@ -1,18 +1,20 @@
-from pysimmulator.helpers import basic_parameters
+from pysimmmulator.helpers import basic_parameters
 
 import numpy as np
 import pandas as pd
 
 import logging
-# import logging.config
-logging.config.fileConfig("./src/pysimmulator/logging.conf")
-logger = logging.getLogger("datapipeline")
+import logging.config
+logging.config.fileConfig("./logging.conf")
+logger = logging.getLogger("pysimmmulator")
 
 
-class simmmulate:
+class simulate:
+    """Takes input of basic params and provies either piece meal  of 
+    MMM data generation tasks or using a config file, """
     def __init__(self, basic_params: basic_parameters):
         self.basic_params = basic_params
-        self.channels = basic_params.channels_click + basic_params.channels_impressions
+        self.channels = basic_params.channels_clicks + basic_params.channels_impressions
         self.channel_count = len(self.channels)
         
 
@@ -50,6 +52,6 @@ class simmmulate:
 
 
     def run_with_config(self):
-        import pysimmulator.load_parameters as load_params
+        import pysimmmulator.load_parameters as load_params
         
         self.simulate_ad_spend(**load_params.cfg['ad_spend'])

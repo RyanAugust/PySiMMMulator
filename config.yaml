@@ -1,4 +1,4 @@
-basic_parms:
+basic_params:
   years: 5
   channels_impressions: ["Amazon", "TV", "Long-Form Video"]
   channels_clicks: ["Search"]
