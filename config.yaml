@@ -41,14 +41,14 @@ media:
     Search: 2.60
   noisy_cpm_cpc:
     Amazon:
-      loc: 1
+      loc: 0
       scale: 1
     TV:
-      loc: 1
+      loc: 0
       scale: 1
     Long-Form Video:
-      loc: 1
+      loc: 0
       scale: 1
     Search:
-      loc: 1
+      loc: 0
       scale: 1
