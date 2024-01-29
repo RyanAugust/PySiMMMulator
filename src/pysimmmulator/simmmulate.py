@@ -1,4 +1,7 @@
-from pysimmmulator.helpers import basic_parameters
+from pysimmmulator.helpers import (
+    basic_parameters,
+    media_parameters
+)
 
 import numpy as np
 import pandas as pd
@@ -49,6 +52,11 @@ class simulate:
             value_name='spend_channel'
         )
         logging.info("You have completed running step 2: Simulating ad spend.")
+
+    def generate_media(self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict) -> None:
+        media_params = media_parameters(true_cpm, true_cpc, noisy_cpm_cpc)
+        media_params.check(basic_params=self.basic_params)
+
 
 
     def run_with_config(self):

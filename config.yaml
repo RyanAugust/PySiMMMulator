@@ -31,3 +31,24 @@ ad_spend:
     Search:
       min: 0.10
       max: 0.30
+
+media:
+  true_cpm:
+    Amazon: 3.50
+    TV: 1.50
+    Long-Form Video: 6.50
+  true_cpc:
+    Search: 2.60
+  noisy_cpm_cpc:
+    Amazon:
+      loc: 1
+      scale: 1
+    TV:
+      loc: 1
+      scale: 1
+    Long-Form Video:
+      loc: 1
+      scale: 1
+    Search:
+      loc: 1
+      scale: 1

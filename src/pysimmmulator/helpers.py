@@ -13,6 +13,7 @@ class basic_parameters:
     revenue_per_conv: str = None
 
     def __post_init__(self):
+        self.all_channels = self.channels_clicks + self.channels_impressions
         self.evaluate_params()
 
     def evaluate_params(self):
@@ -80,3 +81,25 @@ class baseline:
         baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
 
         self.output = np.array([days, baseline_sales, base, trend, temp, seasonality, error])
+
+
+@dataclass
+class media_parameters:
+    true_cpm: dict
+    true_cpc: dict
+    noisy_cpm_cpc: dict
+
+    def __post_init__(self):
+        self.true_cpmcpc_channels = list(self.true_cpm.keys()) + list(self.true_cpc.keys())
+        self.noise_channels = list(self.noisy_cpm_cpc.keys())
+
+    def check(self, basic_params: basic_parameters):
+        assert sorted(self.true_cpmcpc_channels) == sorted(basic_params.all_channels), "Channels declared within true_cpm & true_cpc must be the same as original base channel input"
+        for val in self.true_cpm.values():
+            assert type(val) == float, "cpm values must be of type float"
+            assert val > 0, "CPM values must be greater than 0"
+        for val in self.true_cpc.values():
+            assert type(val) == float, "cpc values must be of type float"
+            assert val > 0, "CPC values must be greater than 0"
+
+        assert sorted(self.noise_channels) == sorted(basic_params.all_channels), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
