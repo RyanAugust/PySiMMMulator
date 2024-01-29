@@ -86,7 +86,7 @@ class ad_spend_parameters:
                 0 < v["max"] <= 1
             ), "Max spend must be between 0 and 1 for each channel"
     
-    def check(basic_params: basic_parameters):
+    def check(self, basic_params: basic_parameters):
         assert (
             len(self.max_min_proportion_on_each_channel.keys()) - 1
             == len(basic_params.all_channels)
