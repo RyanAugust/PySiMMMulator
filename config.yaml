@@ -26,7 +26,7 @@ ad_spend:
       min: 0.05
       max: 0.30
     Long-Form Video:
-      min: 0.00
+      min: 0.01
       max: 0.10
     Search:
       min: 0.10

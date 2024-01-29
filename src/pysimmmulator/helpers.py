@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import numpy as np
 
 
 @dataclass
@@ -20,7 +19,7 @@ class basic_parameters:
         assert (
             self.years > 0
         ), "You entered less than 1 year. Must generate more than a years worth of data"
-        if self.true_cvr != None:
+        if self.true_cvr is not None:
             assert len(self.true_cvr) == len(self.channel_clicks) + len(
                 self.channel_clicks
             ), "True CVR must have equal number of entries as channel impressions and channel clicks"
@@ -37,7 +36,7 @@ class basic_parameters:
         channel_use_clicks = ", ".join(self.channels_clicks)
         cvr_values = (
             ", ".join([str(cvr) for cvr in self.true_cvr])
-            if self.true_cvr != None
+            if self.true_cvr is not None
             else ""
         )
 
@@ -79,10 +78,6 @@ class ad_spend_parameters:
         assert (
             self.campaign_spend_std < self.campaign_spend_mean
         ), "You've entered a campaign spend standard deviation larger than the mean."
-        assert (
-            len(self.max_min_proportion_on_each_channel.keys()) - 1
-            == self.channel_count
-        ), "You did not input in enough numbers or put in too many numbers for proportion of spends on each channel. Must have a maximum and minimum percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."
         for k, v in self.max_min_proportion_on_each_channel.items():
             assert (
                 0 < v["min"] <= 1
@@ -90,6 +85,13 @@ class ad_spend_parameters:
             assert (
                 0 < v["max"] <= 1
             ), "Max spend must be between 0 and 1 for each channel"
+    
+    def check(basic_params: basic_parameters):
+        assert (
+            len(self.max_min_proportion_on_each_channel.keys()) - 1
+            == len(basic_params.all_channels)
+        ), "You did not input in enough numbers or put in too many numbers for proportion of spends on each channel. Must have a maximum and minimum percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."
+        
 
 
 @dataclass

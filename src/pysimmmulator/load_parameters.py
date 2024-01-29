@@ -25,4 +25,5 @@ my_basic_params = basic_parameters(**cfg["basic_params"])
 my_baseline_params = baseline_parameters(
     basic_params=my_basic_params, **cfg["baseline_parms"]
 )
+my_ad_spend_params = ad_spend_parameters(**cfg['ad_spend'])
 my_media_params = media_parameters(**cfg["media"])
