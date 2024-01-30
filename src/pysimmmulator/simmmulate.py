@@ -16,9 +16,8 @@ logger = logging.getLogger("pysimmmulator")
 
 
 class simulate:
-    """Takes input of basic params and provies either piece meal  of
-    MMM data generation tasks or using a config file,"""
-
+    """Takes input of basic params and provies either piece meal or single shot 
+    creation of MMM data using a config file,"""
     def __init__(self, basic_params: basic_parameters):
         self.basic_params = basic_params
 

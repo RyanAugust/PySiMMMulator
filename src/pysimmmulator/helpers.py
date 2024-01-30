@@ -3,13 +3,25 @@ from dataclasses import dataclass
 
 @dataclass
 class basic_parameters:
+    """Handler for loading in basic parameters used by simmmulate class.
+    After init, this class will also preform logic checks for the values of the 
+    parameters.
+     
+    Args:
+        years (int): Number of years you want to generate data for.
+        channels_impressions (list[int]): names of media channels that use impressions as their metric of activity (Examples: Amazon, TV, etc)
+        channels_clicks (list[int]): names of media channels that use clicks as their metric of activity (Examples: Search)
+        frequency_of_campaigns (int): how often campaigns occur (for example, frequency of 1 would yield a new campaign every 1 day with each campaign lasting 1 day).
+        start_date (str): format yyyy/mm/dd that determines when your daily data set starts on
+        true_cvr (list): what the underlying conversion rates of all the channels are, statistical noise will be added on top of this.
+        revenue_per_conv (float): How much money we make from a conversion (i.e. profit from a unit of sale)."""
     years: int
     channels_impressions: list[str]
     channels_clicks: list[str]
     frequency_of_campaigns: int
     start_date: str
     true_cvr: list = None
-    revenue_per_conv: str = None
+    revenue_per_conv: float = None
 
     def __post_init__(self):
         self.all_channels = self.channels_clicks + self.channels_impressions
@@ -53,6 +65,18 @@ Date the data set will start with : {self.start_date}"""
 
 @dataclass
 class baseline_parameters:
+    """Handler for loading in parameters used by simmmulate class to generate a baseline of sales.
+    After init, this class will also preform logic checks for the values of the 
+    parameters.
+     
+    Args:
+        basic_params (basic_parameters): Number of years you want to generate data for.
+        base_p (int): Amount of baseline sales we get in a day (sales not due to ads)
+        trend_p (int): How much baseline sales is going to grow over the whole period of our data.
+        temp_var (int): How big the height of the sine function is for temperature -- i.e. how much temperature varies (used to inject seasonality into our data)
+        temp_coef_mean (int): The average of how important seasonality is in our data (the larger this number, the more important seasonality is for sales)
+        temp_coef_sd (int): The standard deviation of how important seasonality is in our data (the larger this number, the more variable the importance of seasonality is for sales)
+        error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be)."""
     basic_params: basic_parameters
     base_p: int
     trend_p: int
@@ -69,6 +93,15 @@ class baseline_parameters:
 
 @dataclass
 class ad_spend_parameters:
+    """Handler for loading in parameters used by simmmulate class to generate ad spend approximation.
+    After init, this class will also preform logic checks for the values of the 
+    parameters. Also provided is a check function that when passed basic_params 
+    from input to simmmulate, will provide futher validation checks.
+     
+    Args:
+        campaign_spend_mean (int): The average amount of money spent on a campaign.
+        campaign_spend_std (int): The standard deviation of money spent on a campaign
+        max_min_proportion_on_each_channel (dict): Specifies the minimum and maximum percentages of total spend allocated to each channel."""
     campaign_spend_mean: int
     campaign_spend_std: int
     max_min_proportion_on_each_channel: dict
@@ -87,6 +120,11 @@ class ad_spend_parameters:
             ), "Max spend must be between 0 and 1 for each channel"
     
     def check(self, basic_params: basic_parameters):
+        """Validates ad_spend parameters agianst previously constructed basic 
+        parameter values.
+        
+        Args:
+            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class"""
         assert (
             len(self.max_min_proportion_on_each_channel.keys()) - 1
             == len(basic_params.all_channels)
@@ -96,6 +134,15 @@ class ad_spend_parameters:
 
 @dataclass
 class media_parameters:
+    """Handler for loading in parameters used by simmmulate class to generate media data.
+    After init, this class will also preform logic checks for the values of the 
+    parameters. Also provided is a check function that when passed basic_params 
+    from input to simmmulate, will provide futher validation checks.
+     
+    Args:
+        true_cpm (dict): Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)
+        true_cpc (dict): Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)
+        noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel."""
     true_cpm: dict
     true_cpc: dict
     noisy_cpm_cpc: dict
