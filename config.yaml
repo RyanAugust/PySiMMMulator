@@ -7,7 +7,7 @@ basic_params:
   true_cvr:
   revenue_per_conv:
 
-baseline_parms:
+baseline_params:
   base_p: 100
   trend_p: 2
   temp_var: 8
@@ -15,7 +15,7 @@ baseline_parms:
   temp_coef_sd: 5000
   error_std: 90
 
-ad_spend:
+ad_spend_params:
   campaign_spend_mean: 329000
   campaign_spend_std: 100000
   max_min_proportion_on_each_channel:
@@ -32,7 +32,7 @@ ad_spend:
       min: 0.10
       max: 0.30
 
-media:
+media_params:
   true_cpm:
     Amazon: 3.50
     TV: 1.50

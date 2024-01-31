@@ -16,14 +16,14 @@ def load_config(config_path: str = "config.yaml") -> dict:
 def build_params(config_dict: dict) -> None:
     my_basic_params = basic_parameters(**config_dict["basic_params"])
     my_baseline_params = baseline_parameters(
-        basic_params=my_basic_params, **config_dict["baseline_parms"]
+        basic_params=my_basic_params, **config_dict["baseline_params"]
     )
 
 
 cfg = load_config(config_path="config.yaml")
 my_basic_params = basic_parameters(**cfg["basic_params"])
 my_baseline_params = baseline_parameters(
-    basic_params=my_basic_params, **cfg["baseline_parms"]
+    basic_params=my_basic_params, **cfg["baseline_params"]
 )
-my_ad_spend_params = ad_spend_parameters(**cfg['ad_spend'])
-my_media_params = media_parameters(**cfg["media"])
+my_ad_spend_params = ad_spend_parameters(**cfg['ad_spend_params'])
+my_media_params = media_parameters(**cfg["media_params"])

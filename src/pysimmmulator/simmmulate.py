@@ -87,14 +87,14 @@ class simulate:
             max_min_proportion_on_each_channel=max_min_proportion_on_each_channel,
         )
 
-        campaign_count = (
+        campaign_count = int(
             self.basic_params.years * 365 / self.basic_params.frequency_of_campaigns
         )
 
         # specify amount spent on each campaign according to a normal distribution
         campaign_spends = np.random.normal(
             loc=ad_spend_params.campaign_spend_mean,
-            shape=ad_spend_params.campaign_spend_std,
+            scale=ad_spend_params.campaign_spend_std,
             size=campaign_count,
         )
         # if campaign spend number is negative, automatically make it 0
@@ -105,9 +105,9 @@ class simulate:
             proportions,
         ) in ad_spend_params.max_min_proportion_on_each_channel.items():
             campaign_channel_spend_proportions[channel] = np.random.uniform(
-                min=proportions["min"],
-                max=proportions["max"],
-                shape=campaign_count,
+                low=proportions["min"],
+                high=proportions["max"],
+                size=campaign_count,
             )
 
         spend_df = pd.DataFrame(
@@ -130,21 +130,24 @@ class simulate:
         )
         logging.info("You have completed running step 2: Simulating ad spend.")
 
-    def generate_media(
+    def simulate_media(
         self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict
     ) -> None:
         media_params = media_parameters(true_cpm, true_cpc, noisy_cpm_cpc)
         media_params.check(basic_params=self.basic_params)
-
+        
         for channel in media_params.noise_channels:
-            channel_campaigns = self.spend_df[
-                self.spend_df["channel"] == channel
-            ].shape[1]
-            self.spend_df[self.spend_df["channel"] == channel]["true_cpm"]
+            channel_true_cpm_value = true_cpm[channel] if channel in true_cpm.keys() else 0
+            self.spend_df.loc[(self.spend_df["channel"] == channel).index,'true_cpm'] = channel_true_cpm_value
 
-        noisy_cpm = true_cpm.values()
+            channel_true_cpc_value = true_cpc[channel] if channel in true_cpc.keys() else 0
+            self.spend_df.loc[(self.spend_df["channel"] == channel).index,'true_cpc'] = channel_true_cpc_value
+        
+
+        
 
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
-
-        self.simulate_ad_spend(**load_params.cfg["ad_spend"])
+        self.simulate_baseline(**load_params.cfg['baseline_params'])
+        self.simulate_ad_spend(**load_params.cfg["ad_spend_params"])
+        self.simulate_media(**load_params.cfg["media_params"])
