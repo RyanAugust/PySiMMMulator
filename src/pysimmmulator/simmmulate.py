@@ -92,10 +92,12 @@ class simulate:
         )
 
         # specify amount spent on each campaign according to a normal distribution
-        campaign_spends = np.random.normal(
-            loc=ad_spend_params.campaign_spend_mean,
-            scale=ad_spend_params.campaign_spend_std,
-            size=campaign_count,
+        campaign_spends = np.round(
+            np.random.normal(
+                loc=ad_spend_params.campaign_spend_mean,
+                scale=ad_spend_params.campaign_spend_std,
+                size=campaign_count,
+            ), 2
         )
         # if campaign spend number is negative, automatically make it 0
         campaign_spends[campaign_spends < 0] = 0
@@ -118,8 +120,8 @@ class simulate:
         )
 
         for channel in max_min_proportion_on_each_channel.keys():
-            spend_df[channel] = (
-                campaign_spends * campaign_channel_spend_proportions[channel]
+            spend_df[channel] = np.round(
+                campaign_spends * campaign_channel_spend_proportions[channel], 2
             )
 
         self.spend_df = spend_df.melt(
@@ -151,6 +153,14 @@ class simulate:
             self.spend_df.loc[channel_idx,'true_cpc'] = channel_true_cpc_value
             self.spend_df.loc[channel_idx,'noisy_cpc'] = channel_noisy_cpc_value
 
+        self.spend_df['lifetime_impressions'] = np.round(self.spend_df['spend_channel'] / self.spend_df['noisy_cpm'] * 1000, 0)
+        self.spend_df['lifetime_clicks'] = np.round(self.spend_df['spend_channel'] / self.spend_df['noisy_cpc'], 0)
+        
+        self.spend_df['daily_spend'] = np.round(self.spend_df['spend_channel'] / self.basic_params.frequency_of_campaigns, 2)
+        self.spend_df['daily_impressions'] = np.round(self.spend_df['lifetime_impressions'] / self.basic_params.frequency_of_campaigns, 0)
+        self.spend_df['daily_clicks'] = np.round(self.spend_df['lifetime_clicks'] / self.basic_params.frequency_of_campaigns, 0)
+
+        logging.info("You have completed running step 3: Simulating media.")
 
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
