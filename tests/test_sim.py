@@ -3,6 +3,20 @@ from pysimmmulator import simmmulate, load_parameters
 def test_initiate_sim():
     simmmulate.simulate(load_parameters.my_basic_params)
 
+def test_step1_baseline():
+    sim = simmmulate.simulate(load_parameters.my_basic_params)
+    sim.simulate_baseline(**load_parameters.cfg['baseline_params'])
+
+def test_step2_adspend():
+    sim = simmmulate.simulate(load_parameters.my_basic_params)
+    sim.simulate_baseline(**load_parameters.cfg['baseline_params'])
+    sim.simulate_ad_spend(**load_parameters.cfg['ad_spend_params'])
+
+def test_step3_media():
+    sim = simmmulate.simulate(load_parameters.my_basic_params)
+    sim.simulate_baseline(**load_parameters.cfg['baseline_params'])
+    sim.simulate_ad_spend(**load_parameters.cfg['ad_spend_params'])
+    sim.simulate_media(**load_parameters.cfg['media_params'])
 
 def test_run_with_config():
     sim = simmmulate.simulate(load_parameters.my_basic_params)
