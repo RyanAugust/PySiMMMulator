@@ -137,14 +137,20 @@ class simulate:
         media_params.check(basic_params=self.basic_params)
         
         for channel in media_params.noise_channels:
-            channel_true_cpm_value = true_cpm[channel] if channel in true_cpm.keys() else 0
-            self.spend_df.loc[(self.spend_df["channel"] == channel).index,'true_cpm'] = channel_true_cpm_value
+            channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
-            channel_true_cpc_value = true_cpc[channel] if channel in true_cpc.keys() else 0
-            self.spend_df.loc[(self.spend_df["channel"] == channel).index,'true_cpc'] = channel_true_cpc_value
-        
+            channel_noise = np.random.normal(size=len(channel_idx), **noisy_cpm_cpc[channel])
 
-        
+            channel_true_cpm_value = true_cpm[channel] if channel in true_cpm.keys() else np.nan
+            channel_noisy_cpm_value = true_cpm[channel] + channel_noise if channel in true_cpm.keys() else np.nan
+            self.spend_df.loc[channel_idx,'true_cpm'] = channel_true_cpm_value
+            self.spend_df.loc[channel_idx,'noisy_cpm'] = channel_noisy_cpm_value
+
+            channel_true_cpc_value = true_cpc[channel] if channel in true_cpc.keys() else np.nan
+            channel_noisy_cpc_value = true_cpc[channel] + channel_noise if channel in true_cpc.keys() else np.nan
+            self.spend_df.loc[channel_idx,'true_cpc'] = channel_true_cpc_value
+            self.spend_df.loc[channel_idx,'noisy_cpc'] = channel_noisy_cpc_value
+
 
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
