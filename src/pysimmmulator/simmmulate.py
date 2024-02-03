@@ -182,3 +182,4 @@ class simulate:
         self.simulate_baseline(**load_params.cfg['baseline_params'])
         self.simulate_ad_spend(**load_params.cfg["ad_spend_params"])
         self.simulate_media(**load_params.cfg["media_params"])
+        self.simulate_cvr(**load_params.cfg['cvr_params'])
