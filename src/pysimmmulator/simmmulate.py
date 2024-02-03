@@ -1,4 +1,4 @@
-from pysimmmulator.helpers import (
+from pysimmmulator.param_handlers import (
     basic_parameters,
     baseline_parameters,
     ad_spend_parameters,
