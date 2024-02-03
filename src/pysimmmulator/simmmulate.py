@@ -3,10 +3,12 @@ from pysimmmulator.helpers import (
     baseline_parameters,
     ad_spend_parameters,
     media_parameters,
+    cvr_parameters
 )
 
 import numpy as np
 import pandas as pd
+import scipy.stats as stats
 
 import logging
 import logging.config
@@ -161,6 +163,19 @@ class simulate:
         self.spend_df['daily_clicks'] = np.round(self.spend_df['lifetime_clicks'] / self.basic_params.frequency_of_campaigns, 0)
 
         logging.info("You have completed running step 3: Simulating media.")
+
+    def simulate_cvr(self,  noisy_cvr: dict) -> None:
+        cvr_params = cvr_parameters(noisy_cvr)
+        cvr_params.check(basic_params=self.basic_params)
+        
+        for channel in cvr_params.noise_channels:
+            channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
+
+            channel_noise = np.random.normal(size=len(channel_idx), **noisy_cvr[channel])
+            self.spend_df.loc[channel_idx,'noisy_cvr'] = channel_noise + self.basic_params.true_cvr[channel]
+        
+        # Daily CVR == campaign CVR, no reason to duplicate
+
 
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params

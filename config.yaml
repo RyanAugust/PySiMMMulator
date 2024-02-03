@@ -41,14 +41,28 @@ media_params:
     Search: 2.60
   noisy_cpm_cpc:
     Amazon:
-      loc: 0
-      scale: 1
+      loc: 0.0
+      scale: 1.0
     TV:
-      loc: 0
-      scale: 1
+      loc: 0.0
+      scale: 1.0
     Long-Form Video:
-      loc: 0
-      scale: 1
+      loc: 0.0
+      scale: 1.0
     Search:
-      loc: 0
-      scale: 1
+      loc: 0.0
+      scale: 1.0
+
+cvr_params:
+  Amazon:
+    loc: 0.0
+    scale: 0.5
+  TV:
+    loc: 0.0
+    scale: 0.5
+  Long-Form Video:
+    loc: 0.0
+    scale: 0.5
+  Search:
+    loc: 0.0
+    scale: 0.5

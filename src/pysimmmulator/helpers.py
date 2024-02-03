@@ -167,3 +167,27 @@ class media_parameters:
         assert sorted(self.noise_channels) == sorted(
             basic_params.all_channels
         ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
+
+
+@dataclass
+class cvr_parameters:
+    """Handler for loading in parameters used by simmmulate class to generate cvr data.
+    Provided is a check function that when passed basic_params 
+    from input to simmmulate, will provide validation checks.
+     
+    Args:
+        noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CVR for each channel."""
+    noisy_cvr: dict
+
+    def __post_init__(self):
+        self.noise_channels = list(self.noisy_cvr.keys())
+
+        for channel in self.noisy_cvr.keys():
+            channel_spec = self.noisy_cvr[channel]
+            assert channel_spec['loc'] == float, "noisy loc value must be of type float"
+            assert channel_spec['scale'] == float, "noisy scale value must be of type float"
+
+    def check(self, basic_params: basic_parameters):
+        assert sorted(self.noise_channels) == sorted(
+            basic_params.all_channels
+        ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
