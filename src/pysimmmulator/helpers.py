@@ -32,10 +32,10 @@ class basic_parameters:
             self.years > 0
         ), "You entered less than 1 year. Must generate more than a years worth of data"
         if self.true_cvr is not None:
-            assert len(self.true_cvr) == len(self.channel_clicks) + len(
-                self.channel_clicks
+            assert len(self.true_cvr.keys()) == len(
+                self.all_channels
             ), "True CVR must have equal number of entries as channel impressions and channel clicks"
-            for cvr in self.true_cvr:
+            for cvr in self.true_cvr.values():
                 assert (
                     0 < cvr <= 1
                 ), "You've entered an invalid True CVR value. CVR values must be greater than 0 and less than or equal to 1"
@@ -184,8 +184,8 @@ class cvr_parameters:
 
         for channel in self.noisy_cvr.keys():
             channel_spec = self.noisy_cvr[channel]
-            assert channel_spec['loc'] == float, "noisy loc value must be of type float"
-            assert channel_spec['scale'] == float, "noisy scale value must be of type float"
+            assert isinstance(channel_spec['loc'], float), "noisy loc value must be of type float"
+            assert isinstance(channel_spec['scale'], float), "noisy scale value must be of type float"
 
     def check(self, basic_params: basic_parameters):
         assert sorted(self.noise_channels) == sorted(

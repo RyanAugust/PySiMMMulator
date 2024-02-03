@@ -5,6 +5,10 @@ basic_params:
   frequency_of_campaigns: 1
   start_date: "2017/1/1"
   true_cvr:
+    Amazon: 0.05
+    TV: 0.002
+    Long-Form Video: 0.015
+    Search: 0.02
   revenue_per_conv:
 
 baseline_params:
@@ -54,15 +58,16 @@ media_params:
       scale: 1.0
 
 cvr_params:
-  Amazon:
-    loc: 0.0
-    scale: 0.5
-  TV:
-    loc: 0.0
-    scale: 0.5
-  Long-Form Video:
-    loc: 0.0
-    scale: 0.5
-  Search:
-    loc: 0.0
-    scale: 0.5
+  noisy_cvr:
+    Amazon:
+      loc: 0.0
+      scale: 0.5
+    TV:
+      loc: 0.0
+      scale: 0.5
+    Long-Form Video:
+      loc: 0.0
+      scale: 0.5
+    Search:
+      loc: 0.0
+      scale: 0.5
