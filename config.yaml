@@ -71,3 +71,20 @@ cvr_params:
     Search:
       loc: 0.0
       scale: 0.5
+
+adstock_params:
+  true_lambda_decay:
+    Amazon: 0.1
+    TV: 0.2
+    Long-Form Video: 0.15
+    Search: 0.08
+  alpha_saturation:
+    Amazon: 4.0
+    TV: 3.0
+    Long-Form Video: 2.0
+    Search: 1.0
+  gamma_saturation:
+    Amazon: 0.20
+    TV: 0.30
+    Long-Form Video: 0.40
+    Search: 0.50

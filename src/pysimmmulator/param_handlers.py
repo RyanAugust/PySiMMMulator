@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import datetime
 
 
 @dataclass
@@ -25,6 +26,8 @@ class basic_parameters:
 
     def __post_init__(self):
         self.all_channels = self.channels_clicks + self.channels_impressions
+        self.start_date = datetime.datetime.strptime(self.start_date, "%Y/%m/%d")
+        self.end_date = self.start_date + datetime.timedelta(days=(self.years * 365))
         self.evaluate_params()
 
     def evaluate_params(self):
@@ -158,10 +161,10 @@ class media_parameters:
             basic_params.all_channels
         ), "Channels declared within true_cpm & true_cpc must be the same as original base channel input"
         for val in self.true_cpm.values():
-            assert type(val) == float, "cpm values must be of type float"
+            assert isinstance(val, float), "cpm values must be of type float"
             assert val > 0, "CPM values must be greater than 0"
         for val in self.true_cpc.values():
-            assert type(val) == float, "cpc values must be of type float"
+            assert isinstance(val, float), "cpc values must be of type float"
             assert val > 0, "CPC values must be greater than 0"
 
         assert sorted(self.noise_channels) == sorted(
@@ -191,3 +194,34 @@ class cvr_parameters:
         assert sorted(self.noise_channels) == sorted(
             basic_params.all_channels
         ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
+
+@dataclass
+class adstock_parameters:
+    """Handler for loading in parameters used by simmmulate class to augment adstock data.
+    Provided is a check function that when passed basic_params 
+    from input to simmmulate, will provide validation checks.
+     
+    Args:
+        true_lambda_decay (dict): Numbers between 0 and 1 specifying the lambda parameters for a geometric distribution for adstocking media variables.
+        alpha_saturation (dict): Specifying alpha parameter of geometric distribution for applying diminishing returns to media variables
+        gamma_saturation (dict): Between 0 and 1 specifying gamma parameter of geometric distribution for applying diminishing returns to media variables
+        """
+    true_lambda_decay: dict
+    alpha_saturation: dict
+    gamma_saturation: dict
+
+    def __post_init__(self):
+        for channel, value in self.true_lambda_decay.items():
+            assert isinstance(value, float), "lambda decay value must be of type float"
+            assert 0 <= value <= 1, "lambda decay value must be between 0 and 1"
+        for channel, value in self.alpha_saturation.items():
+            assert isinstance(value, float), "alpha saturation value must be of type float"
+        for channel, value in self.gamma_saturation.items():
+            assert isinstance(value, float), "gamma saturation value must be of type float"
+            assert 0 <= value <= 1, "gamma saturation value must be between 0 and 1"
+
+    def check(self, basic_params: basic_parameters):
+        for input_dict in [self.true_lambda_decay, self.alpha_saturation, self.gamma_saturation]:
+            assert sorted(list(input_dict.keys())) == sorted(
+                basic_params.all_channels
+            ), f"Channels declared within {input_dict.__name__} must be the same as original base channel input"

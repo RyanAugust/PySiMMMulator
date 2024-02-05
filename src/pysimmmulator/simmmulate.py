@@ -3,12 +3,12 @@ from pysimmmulator.param_handlers import (
     baseline_parameters,
     ad_spend_parameters,
     media_parameters,
-    cvr_parameters
+    cvr_parameters,
+    adstock_parameters
 )
 
 import numpy as np
 import pandas as pd
-import scipy.stats as stats
 
 import logging
 import logging.config
@@ -175,11 +175,46 @@ class simulate:
             self.spend_df.loc[channel_idx,'noisy_cvr'] = channel_noise + self.basic_params.true_cvr[channel]
         
         # Daily CVR == campaign CVR, no reason to duplicate
+        logging.info("You have completed running step 4: Simulating CVR.")
 
+    def _reformat_for_mmm(self) -> None:
+        date_backbone = pd.date_range(start=self.basic_params.start_date, end=self.basic_params.end_date, freq='D')
+        campaigns_in_period = date_backbone.shape[0] / self.basic_params.frequency_of_campaigns
+        campaign_id_to_date_map = np.trunc(np.linspace(start=0, stop=campaigns_in_period, num=date_backbone.shape[0])).astype(int)
+        self.mmm_df = pd.DataFrame({'date':date_backbone, 'id_map':campaign_id_to_date_map})
+        self.mmm_df.set_index("id_map")
+        
+        agg_media_df = self.spend_df.groupby(['channel','campaign_id']).sum()[["daily_impressions","daily_clicks","daily_spend","noisy_cvr"]]
+        agg_media_df = agg_media_df.unstack(level=0)
+        joined_columns = []
+        for (_metric, _channel) in agg_media_df.columns:
+            col_name = f"{_channel}_{_metric.split('_')[1]}"
+            joined_columns.append(col_name)
+        agg_media_df.columns = joined_columns
 
+        self.mmm_df = self.mmm_df.join(agg_media_df)
+        del self.mmm_df["id_map"]
+
+        logger.info("You have completed running step 5a: pivoting the data frame to an MMM format.")
+
+    def _simulate_decay(self, true_lambda_decay: dict) -> None:
+        return 0
+
+    def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict) -> None:
+        return 0
+
+    def simulate_decay_returns(self, true_lambda_decay: dict, alpha_saturation: dict, gamma_saturation: dict) -> None:
+        adstock_params = adstock_parameters(true_lambda_decay, alpha_saturation, gamma_saturation)
+        self._reformat_for_mmm()
+        self._simulate_decay(adstock_params.true_lambda_decay)
+        self._simulate_diminishing_returns(alpha_saturation = adstock_params.alpha_saturation,
+                                           gamma_saturation = adstock_params.gamma_saturation)
+        logging.info("You have completed running step 5: Simulating CVR.")
+    
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
         self.simulate_baseline(**load_params.cfg['baseline_params'])
         self.simulate_ad_spend(**load_params.cfg["ad_spend_params"])
         self.simulate_media(**load_params.cfg["media_params"])
         self.simulate_cvr(**load_params.cfg['cvr_params'])
+        self.simulate_decay_returns(**load_params.cfg["adstock_params"])
