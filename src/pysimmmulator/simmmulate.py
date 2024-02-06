@@ -199,18 +199,18 @@ class simulate:
     
     @staticmethod
     def _build_decay_vector(original_vector: pd.Series, decay_value: float) -> pd.Series:
-        decayed_vector = pd.Series([original_vector.values[0]])
+        decayed_vector = [original_vector.values[0]]
         for i, orig_value in enumerate(original_vector.values[1:]):
             decayed_vector.append(orig_value + decay_value * decayed_vector[i])
-        return decayed_vector
+        return pd.Series(decayed_vector)
 
     def _simulate_decay(self, true_lambda_decay: dict) -> None:
         for channel in true_lambda_decay.keys():
             for column_name in self.mmm_df.columns:
-                if column_name.str.contains(channel) and (column_name.str.contains('impressions') or column_name.str.contains('clicks')):
+                if channel in column_name and ('impressions' in column_name or 'clicks' in column_name):
                     # these nests are getting insane... 
                     # Does this really have to be calculated like this?
-                    self.mmm_df[column_name + '_adstocked'] = self._build_decay_vector(original_vector=self.mmm_df[column_name])
+                    self.mmm_df[column_name + '_adstocked'] = self._build_decay_vector(original_vector=self.mmm_df[column_name], decay_value=true_lambda_decay[channel])
 
     def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict) -> None:
         return 0
