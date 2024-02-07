@@ -180,7 +180,7 @@ class simulate:
     def _reformat_for_mmm(self) -> None:
         date_backbone = pd.date_range(start=self.basic_params.start_date, end=self.basic_params.end_date, freq='D')
         campaigns_in_period = date_backbone.shape[0] / self.basic_params.frequency_of_campaigns
-        campaign_id_to_date_map = np.trunc(np.linspace(start=0, stop=campaigns_in_period, num=date_backbone.shape[0])).astype(int)
+        campaign_id_to_date_map = np.trunc(np.linspace(start=0, stop=campaigns_in_period-1, num=date_backbone.shape[0])).astype(int)
         self.mmm_df = pd.DataFrame({'date':date_backbone, 'id_map':campaign_id_to_date_map})
         self.mmm_df.set_index("id_map")
         
@@ -205,12 +205,18 @@ class simulate:
         return pd.Series(decayed_vector)
 
     def _simulate_decay(self, true_lambda_decay: dict) -> None:
-        for channel in true_lambda_decay.keys():
-            for column_name in self.mmm_df.columns:
-                if channel in column_name and ('impressions' in column_name or 'clicks' in column_name):
-                    # these nests are getting insane... 
-                    # Does this really have to be calculated like this?
-                    self.mmm_df[column_name + '_adstocked'] = self._build_decay_vector(original_vector=self.mmm_df[column_name], decay_value=true_lambda_decay[channel])
+        for channel in self.basic_params.channels_impressions:
+            self.mmm_df[f"{channel}_impressions_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_impressions"], decay_value=true_lambda_decay[channel])
+        for channel in self.basic_params.channels_clicks:
+            self.mmm_df[f"{channel}_clicks_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_clicks"], decay_value=true_lambda_decay[channel])
+        
+        # for channel in true_lambda_decay.keys():
+        #     for column_name in self.mmm_df.columns:
+        #         if channel in column_name and ('impressions' in column_name or 'clicks' in column_name):
+        #             # these nests are getting insane... 
+        #             # Does this really have to be calculated like this?
+        #             self.mmm_df[column_name + '_adstocked'] = self._build_decay_vector(original_vector=self.mmm_df[column_name], decay_value=true_lambda_decay[channel])
+        # Knew I could find a better way
 
     def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict) -> None:
         return 0
