@@ -205,21 +205,16 @@ class simulate:
         return pd.Series(decayed_vector)
 
     def _simulate_decay(self, true_lambda_decay: dict) -> None:
-        for channel in self.basic_params.channels_impressions:
-            self.mmm_df[f"{channel}_impressions_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_impressions"], decay_value=true_lambda_decay[channel])
-        for channel in self.basic_params.channels_clicks:
-            self.mmm_df[f"{channel}_clicks_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_clicks"], decay_value=true_lambda_decay[channel])
+        for channel in true_lambda_decay.keys():
+            metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
+            self.mmm_df[f"{channel}_{metric}_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_{metric}"], decay_value=true_lambda_decay[channel])
         
-        # for channel in true_lambda_decay.keys():
-        #     for column_name in self.mmm_df.columns:
-        #         if channel in column_name and ('impressions' in column_name or 'clicks' in column_name):
-        #             # these nests are getting insane... 
-        #             # Does this really have to be calculated like this?
-        #             self.mmm_df[column_name + '_adstocked'] = self._build_decay_vector(original_vector=self.mmm_df[column_name], decay_value=true_lambda_decay[channel])
-        # Knew I could find a better way
+        # Knew I could find a better way, even better now
 
-    def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict) -> None:
+    def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict, x_marginal: int = None) -> None:
+
         return 0
+        
 
     def simulate_decay_returns(self, true_lambda_decay: dict, alpha_saturation: dict, gamma_saturation: dict) -> None:
         adstock_params = adstock_parameters(true_lambda_decay, alpha_saturation, gamma_saturation)
