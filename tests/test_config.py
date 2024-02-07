@@ -12,3 +12,15 @@ def test_media_cfg_check():
     media_params = load_parameters.media_parameters(**cfg['media_params'])
     media_params.check(basic_params=load_parameters.my_basic_params)
     assert True == True
+
+def test_cvr_cfg_check():
+    cfg = load_parameters.cfg
+    cvr_params = load_parameters.cvr_parameters(**cfg['cvr_params'])
+    cvr_params.check(basic_params=load_parameters.my_basic_params)
+    assert True == True
+
+def test_adstock_cfg_check():
+    cfg = load_parameters.cfg
+    adstock_params = load_parameters.adstock_parameters(**cfg['adstock_params'])
+    adstock_params.check(basic_params=load_parameters.my_basic_params)
+    assert True == True
