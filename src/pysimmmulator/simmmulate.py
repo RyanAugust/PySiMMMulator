@@ -209,12 +209,20 @@ class simulate:
             metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
             self.mmm_df[f"{channel}_{metric}_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_{metric}"], decay_value=true_lambda_decay[channel])
         
+        logger.info("You have completed running step 5b: applying adstock decay.")
         # Knew I could find a better way, even better now
 
-    def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict, x_marginal: int = None) -> None:
-
-        return 0
+    def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict
+                                    #   , x_marginal: int = None
+                                      ) -> None:
+        for channel in alpha_saturation.keys():
+            metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
+            target = self.mmm_df[f"{channel}_{metric}_adstocked"]
+            gamma_trans = np.round(np.quantile(np.linspace(min(target), max(target), num=100), gamma_saturation[channel]), 4)
+            x_scurve = target**alpha_saturation[channel] / (target**alpha_saturation[channel] + gamma_trans**alpha_saturation[channel])
+            self.mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = x_scurve * target
         
+        logger.info("You have completed running step 5c: apply diminishing marginal returns.")
 
     def simulate_decay_returns(self, true_lambda_decay: dict, alpha_saturation: dict, gamma_saturation: dict) -> None:
         adstock_params = adstock_parameters(true_lambda_decay, alpha_saturation, gamma_saturation)
@@ -222,7 +230,8 @@ class simulate:
         self._simulate_decay(adstock_params.true_lambda_decay)
         self._simulate_diminishing_returns(alpha_saturation = adstock_params.alpha_saturation,
                                            gamma_saturation = adstock_params.gamma_saturation)
-        logging.info("You have completed running step 5: Simulating CVR.")
+        
+        logging.info("You have completed running step 5: Simulating adstock.")
     
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
