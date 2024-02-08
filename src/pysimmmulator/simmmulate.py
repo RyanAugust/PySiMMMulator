@@ -241,6 +241,23 @@ class simulate:
         
         logger.info("You have completed running step 6: Calculating the number of conversions.")
 
+    def consolidate_dataframe(self):
+        all_cols = self.mmm_df.columns.tolist()
+        metric_cols = []
+        [metric_cols.append(f"{channel}_impressions") for channel in self.basic_params.channels_impressions]
+        [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
+        spend_cols = []
+        [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
+        conv_cols = []
+        [conv_cols.append(f"{channel}_conversions") for channel in self.basic_params.all_channels]
+        self.final_df = self.mmm_df[metric_cols + spend_cols + conv_cols].copy()
+        self.final_df["total_conversions_from_ads"] = self.final_df[conv_cols].sum(axis=1)
+        self.final_df["total_revenue_from_ads"] = self.final_df["total_conversions_from_ads"] * self.basic_params.revenue_per_conv
+        self.final_df["baseline_revenue"] = round(self.baseline_sales_df["baseline_sales"]) * self.basic_params.revenue_per_conv
+        self.final_df["total_revenue"] = self.final_df[["total_revenue_from_ads","baseline_revenue"]].sum(axis=1)
+        
+        logger.info("You have completed running step 7: Expanding to maximum data frame.")
+
     
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
@@ -250,3 +267,4 @@ class simulate:
         self.simulate_cvr(**load_params.cfg['cvr_params'])
         self.simulate_decay_returns(**load_params.cfg["adstock_params"])
         self.calculate_conversions()
+        self.consolidate_dataframe()
