@@ -9,7 +9,7 @@ basic_params:
     TV: 0.002
     Long-Form Video: 0.015
     Search: 0.02
-  revenue_per_conv:
+  revenue_per_conv: 14
 
 baseline_params:
   base_p: 100
