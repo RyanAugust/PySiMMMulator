@@ -132,7 +132,7 @@ class simulate:
             var_name="channel",
             value_name="spend_channel",
         )
-        logging.info("You have completed running step 2: Simulating ad spend.")
+        logger.info("You have completed running step 2: Simulating ad spend.")
 
     def simulate_media(
         self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict
@@ -162,7 +162,7 @@ class simulate:
         self.spend_df['daily_impressions'] = np.round(self.spend_df['lifetime_impressions'] / self.basic_params.frequency_of_campaigns, 0)
         self.spend_df['daily_clicks'] = np.round(self.spend_df['lifetime_clicks'] / self.basic_params.frequency_of_campaigns, 0)
 
-        logging.info("You have completed running step 3: Simulating media.")
+        logger.info("You have completed running step 3: Simulating media.")
 
     def simulate_cvr(self,  noisy_cvr: dict) -> None:
         cvr_params = cvr_parameters(noisy_cvr)
@@ -175,7 +175,7 @@ class simulate:
             self.spend_df.loc[channel_idx,'noisy_cvr'] = channel_noise + self.basic_params.true_cvr[channel]
         
         # Daily CVR == campaign CVR, no reason to duplicate
-        logging.info("You have completed running step 4: Simulating CVR.")
+        logger.info("You have completed running step 4: Simulating CVR.")
 
     def _reformat_for_mmm(self) -> None:
         date_backbone = pd.date_range(start=self.basic_params.start_date, end=self.basic_params.end_date, freq='D')
@@ -188,6 +188,7 @@ class simulate:
         agg_media_df = agg_media_df.unstack(level=0)
         joined_columns = []
         for (_metric, _channel) in agg_media_df.columns:
+            # we'll just name everything channel_metric from here. No need for daily/lifetime
             col_name = f"{_channel}_{_metric.split('_')[1]}"
             joined_columns.append(col_name)
         agg_media_df.columns = joined_columns
@@ -231,7 +232,15 @@ class simulate:
         self._simulate_diminishing_returns(alpha_saturation = adstock_params.alpha_saturation,
                                            gamma_saturation = adstock_params.gamma_saturation)
         
-        logging.info("You have completed running step 5: Simulating adstock.")
+        logger.info("You have completed running step 5: Simulating adstock.")
+
+    def calculate_conversions(self):
+        for channel in self.basic_params.all_channels:
+            metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
+            self.mmm_df[f'{channel}_conversions'] = self.mmm_df[f'{channel}_{metric}_adstocked_decay_diminishing'] * self.mmm_df[f'{channel}_cvr']
+        
+        logger.info("You have completed running step 6: Calculating the number of conversions.")
+
     
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
@@ -240,3 +249,4 @@ class simulate:
         self.simulate_media(**load_params.cfg["media_params"])
         self.simulate_cvr(**load_params.cfg['cvr_params'])
         self.simulate_decay_returns(**load_params.cfg["adstock_params"])
+        self.calculate_conversions()
