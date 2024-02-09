@@ -132,7 +132,6 @@ class ad_spend_parameters:
             len(self.max_min_proportion_on_each_channel.keys()) - 1
             == len(basic_params.all_channels)
         ), "You did not input in enough numbers or put in too many numbers for proportion of spends on each channel. Must have a maximum and minimum percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."
-        
 
 
 @dataclass
@@ -195,6 +194,7 @@ class cvr_parameters:
             basic_params.all_channels
         ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
 
+
 @dataclass
 class adstock_parameters:
     """Handler for loading in parameters used by simmmulate class to augment adstock data.
@@ -225,3 +225,15 @@ class adstock_parameters:
             assert sorted(list(input_dict.keys())) == sorted(
                 basic_params.all_channels
             ), f"Channels declared within {input_dict.__name__} must be the same as original base channel input"
+
+
+@dataclass
+class output_parameters:
+    """Handler for loading in parameters used by simmmulate class to generate final output data.
+     
+    Args:
+        aggregation_level (str): Specifies the aggregation level of final output data. choose between [daily, weekly]."""
+    aggregation_level: str
+
+    def __post_init__(self):
+        assert self.aggregation_level in ['daily','weekly'], "{self.aggregation_level} is invalid. Aggregation level must be in [daily, weekly]"

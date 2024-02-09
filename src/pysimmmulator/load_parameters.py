@@ -5,7 +5,8 @@ from pysimmmulator.param_handlers import (
     ad_spend_parameters,
     media_parameters,
     cvr_parameters,
-    adstock_parameters
+    adstock_parameters,
+    output_parameters
 )
 
 
@@ -31,3 +32,4 @@ my_ad_spend_params = ad_spend_parameters(**cfg['ad_spend_params'])
 my_media_params = media_parameters(**cfg["media_params"])
 my_cvr_params = cvr_parameters(**cfg["cvr_params"])
 my_adstock_params = adstock_parameters(**cfg["adstock_params"])
+my_output_params = output_parameters(**cfg["output_params"])
