@@ -259,6 +259,13 @@ class simulate:
         
         logger.info("You have completed running step 7: Expanding to maximum data frame.")
     
+    def calculate_channel_roi(self):
+        self.channel_roi = {}
+        for channel in self.basic_params.all_channels:
+            total_cpa = self.mmm_df[f"{channel}_spend"].sum() / self.mmm_df[f"{channel}_conversions"].sum()
+            total_roi = (self.basic_params.revenue_per_conv - total_cpa) / total_cpa
+            self.channel_roi[channel] = total_roi
+    
     def finalize_output(self, aggregation_level: str) -> None:
         output_params = output_parameters(aggregation_level)
         metric_cols = []
