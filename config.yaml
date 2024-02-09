@@ -88,3 +88,6 @@ adstock_params:
     TV: 0.30
     Long-Form Video: 0.40
     Search: 0.50
+
+output_params:
+  aggregation_level: daily
