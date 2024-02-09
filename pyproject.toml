@@ -33,7 +33,7 @@ dev = ["black","flake8","pylint","pytest"]
 where = ["src"]  # list of folders that contain the packages (["."] by default)
 
 [tool.setuptools.dynamic]
-version = {file = "src/cheetahpy/VERSION"}
+version = {file = "src/pysimmmulator/VERSION"}
 
 [tool.coverage.run]
 source = ["src"]
