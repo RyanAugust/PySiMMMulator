@@ -4,7 +4,6 @@ requires = ["setuptools ~=63.2.0", "setuptools-scm"]
 
 [project]
 name = "pysimmmulator"
-version = "0.1.0"
 description = "Python package for generating MMM (Marketing Mix Model) input data"
 dependencies = [
   "numpy",
@@ -23,14 +22,18 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
-[tool.setuptools.packages.find]
-where = ["src"]  # list of folders that contain the packages (["."] by default)
+dynamic = ["version"]
 
 [project.optional-dependencies]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
 dev = ["black","flake8","pylint","pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
+
+[tool.setuptools.dynamic]
+version = {file = "src/cheetahpy/VERSION"}
 
 [tool.coverage.run]
 source = ["src"]
