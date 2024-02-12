@@ -18,7 +18,7 @@ logging.config.fileConfig("./logging.conf")
 logger = logging.getLogger("pysimmmulator")
 
 
-class simulate:
+class simmmulate:
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 

@@ -15,12 +15,24 @@ def load_config(config_path: str = "example_config.yaml") -> dict:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
     return cfg
 
-
-cfg = load_config(config_path="example_config.yaml")
-my_basic_params = basic_parameters(**cfg["basic_params"])
-my_baseline_params = baseline_parameters(basic_params=my_basic_params, **cfg["baseline_params"])
-my_ad_spend_params = ad_spend_parameters(**cfg["ad_spend_params"])
-my_media_params = media_parameters(**cfg["media_params"])
-my_cvr_params = cvr_parameters(**cfg["cvr_params"])
-my_adstock_params = adstock_parameters(**cfg["adstock_params"])
-my_output_params = output_parameters(**cfg["output_params"])
+def define_basic_params(
+        years,
+        channels_clicks,
+        channels_impressions,
+        frequency_of_campaigns,
+        start_date,
+        true_cvr,
+        revenue_per_conv
+    ):
+    "Takes in requirements for basic_params and loads with dataclass for validation as precursor"
+    my_basic_params = basic_parameters(
+        years=years,
+        channels_clicks=channels_clicks,
+        channels_impressions=channels_impressions,
+        frequency_of_campaigns=frequency_of_campaigns,
+        start_date=start_date,
+        true_cvr=true_cvr,
+        revenue_per_conv=revenue_per_conv
+    )
+    
+    return my_basic_params
