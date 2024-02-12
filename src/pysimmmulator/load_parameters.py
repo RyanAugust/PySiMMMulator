@@ -16,11 +16,6 @@ def load_config(config_path: str = "config.yaml") -> dict:
     return cfg
 
 
-def build_params(config_dict: dict) -> None:
-    my_basic_params = basic_parameters(**config_dict["basic_params"])
-    my_baseline_params = baseline_parameters(basic_params=my_basic_params, **config_dict["baseline_params"])
-
-
 cfg = load_config(config_path="config.yaml")
 my_basic_params = basic_parameters(**cfg["basic_params"])
 my_baseline_params = baseline_parameters(basic_params=my_basic_params, **cfg["baseline_params"])

@@ -261,7 +261,6 @@ class simulate:
         logger.info("You have completed running step 6: Calculating the number of conversions.")
 
     def consolidate_dataframe(self):
-        all_cols = self.mmm_df.columns.tolist()
         metric_cols = []
         [metric_cols.append(f"{channel}_impressions") for channel in self.basic_params.channels_impressions]
         [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
@@ -296,7 +295,7 @@ class simulate:
         spend_cols = []
         [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
-        if aggregation_level == "daily":
+        if output_params.aggregation_level == "daily":
             self.final_df = self.mmm_df[metric_cols + spend_cols + ["total_revenue"]]
         else:
             self.mmm_df["week_start"] = self.mmm_df["date"] - pd.to_timedelta(
@@ -310,7 +309,7 @@ class simulate:
 
     def run_with_config(self, config: dict):
         # import pysimmmulator.load_parameters as load_params
-        if self.basic_params == None:
+        if self.basic_params is None:
             self.basic_params = basic_parameters(**config["basic_params"])
         self.simulate_baseline(**config["baseline_params"])
         self.simulate_ad_spend(**config["ad_spend_params"])
