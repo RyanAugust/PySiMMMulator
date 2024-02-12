@@ -23,8 +23,8 @@ PySiMMMulator's simulator can either be run on a step-by-step basis, or can be r
 Run using this method, you'll be returned both a dataframe of for MMM input as well as the "True ROI" values for each of your channels. These true values are critical to validating your MMM model.
 
 ```python
-cfg = load_parameters.load_config(config_path="./my_config.yaml")
-sim = simmmulate.simulate()
+cfg = load_config(config_path="./my_config.yaml")
+sim = simmmulate()
 mmm_input_df, channel_roi = sim.run_with_config(config=cfg)
 ```
 
@@ -33,7 +33,7 @@ mmm_input_df, channel_roi = sim.run_with_config(config=cfg)
 Alternatively you may run each of the stages independently, which allows for easier debugging and in-run adjustments based on the results of each stage. The order of the stages is reflected below **(without their inputs)**. Once you've run through every stage, results are available by calling the `sim.final_df` object (channel ROI results are stored as `sim.channel_roi`).
 
 ```python
-sim = simmmulate.simulate()
+sim = simmmulate()
 sim.simulate_baseline()
 sim.simulate_ad_spend()
 sim.simulate_media()
