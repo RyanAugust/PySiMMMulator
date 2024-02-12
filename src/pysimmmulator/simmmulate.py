@@ -22,7 +22,7 @@ class simulate:
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 
-    def __init__(self, basic_params: basic_parameters):
+    def __init__(self, basic_params: basic_parameters = None):
         self.basic_params = basic_params
 
     def simulate_baseline(
@@ -308,13 +308,18 @@ class simulate:
             "You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level"
         )
 
-    def run_with_config(self):
-        import pysimmmulator.load_parameters as load_params
-
-        self.simulate_baseline(**load_params.cfg["baseline_params"])
-        self.simulate_ad_spend(**load_params.cfg["ad_spend_params"])
-        self.simulate_media(**load_params.cfg["media_params"])
-        self.simulate_cvr(**load_params.cfg["cvr_params"])
-        self.simulate_decay_returns(**load_params.cfg["adstock_params"])
+    def run_with_config(self, config: dict):
+        # import pysimmmulator.load_parameters as load_params
+        if self.basic_params == None:
+            self.basic_params = basic_parameters(**config["basic_params"])
+        self.simulate_baseline(**config["baseline_params"])
+        self.simulate_ad_spend(**config["ad_spend_params"])
+        self.simulate_media(**config["media_params"])
+        self.simulate_cvr(**config["cvr_params"])
+        self.simulate_decay_returns(**config["adstock_params"])
         self.calculate_conversions()
         self.consolidate_dataframe()
+        self.calculate_channel_roi()
+        self.finalize_output(**config["output_params"])
+
+        return (self.final_df, self.channel_roi)

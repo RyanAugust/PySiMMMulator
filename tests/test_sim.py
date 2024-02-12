@@ -75,5 +75,6 @@ def tests_step9_consolidatedataframe():
     sim.finalize_output(**load_parameters.cfg["output_params"])
 
 def test_run_with_config():
-    sim = simmmulate.simulate(load_parameters.my_basic_params)
-    sim.run_with_config()
+    cfg = load_parameters.load_config(config_path="config.yaml")
+    sim = simmmulate.simulate()
+    sim.run_with_config(config=cfg)
