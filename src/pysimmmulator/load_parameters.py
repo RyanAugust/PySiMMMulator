@@ -10,13 +10,13 @@ from pysimmmulator.param_handlers import (
 )
 
 
-def load_config(config_path: str = "config.yaml") -> dict:
+def load_config(config_path: str = "example_config.yaml") -> dict:
     with open(config_path) as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
     return cfg
 
 
-cfg = load_config(config_path="config.yaml")
+cfg = load_config(config_path="example_config.yaml")
 my_basic_params = basic_parameters(**cfg["basic_params"])
 my_baseline_params = baseline_parameters(basic_params=my_basic_params, **cfg["baseline_params"])
 my_ad_spend_params = ad_spend_parameters(**cfg["ad_spend_params"])
