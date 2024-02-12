@@ -5,7 +5,7 @@ from pysimmmulator.param_handlers import (
     media_parameters,
     cvr_parameters,
     adstock_parameters,
-    output_parameters
+    output_parameters,
 )
 
 import numpy as np
@@ -19,8 +19,9 @@ logger = logging.getLogger("pysimmmulator")
 
 
 class simulate:
-    """Takes input of basic params and provies either piece meal or single shot 
+    """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
+
     def __init__(self, basic_params: basic_parameters):
         self.basic_params = basic_params
 
@@ -58,9 +59,7 @@ class simulate:
             * temp
         )
         # add some noise to the trend
-        error = np.random.normal(
-            loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365
-        )
+        error = np.random.normal(loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365)
         # Generate series for baseline sales
         baseline_sales = base + trend + seasonality + error
         # if error term makes baseline_sales negative, make it 0
@@ -90,9 +89,7 @@ class simulate:
             max_min_proportion_on_each_channel=max_min_proportion_on_each_channel,
         )
 
-        campaign_count = int(
-            self.basic_params.years * 365 / self.basic_params.frequency_of_campaigns
-        )
+        campaign_count = int(self.basic_params.years * 365 / self.basic_params.frequency_of_campaigns)
 
         # specify amount spent on each campaign according to a normal distribution
         campaign_spends = np.round(
@@ -100,7 +97,8 @@ class simulate:
                 loc=ad_spend_params.campaign_spend_mean,
                 scale=ad_spend_params.campaign_spend_std,
                 size=campaign_count,
-            ), 2
+            ),
+            2,
         )
         # if campaign spend number is negative, automatically make it 0
         campaign_spends[campaign_spends < 0] = 0
@@ -123,9 +121,7 @@ class simulate:
         )
 
         for channel in max_min_proportion_on_each_channel.keys():
-            spend_df[channel] = np.round(
-                campaign_spends * campaign_channel_spend_proportions[channel], 2
-            )
+            spend_df[channel] = np.round(campaign_spends * campaign_channel_spend_proportions[channel], 2)
 
         self.spend_df = spend_df.melt(
             id_vars=["campaign_id", "total_campaign_spend"],
@@ -135,12 +131,10 @@ class simulate:
         )
         logger.info("You have completed running step 2: Simulating ad spend.")
 
-    def simulate_media(
-        self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict
-    ) -> None:
+    def simulate_media(self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict) -> None:
         media_params = media_parameters(true_cpm, true_cpc, noisy_cpm_cpc)
         media_params.check(basic_params=self.basic_params)
-        
+
         for channel in media_params.noise_channels:
             channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
@@ -148,47 +142,59 @@ class simulate:
 
             channel_true_cpm_value = true_cpm[channel] if channel in true_cpm.keys() else np.nan
             channel_noisy_cpm_value = true_cpm[channel] + channel_noise if channel in true_cpm.keys() else np.nan
-            self.spend_df.loc[channel_idx,'true_cpm'] = channel_true_cpm_value
-            self.spend_df.loc[channel_idx,'noisy_cpm'] = channel_noisy_cpm_value
+            self.spend_df.loc[channel_idx, "true_cpm"] = channel_true_cpm_value
+            self.spend_df.loc[channel_idx, "noisy_cpm"] = channel_noisy_cpm_value
 
             channel_true_cpc_value = true_cpc[channel] if channel in true_cpc.keys() else np.nan
             channel_noisy_cpc_value = true_cpc[channel] + channel_noise if channel in true_cpc.keys() else np.nan
-            self.spend_df.loc[channel_idx,'true_cpc'] = channel_true_cpc_value
-            self.spend_df.loc[channel_idx,'noisy_cpc'] = channel_noisy_cpc_value
+            self.spend_df.loc[channel_idx, "true_cpc"] = channel_true_cpc_value
+            self.spend_df.loc[channel_idx, "noisy_cpc"] = channel_noisy_cpc_value
 
-        self.spend_df['lifetime_impressions'] = np.round(self.spend_df['spend_channel'] / self.spend_df['noisy_cpm'] * 1000, 0)
-        self.spend_df['lifetime_clicks'] = np.round(self.spend_df['spend_channel'] / self.spend_df['noisy_cpc'], 0)
-        
-        self.spend_df['daily_spend'] = np.round(self.spend_df['spend_channel'] / self.basic_params.frequency_of_campaigns, 2)
-        self.spend_df['daily_impressions'] = np.round(self.spend_df['lifetime_impressions'] / self.basic_params.frequency_of_campaigns, 0)
-        self.spend_df['daily_clicks'] = np.round(self.spend_df['lifetime_clicks'] / self.basic_params.frequency_of_campaigns, 0)
+        self.spend_df["lifetime_impressions"] = np.round(
+            self.spend_df["spend_channel"] / self.spend_df["noisy_cpm"] * 1000, 0
+        )
+        self.spend_df["lifetime_clicks"] = np.round(self.spend_df["spend_channel"] / self.spend_df["noisy_cpc"], 0)
+
+        self.spend_df["daily_spend"] = np.round(
+            self.spend_df["spend_channel"] / self.basic_params.frequency_of_campaigns, 2
+        )
+        self.spend_df["daily_impressions"] = np.round(
+            self.spend_df["lifetime_impressions"] / self.basic_params.frequency_of_campaigns, 0
+        )
+        self.spend_df["daily_clicks"] = np.round(
+            self.spend_df["lifetime_clicks"] / self.basic_params.frequency_of_campaigns, 0
+        )
 
         logger.info("You have completed running step 3: Simulating media.")
 
-    def simulate_cvr(self,  noisy_cvr: dict) -> None:
+    def simulate_cvr(self, noisy_cvr: dict) -> None:
         cvr_params = cvr_parameters(noisy_cvr)
         cvr_params.check(basic_params=self.basic_params)
-        
+
         for channel in cvr_params.noise_channels:
             channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
             channel_noise = np.random.normal(size=len(channel_idx), **noisy_cvr[channel])
-            self.spend_df.loc[channel_idx,'noisy_cvr'] = channel_noise + self.basic_params.true_cvr[channel]
-        
+            self.spend_df.loc[channel_idx, "noisy_cvr"] = channel_noise + self.basic_params.true_cvr[channel]
+
         # Daily CVR == campaign CVR, no reason to duplicate
         logger.info("You have completed running step 4: Simulating CVR.")
 
     def _reformat_for_mmm(self) -> None:
-        date_backbone = pd.date_range(start=self.basic_params.start_date, end=self.basic_params.end_date, freq='D')
+        date_backbone = pd.date_range(start=self.basic_params.start_date, end=self.basic_params.end_date, freq="D")
         campaigns_in_period = date_backbone.shape[0] / self.basic_params.frequency_of_campaigns
-        campaign_id_to_date_map = np.trunc(np.linspace(start=0, stop=campaigns_in_period-1, num=date_backbone.shape[0])).astype(int)
-        self.mmm_df = pd.DataFrame({'date':date_backbone, 'id_map':campaign_id_to_date_map})
+        campaign_id_to_date_map = np.trunc(
+            np.linspace(start=0, stop=campaigns_in_period - 1, num=date_backbone.shape[0])
+        ).astype(int)
+        self.mmm_df = pd.DataFrame({"date": date_backbone, "id_map": campaign_id_to_date_map})
         self.mmm_df.set_index("id_map")
-        
-        agg_media_df = self.spend_df.groupby(['channel','campaign_id']).sum()[["daily_impressions","daily_clicks","daily_spend","noisy_cvr"]]
+
+        agg_media_df = self.spend_df.groupby(["channel", "campaign_id"]).sum()[
+            ["daily_impressions", "daily_clicks", "daily_spend", "noisy_cvr"]
+        ]
         agg_media_df = agg_media_df.unstack(level=0)
         joined_columns = []
-        for (_metric, _channel) in agg_media_df.columns:
+        for _metric, _channel in agg_media_df.columns:
             # we'll just name everything channel_metric from here. No need for daily/lifetime
             col_name = f"{_channel}_{_metric.split('_')[1]}"
             joined_columns.append(col_name)
@@ -198,7 +204,7 @@ class simulate:
         del self.mmm_df["id_map"]
 
         logger.info("You have completed running step 5a: pivoting the data frame to an MMM format.")
-    
+
     @staticmethod
     def _build_decay_vector(original_vector: pd.Series, decay_value: float) -> pd.Series:
         decayed_vector = [original_vector.values[0]]
@@ -208,38 +214,50 @@ class simulate:
 
     def _simulate_decay(self, true_lambda_decay: dict) -> None:
         for channel in true_lambda_decay.keys():
-            metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
-            self.mmm_df[f"{channel}_{metric}_adstocked"] = self._build_decay_vector(original_vector=self.mmm_df[f"{channel}_{metric}"], decay_value=true_lambda_decay[channel])
-        
+            metric = "impressions" if channel in self.basic_params.channels_impressions else "clicks"
+            self.mmm_df[f"{channel}_{metric}_adstocked"] = self._build_decay_vector(
+                original_vector=self.mmm_df[f"{channel}_{metric}"], decay_value=true_lambda_decay[channel]
+            )
+
         logger.info("You have completed running step 5b: applying adstock decay.")
         # Knew I could find a better way, even better now
 
-    def _simulate_diminishing_returns(self, alpha_saturation: dict, gamma_saturation: dict
-                                    #   , x_marginal: int = None
-                                      ) -> None:
+    def _simulate_diminishing_returns(
+        self,
+        alpha_saturation: dict,
+        gamma_saturation: dict,
+        #   , x_marginal: int = None
+    ) -> None:
         for channel in alpha_saturation.keys():
-            metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
+            metric = "impressions" if channel in self.basic_params.channels_impressions else "clicks"
             target = self.mmm_df[f"{channel}_{metric}_adstocked"]
-            gamma_trans = np.round(np.quantile(np.linspace(min(target), max(target), num=100), gamma_saturation[channel]), 4)
-            x_scurve = target**alpha_saturation[channel] / (target**alpha_saturation[channel] + gamma_trans**alpha_saturation[channel])
+            gamma_trans = np.round(
+                np.quantile(np.linspace(min(target), max(target), num=100), gamma_saturation[channel]), 4
+            )
+            x_scurve = target ** alpha_saturation[channel] / (
+                target ** alpha_saturation[channel] + gamma_trans ** alpha_saturation[channel]
+            )
             self.mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = x_scurve * target
-        
+
         logger.info("You have completed running step 5c: apply diminishing marginal returns.")
 
     def simulate_decay_returns(self, true_lambda_decay: dict, alpha_saturation: dict, gamma_saturation: dict) -> None:
         adstock_params = adstock_parameters(true_lambda_decay, alpha_saturation, gamma_saturation)
         self._reformat_for_mmm()
         self._simulate_decay(adstock_params.true_lambda_decay)
-        self._simulate_diminishing_returns(alpha_saturation = adstock_params.alpha_saturation,
-                                           gamma_saturation = adstock_params.gamma_saturation)
-        
+        self._simulate_diminishing_returns(
+            alpha_saturation=adstock_params.alpha_saturation, gamma_saturation=adstock_params.gamma_saturation
+        )
+
         logger.info("You have completed running step 5: Simulating adstock.")
 
     def calculate_conversions(self):
         for channel in self.basic_params.all_channels:
-            metric = 'impressions' if channel in self.basic_params.channels_impressions else 'clicks'
-            self.mmm_df[f'{channel}_conversions'] = self.mmm_df[f'{channel}_{metric}_adstocked_decay_diminishing'] * self.mmm_df[f'{channel}_cvr']
-        
+            metric = "impressions" if channel in self.basic_params.channels_impressions else "clicks"
+            self.mmm_df[f"{channel}_conversions"] = (
+                self.mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] * self.mmm_df[f"{channel}_cvr"]
+            )
+
         logger.info("You have completed running step 6: Calculating the number of conversions.")
 
     def consolidate_dataframe(self):
@@ -253,19 +271,23 @@ class simulate:
         [conv_cols.append(f"{channel}_conversions") for channel in self.basic_params.all_channels]
         self.mmm_df = self.mmm_df[metric_cols + spend_cols + conv_cols]
         self.mmm_df["total_conversions_from_ads"] = self.mmm_df[conv_cols].sum(axis=1)
-        self.mmm_df["total_revenue_from_ads"] = self.mmm_df["total_conversions_from_ads"] * self.basic_params.revenue_per_conv
-        self.mmm_df["baseline_revenue"] = round(self.baseline_sales_df["baseline_sales"]) * self.basic_params.revenue_per_conv
-        self.mmm_df["total_revenue"] = self.mmm_df[["total_revenue_from_ads","baseline_revenue"]].sum(axis=1)
-        
+        self.mmm_df["total_revenue_from_ads"] = (
+            self.mmm_df["total_conversions_from_ads"] * self.basic_params.revenue_per_conv
+        )
+        self.mmm_df["baseline_revenue"] = (
+            round(self.baseline_sales_df["baseline_sales"]) * self.basic_params.revenue_per_conv
+        )
+        self.mmm_df["total_revenue"] = self.mmm_df[["total_revenue_from_ads", "baseline_revenue"]].sum(axis=1)
+
         logger.info("You have completed running step 7: Expanding to maximum data frame.")
-    
+
     def calculate_channel_roi(self):
         self.channel_roi = {}
         for channel in self.basic_params.all_channels:
             total_cpa = self.mmm_df[f"{channel}_spend"].sum() / self.mmm_df[f"{channel}_conversions"].sum()
             total_roi = (self.basic_params.revenue_per_conv - total_cpa) / total_cpa
             self.channel_roi[channel] = total_roi
-    
+
     def finalize_output(self, aggregation_level: str) -> None:
         output_params = output_parameters(aggregation_level)
         metric_cols = []
@@ -273,22 +295,26 @@ class simulate:
         [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
         spend_cols = []
         [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
-        
+
         if aggregation_level == "daily":
             self.final_df = self.mmm_df[metric_cols + spend_cols + ["total_revenue"]]
         else:
-            self.mmm_df['week_start'] = self.mmm_df['date'] - pd.to_timedelta(self.mmm_df['date'].apply(lambda x: x.weekday()), unit='d')
-            self.final_df = self.mmm_df.groupby(['week_start']).sum()[metric_cols + spend_cols + ["total_revenue"]]
-        
-        logger.info("You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level")
+            self.mmm_df["week_start"] = self.mmm_df["date"] - pd.to_timedelta(
+                self.mmm_df["date"].apply(lambda x: x.weekday()), unit="d"
+            )
+            self.final_df = self.mmm_df.groupby(["week_start"]).sum()[metric_cols + spend_cols + ["total_revenue"]]
 
+        logger.info(
+            "You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level"
+        )
 
     def run_with_config(self):
         import pysimmmulator.load_parameters as load_params
-        self.simulate_baseline(**load_params.cfg['baseline_params'])
+
+        self.simulate_baseline(**load_params.cfg["baseline_params"])
         self.simulate_ad_spend(**load_params.cfg["ad_spend_params"])
         self.simulate_media(**load_params.cfg["media_params"])
-        self.simulate_cvr(**load_params.cfg['cvr_params'])
+        self.simulate_cvr(**load_params.cfg["cvr_params"])
         self.simulate_decay_returns(**load_params.cfg["adstock_params"])
         self.calculate_conversions()
         self.consolidate_dataframe()
