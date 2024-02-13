@@ -1,3 +1,5 @@
+<img align="left" src="PySiMMMulator_logo.png" alt="logo" width="150"/>
+
 # PySiMMMulator
 [![CodeFactor](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator/badge)](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/pysimmmulator.svg?label=PyPI%20downloads)](
