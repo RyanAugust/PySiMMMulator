@@ -304,7 +304,7 @@ class simmmulate:
             self.final_df = self.mmm_df.groupby(["week_start"]).sum()[metric_cols + spend_cols + ["total_revenue"]]
 
         logger.info(
-            "You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level"
+            f"You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level"
         )
 
     def run_with_config(self, config: dict):
