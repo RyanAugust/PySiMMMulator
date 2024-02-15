@@ -10,7 +10,7 @@ from pysimmmulator.param_handlers import (
 )
 
 
-def load_config(config_path: str = "example_config.yaml") -> dict:
+def load_config(config_path: str) -> dict:
     with open(config_path) as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
     return cfg
