@@ -1,6 +1,6 @@
 from pysimmmulator import load_config, simmmulate
 import pandas as pd
-import sys
+import argparse
 
 def run_with_config(config_path):
     """Initiates `simmmulator` and executes `simmmmulator.run_with_config` against the passed config filepath
@@ -13,11 +13,11 @@ def run_with_config(config_path):
 
     # save to current directory. Should be an optional argument for this    
     mmm_input_df.to_csv('mmm_input_df.csv', index=False)
-    pd.DataFrame.from_dict(channel_roi, orient='index',columns=['true_roi']).to_csv('mmm_input_df.csv')
+    pd.DataFrame.from_dict(channel_roi, orient='index',columns=['true_roi']).to_csv('channel_roi.csv')
 
 
 def main():
-    # parse args
-    args = sys.argv
-    config_path = args.config_path
-    run_with_config(config_path=config_path)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("-c", "--config_path", action="store", help="Provides configuration file path for simulation")
+    args = arg_parser.parse_args()
+    run_with_config(config_path=args.config_path)
