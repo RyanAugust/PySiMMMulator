@@ -3,5 +3,5 @@ import subprocess
 
 
 def test_cli():
-    subprocess.run(["pysimmm", "-c", "example_config.yaml", "-o", "./"])
+    subprocess.run(["pysimmm", "-c", "example_config.yaml", "-o", "."])
     assert 1 == 1
