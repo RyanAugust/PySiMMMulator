@@ -268,7 +268,7 @@ class simmmulate:
         [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
         conv_cols = []
         [conv_cols.append(f"{channel}_conversions") for channel in self.basic_params.all_channels]
-        self.mmm_df = self.mmm_df[metric_cols + spend_cols + conv_cols]
+        self.mmm_df = self.mmm_df[['date'] + metric_cols + spend_cols + conv_cols]
         self.mmm_df["total_conversions_from_ads"] = self.mmm_df[conv_cols].sum(axis=1)
         self.mmm_df["total_revenue_from_ads"] = (
             self.mmm_df["total_conversions_from_ads"] * self.basic_params.revenue_per_conv
