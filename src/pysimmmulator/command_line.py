@@ -24,7 +24,7 @@ def main():
         "-c", "--config_path", action="store", help="Provides configuration file path for simulation"
     )
     arg_parser.add_argument(
-        "-o", "--output_path", action="store", help="Provides output destination", default="./"
+        "-o", "--output_path", action="store", help="Provides output destination", default="."
     )
     args = arg_parser.parse_args()
     run_with_config(config_path=args.config_path)
