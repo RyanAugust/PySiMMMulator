@@ -296,12 +296,13 @@ class simmmulate:
         [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
         if output_params.aggregation_level == "daily":
+            self.final_df.set_index("date", inplace=True)
             self.final_df = self.mmm_df[metric_cols + spend_cols + ["total_revenue"]]
         else:
             self.mmm_df["week_start"] = self.mmm_df["date"] - pd.to_timedelta(
                 self.mmm_df["date"].apply(lambda x: x.weekday()), unit="d"
             )
-            self.final_df = self.mmm_df.groupby(["week_start"]).sum()[metric_cols + spend_cols + ["total_revenue"]]
+            self.final_df = self.mmm_df[metric_cols + spend_cols + ["total_revenue"] + ["week_start"]].groupby(["week_start"]).sum()
 
         logger.info(
             f"You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level"
