@@ -109,3 +109,10 @@ def test_run_with_config():
     cfg = load_parameters.load_config(config_path="example_config.yaml")
     sim = simmmulate()
     sim.run_with_config(config=cfg)
+
+
+def test_run_with_config_weekly():
+    cfg = load_parameters.load_config(config_path="example_config.yaml")
+    cfg['output_params']['aggregation_level'] = 'weekly'
+    sim = simmmulate()
+    sim.run_with_config(config=cfg)
