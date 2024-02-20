@@ -5,7 +5,7 @@ __copyright__ = "Copyright 2024"
 
 import os
 
-with open(os.path.join("src/pysimmmulator", "VERSION")) as version_file:
+with open(os.path.join(os.path.dirname(__file__), "VERSION")) as version_file:
     __version__ = version_file.read().strip()
 
 from .simulate import simmmulate
