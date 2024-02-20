@@ -296,7 +296,7 @@ class simmmulate:
         [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
         if output_params.aggregation_level == "daily":
-            self.final_df.mmm_df("date", inplace=True)
+            self.mmm_df.set_index("date", inplace=True)
             self.final_df = self.mmm_df[metric_cols + spend_cols + ["total_revenue"]]
         else:
             self.mmm_df["week_start"] = self.mmm_df["date"] - pd.to_timedelta(
