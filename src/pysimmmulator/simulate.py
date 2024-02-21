@@ -22,8 +22,16 @@ class simmmulate:
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 
-    def __init__(self, basic_params: basic_parameters = None):
+    def __init__(self, basic_params: basic_parameters = None, random_seed = None):
         self.basic_params = basic_params
+        self.rng = self._create_random_factory(seed=random_seed)
+
+    def _create_random_factory(self, seed: int) -> np.random.Generator:
+        rng = np.random.default_rng(seed=seed)
+        return rng
+    
+    def _report_random_state(self):
+        return self.rng.bit_generator
 
     def simulate_baseline(
         self,
