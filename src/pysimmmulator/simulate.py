@@ -63,11 +63,11 @@ class simmmulate:
         temp = self.baseline_params.temp_var * np.sin(days * 3.14 / 182.5)
         # coefficient of temperature's effect on sales will be a random variable with normal distribution
         seasonality = (
-            np.random.normal(loc=self.baseline_params.temp_coef_mean, scale=self.baseline_params.temp_coef_sd, size=1)
+            self.rng.normal(loc=self.baseline_params.temp_coef_mean, scale=self.baseline_params.temp_coef_sd, size=1)
             * temp
         )
         # add some noise to the trend
-        error = np.random.normal(loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365)
+        error = self.rng.normal(loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365)
         # Generate series for baseline sales
         baseline_sales = base + trend + seasonality + error
         # if error term makes baseline_sales negative, make it 0
@@ -101,7 +101,7 @@ class simmmulate:
 
         # specify amount spent on each campaign according to a normal distribution
         campaign_spends = np.round(
-            np.random.normal(
+            self.rng.normal(
                 loc=ad_spend_params.campaign_spend_mean,
                 scale=ad_spend_params.campaign_spend_std,
                 size=campaign_count,
@@ -115,7 +115,7 @@ class simmmulate:
             channel,
             proportions,
         ) in ad_spend_params.max_min_proportion_on_each_channel.items():
-            campaign_channel_spend_proportions[channel] = np.random.uniform(
+            campaign_channel_spend_proportions[channel] = self.rng.uniform(
                 low=proportions["min"],
                 high=proportions["max"],
                 size=campaign_count,
@@ -146,7 +146,7 @@ class simmmulate:
         for channel in media_params.noise_channels:
             channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
-            channel_noise = np.random.normal(size=len(channel_idx), **noisy_cpm_cpc[channel])
+            channel_noise = self.rng.normal(size=len(channel_idx), **noisy_cpm_cpc[channel])
 
             channel_true_cpm_value = true_cpm[channel] if channel in true_cpm.keys() else np.nan
             channel_noisy_cpm_value = true_cpm[channel] + channel_noise if channel in true_cpm.keys() else np.nan
@@ -182,7 +182,7 @@ class simmmulate:
         for channel in cvr_params.noise_channels:
             channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
-            channel_noise = np.random.normal(size=len(channel_idx), **noisy_cvr[channel])
+            channel_noise = self.rng.normal(size=len(channel_idx), **noisy_cvr[channel])
             self.spend_df.loc[channel_idx, "noisy_cvr"] = channel_noise + self.basic_params.true_cvr[channel]
 
         # Daily CVR == campaign CVR, no reason to duplicate
