@@ -46,3 +46,20 @@ sim.consolidate_dataframe()
 sim.calculate_channel_roi()
 sim.finalize_output()
 ```
+### Run via CLI
+
+A configuration file is required as input for this and should be passed as seen below. An output path can also be passed via `-o`, however when not passed the current working directory will be used.
+
+```bash
+pysimmm -i example_config.yaml -o .
+```
+
+## Development
+
+Setting up a dev environment
+
+```bash
+conda create --prefix=./env python=3.11
+conda activate ./env
+pip install -e '.[dev]'
+```
