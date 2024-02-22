@@ -14,8 +14,7 @@ import pandas as pd
 import logging
 import logging.config
 
-# logging.config.fileConfig("logging.conf")
-logger = logging.getLogger("pysimmmulator")
+logger = logging.getLogger(__name__)
 
 
 class simmmulate:
@@ -139,6 +138,15 @@ class simmmulate:
         )
         logger.info("You have completed running step 2: Simulating ad spend.")
 
+    def _negative_check(self, df: pd.DataFrame, column: str, channel: str) -> None:
+        if df[column].min() < 0:
+            sub_zero_count = (df[column] < 0).sum()
+            logger.warning(f"There are {sub_zero_count} negative values for {channel} in {column.split('_')[1]}. Consider adjusting your distribution parameters. For now those values will be set to 0")
+    
+    def _negative_replace(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
+        df.loc[df[column] < 0, column] = 0
+        return df
+
     def simulate_media(self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict) -> None:
         media_params = media_parameters(true_cpm, true_cpc, noisy_cpm_cpc)
         media_params.check(basic_params=self.basic_params)
@@ -157,6 +165,12 @@ class simmmulate:
             channel_noisy_cpc_value = true_cpc[channel] + channel_noise if channel in true_cpc.keys() else np.nan
             self.spend_df.loc[channel_idx, "true_cpc"] = channel_true_cpc_value
             self.spend_df.loc[channel_idx, "noisy_cpc"] = channel_noisy_cpc_value
+
+            self._negative_check(self.spend_df.loc[channel_idx], column="noisy_cpm", channel=channel)
+            self._negative_check(self.spend_df.loc[channel_idx], column="noisy_cpc", channel=channel)
+
+        self.spend_df = self._negative_replace(df = self.spend_df, column = "noisy_cpm")
+        self.spend_df = self._negative_replace(df = self.spend_df, column = "noisy_cpc")
 
         self.spend_df["lifetime_impressions"] = np.round(
             self.spend_df["spend_channel"] / self.spend_df["noisy_cpm"] * 1000, 0
@@ -185,6 +199,8 @@ class simmmulate:
             channel_noise = self.rng.normal(size=len(channel_idx), **noisy_cvr[channel])
             self.spend_df.loc[channel_idx, "noisy_cvr"] = channel_noise + self.basic_params.true_cvr[channel]
 
+            self._negative_check(self.spend_df.loc[channel_idx], column="noisy_cvr", channel=channel)
+        self.spend_df = self._negative_replace(df = self.spend_df, column = "noisy_cvr")
         # Daily CVR == campaign CVR, no reason to duplicate
         logger.info("You have completed running step 4: Simulating CVR.")
 
