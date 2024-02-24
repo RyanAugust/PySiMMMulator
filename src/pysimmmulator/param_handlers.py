@@ -15,7 +15,8 @@ class basic_parameters:
         frequency_of_campaigns (int): how often campaigns occur (for example, frequency of 1 would yield a new campaign every 1 day with each campaign lasting 1 day).
         start_date (str): format yyyy/mm/dd that determines when your daily data set starts on
         true_cvr (list): what the underlying conversion rates of all the channels are, statistical noise will be added on top of this.
-        revenue_per_conv (float): How much money we make from a conversion (i.e. profit from a unit of sale)."""
+        revenue_per_conv (float): How much money we make from a conversion (i.e. profit from a unit of sale).
+    """
 
     years: int
     channels_impressions: list[str]
@@ -32,7 +33,9 @@ class basic_parameters:
         self.evaluate_params()
 
     def evaluate_params(self):
-        assert self.years > 0, "You entered less than 1 year. Must generate more than a years worth of data"
+        assert (
+            self.years > 0
+        ), "You entered less than 1 year. Must generate more than a years worth of data"
         if self.true_cvr is not None:
             assert len(self.true_cvr.keys()) == len(
                 self.all_channels
@@ -48,7 +51,11 @@ class basic_parameters:
     def __repr__(self):
         channel_use_impressions = ", ".join(self.channels_impressions)
         channel_use_clicks = ", ".join(self.channels_clicks)
-        cvr_values = ", ".join([str(cvr) for cvr in self.true_cvr]) if self.true_cvr is not None else ""
+        cvr_values = (
+            ", ".join([str(cvr) for cvr in self.true_cvr])
+            if self.true_cvr is not None
+            else ""
+        )
 
         slug = f"""Years of Data to generate : {self.years}
 Channel that use impressions : {channel_use_impressions}
@@ -107,20 +114,27 @@ class ad_spend_parameters:
     max_min_proportion_on_each_channel: dict
 
     def __post_init__(self):
-        assert self.campaign_spend_mean > 0, "You entered a negative average campaign spend. Enter a positive number."
+        assert (
+            self.campaign_spend_mean > 0
+        ), "You entered a negative average campaign spend. Enter a positive number."
         assert (
             self.campaign_spend_std < self.campaign_spend_mean
         ), "You've entered a campaign spend standard deviation larger than the mean."
         for k, v in self.max_min_proportion_on_each_channel.items():
-            assert 0 < v["min"] <= 1, "Min spend must be between 0 and 1 for each channel"
-            assert 0 < v["max"] <= 1, "Max spend must be between 0 and 1 for each channel"
+            assert (
+                0 < v["min"] <= 1
+            ), "Min spend must be between 0 and 1 for each channel"
+            assert (
+                0 < v["max"] <= 1
+            ), "Max spend must be between 0 and 1 for each channel"
 
     def check(self, basic_params: basic_parameters):
         """Validates ad_spend parameters agianst previously constructed basic
         parameter values.
 
         Args:
-            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class"""
+            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
+        """
         assert len(self.max_min_proportion_on_each_channel.keys()) - 1 == len(
             basic_params.all_channels
         ), "You did not input in enough numbers or put in too many numbers for proportion of spends on each channel. Must have a maximum and minimum percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."
@@ -144,7 +158,9 @@ class media_parameters:
     noisy_cpm_cpc: dict
 
     def __post_init__(self):
-        self.true_cpmcpc_channels = list(self.true_cpm.keys()) + list(self.true_cpc.keys())
+        self.true_cpmcpc_channels = list(self.true_cpm.keys()) + list(
+            self.true_cpc.keys()
+        )
         self.noise_channels = list(self.noisy_cpm_cpc.keys())
 
     def check(self, basic_params: basic_parameters):
@@ -170,7 +186,8 @@ class cvr_parameters:
     from input to simmmulate, will provide validation checks.
 
     Args:
-        noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CVR for each channel."""
+        noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CVR for each channel.
+    """
 
     noisy_cvr: dict
 
@@ -179,8 +196,12 @@ class cvr_parameters:
 
         for channel in self.noisy_cvr.keys():
             channel_spec = self.noisy_cvr[channel]
-            assert isinstance(channel_spec["loc"], float), "noisy loc value must be of type float"
-            assert isinstance(channel_spec["scale"], float), "noisy scale value must be of type float"
+            assert isinstance(
+                channel_spec["loc"], float
+            ), "noisy loc value must be of type float"
+            assert isinstance(
+                channel_spec["scale"], float
+            ), "noisy scale value must be of type float"
 
     def check(self, basic_params: basic_parameters):
         assert sorted(self.noise_channels) == sorted(
@@ -209,13 +230,21 @@ class adstock_parameters:
             assert isinstance(value, float), "lambda decay value must be of type float"
             assert 0 <= value <= 1, "lambda decay value must be between 0 and 1"
         for channel, value in self.alpha_saturation.items():
-            assert isinstance(value, float), "alpha saturation value must be of type float"
+            assert isinstance(
+                value, float
+            ), "alpha saturation value must be of type float"
         for channel, value in self.gamma_saturation.items():
-            assert isinstance(value, float), "gamma saturation value must be of type float"
+            assert isinstance(
+                value, float
+            ), "gamma saturation value must be of type float"
             assert 0 <= value <= 1, "gamma saturation value must be between 0 and 1"
 
     def check(self, basic_params: basic_parameters):
-        for input_dict in [self.true_lambda_decay, self.alpha_saturation, self.gamma_saturation]:
+        for input_dict in [
+            self.true_lambda_decay,
+            self.alpha_saturation,
+            self.gamma_saturation,
+        ]:
             assert sorted(list(input_dict.keys())) == sorted(
                 basic_params.all_channels
             ), f"Channels declared within {input_dict.__name__} must be the same as original base channel input"

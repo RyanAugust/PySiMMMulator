@@ -15,15 +15,16 @@ def load_config(config_path: str) -> dict:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
     return cfg
 
+
 def define_basic_params(
-        years,
-        channels_clicks,
-        channels_impressions,
-        frequency_of_campaigns,
-        start_date,
-        true_cvr,
-        revenue_per_conv
-    ):
+    years,
+    channels_clicks,
+    channels_impressions,
+    frequency_of_campaigns,
+    start_date,
+    true_cvr,
+    revenue_per_conv,
+):
     "Takes in requirements for basic_params and loads with dataclass for validation as precursor"
     my_basic_params = basic_parameters(
         years=years,
@@ -32,7 +33,7 @@ def define_basic_params(
         frequency_of_campaigns=frequency_of_campaigns,
         start_date=start_date,
         true_cvr=true_cvr,
-        revenue_per_conv=revenue_per_conv
+        revenue_per_conv=revenue_per_conv,
     )
-    
+
     return my_basic_params
