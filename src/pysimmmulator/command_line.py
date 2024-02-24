@@ -1,4 +1,4 @@
-from pysimmmulator import load_config, simmmulate
+from pysimmmulator import load_config, simmm
 import pandas as pd
 import argparse
 import os
@@ -11,7 +11,7 @@ def run_with_config(config_path, output_path):
         config_path (str): path to a valid config file, see example_config.yaml as example of `simmmulator` expected config format
     """
     cfg = load_config(config_path)
-    sim = simmmulate()
+    sim = simmm()
     (mmm_input_df, channel_roi) = sim.run_with_config(config=cfg)
 
     # save to current directory. Should be an optional argument for this

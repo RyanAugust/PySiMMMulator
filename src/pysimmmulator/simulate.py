@@ -17,7 +17,7 @@ import logging.config
 logger = logging.getLogger(__name__)
 
 
-class simmmulate:
+class simmm:
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 
@@ -341,7 +341,7 @@ class simmmulate:
         return (self.final_df, self.channel_roi)
 
 
-class multisimmm(simmmulate):
+class multisimmm(simmm):
     def __init__(self):
         super(multisimmm, self).__init__()
         self.final_frames = []
