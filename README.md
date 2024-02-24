@@ -1,6 +1,7 @@
 <img align="left" src="PySiMMMulator_logo.png" alt="logo" width="150"/>
 
 # PySiMMMulator
+
 [![CodeFactor](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator/badge)](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/pysimmmulator.svg?label=PyPI%20downloads)](
 https://pypi.org/project/pysimmmulator/)
@@ -26,7 +27,7 @@ Run using this method, you'll be returned both a dataframe of for MMM input as w
 
 ```python
 cfg = load_config(config_path="./my_config.yaml")
-sim = simmmulate()
+sim = simmm()
 mmm_input_df, channel_roi = sim.run_with_config(config=cfg)
 ```
 
@@ -35,7 +36,7 @@ mmm_input_df, channel_roi = sim.run_with_config(config=cfg)
 Alternatively you may run each of the stages independently, which allows for easier debugging and in-run adjustments based on the results of each stage. The order of the stages is reflected below **(without their inputs)**. Once you've run through every stage, results are available by calling the `sim.final_df` object (channel ROI results are stored as `sim.channel_roi`).
 
 ```python
-sim = simmmulate()
+sim = simmm()
 sim.simulate_baseline()
 sim.simulate_ad_spend()
 sim.simulate_media()
@@ -46,6 +47,7 @@ sim.consolidate_dataframe()
 sim.calculate_channel_roi()
 sim.finalize_output()
 ```
+
 ### Run via CLI
 
 A configuration file is required as input for this and should be passed as seen below. An output path can also be passed via `-o`, however when not passed the current working directory will be used.

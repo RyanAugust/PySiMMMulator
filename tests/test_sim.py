@@ -1,23 +1,23 @@
-from pysimmmulator import load_parameters, simmmulate
+from pysimmmulator import load_parameters, simmm
 
 
 def test_initiate_sim():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    simmmulate(my_basic_params)
+    simmm(my_basic_params)
 
 
 def test_step1_baseline():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
 
 
 def test_step2_adspend():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
 
@@ -25,7 +25,7 @@ def test_step2_adspend():
 def test_step3_media():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -34,7 +34,7 @@ def test_step3_media():
 def test_step4_cvr():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -44,7 +44,7 @@ def test_step4_cvr():
 def tests_step5_adstock():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -55,7 +55,7 @@ def tests_step5_adstock():
 def tests_step6_conversions():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -67,7 +67,7 @@ def tests_step6_conversions():
 def tests_step7_consolidatedataframe():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -80,7 +80,7 @@ def tests_step7_consolidatedataframe():
 def tests_step8_roi():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -94,7 +94,7 @@ def tests_step8_roi():
 def tests_step9_consolidatedataframe():
     cfg = load_parameters.load_config(config_path="./example_config.yaml")
     my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-    sim = simmmulate(my_basic_params)
+    sim = simmm(my_basic_params)
     sim.simulate_baseline(**cfg["baseline_params"])
     sim.simulate_ad_spend(**cfg["ad_spend_params"])
     sim.simulate_media(**cfg["media_params"])
@@ -107,12 +107,12 @@ def tests_step9_consolidatedataframe():
 
 def test_run_with_config():
     cfg = load_parameters.load_config(config_path="example_config.yaml")
-    sim = simmmulate()
+    sim = simmm()
     sim.run_with_config(config=cfg)
 
 
 def test_run_with_config_weekly():
     cfg = load_parameters.load_config(config_path="example_config.yaml")
-    cfg['output_params']['aggregation_level'] = 'weekly'
-    sim = simmmulate()
+    cfg["output_params"]["aggregation_level"] = "weekly"
+    sim = simmm()
     sim.run_with_config(config=cfg)
