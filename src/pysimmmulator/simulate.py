@@ -344,10 +344,12 @@ class simmmulate:
 class multisimmm(simmmulate):
     def __init__(self):
         super(multisimmm, self).__init__()
-
-    def store_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
         self.final_frames = []
         self.rois = []
+
+    def store_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
+        self.final_frames.append(final_df)
+        self.rois.append(channel_roi)
 
     def run(self, config: dict, runs: int) -> None:
         for run in range(runs):
