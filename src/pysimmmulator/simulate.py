@@ -296,7 +296,7 @@ class simmmulate:
 
         logger.info("You have completed running step 7: Expanding to maximum data frame.")
 
-    def calculate_channel_roi(self):
+    def calculate_channel_roi(self) -> None:
         self.channel_roi = {}
         for channel in self.basic_params.all_channels:
             total_cpa = self.mmm_df[f"{channel}_spend"].sum() / self.mmm_df[f"{channel}_conversions"].sum()
@@ -324,7 +324,7 @@ class simmmulate:
             f"You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level"
         )
 
-    def run_with_config(self, config: dict):
+    def run_with_config(self, config: dict) -> set[pd.DataFrame, dict]:
         # import pysimmmulator.load_parameters as load_params
         if self.basic_params is None:
             self.basic_params = basic_parameters(**config["basic_params"])
@@ -339,3 +339,18 @@ class simmmulate:
         self.finalize_output(**config["output_params"])
 
         return (self.final_df, self.channel_roi)
+
+
+class multisimmm(simmmulate):
+    def __init__(self):
+        super(multisimmm, self).__init__()
+
+    def store_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
+        self.final_frames = []
+        self.rois = []
+
+    def run(self, config: dict, runs: int) -> None:
+        for run in range(runs):
+            frame, roi = self.run_with_config(config=config)
+            self.store_outputs(final_df=frame, channel_roi=roi)
+        logger.info(f"{runs} runs complete and stored")
