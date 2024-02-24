@@ -1,6 +1,7 @@
 <img align="left" src="PySiMMMulator_logo.png" alt="logo" width="150"/>
 
 # PySiMMMulator
+
 [![CodeFactor](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator/badge)](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/pysimmmulator.svg?label=PyPI%20downloads)](
 https://pypi.org/project/pysimmmulator/)
@@ -46,6 +47,7 @@ sim.consolidate_dataframe()
 sim.calculate_channel_roi()
 sim.finalize_output()
 ```
+
 ### Run via CLI
 
 A configuration file is required as input for this and should be passed as seen below. An output path can also be passed via `-o`, however when not passed the current working directory will be used.
