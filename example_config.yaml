@@ -5,10 +5,10 @@ basic_params:
   frequency_of_campaigns: 1
   start_date: "2017/1/1"
   true_cvr:
-    Amazon: 0.05
-    TV: 0.002
-    Long-Form Video: 0.015
-    Search: 0.02
+    Amazon: 0.06
+    TV: 0.01
+    Long-Form Video: 0.02
+    Search: 0.07
   revenue_per_conv: 14
 
 baseline_params:
@@ -39,14 +39,14 @@ ad_spend_params:
 media_params:
   true_cpm:
     Amazon: 3.50
-    TV: 1.50
+    TV: 12.50
     Long-Form Video: 6.50
   true_cpc:
     Search: 2.60
   noisy_cpm_cpc:
     Amazon:
       loc: 0.0
-      scale: 1.0
+      scale: 0.25
     TV:
       loc: 0.0
       scale: 1.0
@@ -55,22 +55,22 @@ media_params:
       scale: 1.0
     Search:
       loc: 0.0
-      scale: 1.0
+      scale: .25
 
 cvr_params:
   noisy_cvr:
     Amazon:
       loc: 0.0
-      scale: 0.5
+      scale: 0.01
     TV:
       loc: 0.0
-      scale: 0.5
+      scale: 0.0025
     Long-Form Video:
       loc: 0.0
-      scale: 0.5
+      scale: 0.005
     Search:
       loc: 0.0
-      scale: 0.5
+      scale: 0.01
 
 adstock_params:
   true_lambda_decay:

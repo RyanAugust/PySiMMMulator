@@ -21,8 +21,16 @@ class simmm:
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 
-    def __init__(self, basic_params: basic_parameters = None):
+    def __init__(self, basic_params: basic_parameters = None, random_seed = None):
         self.basic_params = basic_params
+        self.rng = self._create_random_factory(seed=random_seed)
+
+    def _create_random_factory(self, seed: int) -> np.random.Generator:
+        rng = np.random.default_rng(seed=seed)
+        return rng
+    
+    def _report_random_state(self):
+        return self.rng.bit_generator
 
     def simulate_baseline(
         self,
@@ -58,19 +66,11 @@ class simmm:
         temp = self.baseline_params.temp_var * np.sin(days * 3.14 / 182.5)
         # coefficient of temperature's effect on sales will be a random variable with normal distribution
         seasonality = (
-            np.random.normal(
-                loc=self.baseline_params.temp_coef_mean,
-                scale=self.baseline_params.temp_coef_sd,
-                size=1,
-            )
+            self.rng.normal(loc=self.baseline_params.temp_coef_mean, scale=self.baseline_params.temp_coef_sd, size=1)
             * temp
         )
         # add some noise to the trend
-        error = np.random.normal(
-            loc=0,
-            scale=self.baseline_params.error_std,
-            size=self.basic_params.years * 365,
-        )
+        error = self.rng.normal(loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365)
         # Generate series for baseline sales
         baseline_sales = base + trend + seasonality + error
         # if error term makes baseline_sales negative, make it 0
@@ -106,7 +106,7 @@ class simmm:
 
         # specify amount spent on each campaign according to a normal distribution
         campaign_spends = np.round(
-            np.random.normal(
+            self.rng.normal(
                 loc=ad_spend_params.campaign_spend_mean,
                 scale=ad_spend_params.campaign_spend_std,
                 size=campaign_count,
@@ -116,8 +116,11 @@ class simmm:
         # if campaign spend number is negative, automatically make it 0
         campaign_spends[campaign_spends < 0] = 0
         campaign_channel_spend_proportions = {}
-        for (channel,proportions,) in ad_spend_params.max_min_proportion_on_each_channel.items():
-            campaign_channel_spend_proportions[channel] = np.random.uniform(
+        for (
+            channel,
+            proportions,
+        ) in ad_spend_params.max_min_proportion_on_each_channel.items():
+            campaign_channel_spend_proportions[channel] = self.rng.uniform(
                 low=proportions["min"],
                 high=proportions["max"],
                 size=campaign_count,
@@ -163,7 +166,7 @@ class simmm:
         for channel in media_params.noise_channels:
             channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
-            channel_noise = np.random.normal(
+            channel_noise = self.rng.normal(
                 size=len(channel_idx), **noisy_cpm_cpc[channel]
             )
 
@@ -228,7 +231,7 @@ class simmm:
         for channel in cvr_params.noise_channels:
             channel_idx = self.spend_df[self.spend_df["channel"] == channel].index
 
-            channel_noise = np.random.normal(size=len(channel_idx), **noisy_cvr[channel])
+            channel_noise = self.rng.normal(size=len(channel_idx), **noisy_cvr[channel])
             self.spend_df.loc[channel_idx, "noisy_cvr"] = (
                 channel_noise + self.basic_params.true_cvr[channel]
             )
