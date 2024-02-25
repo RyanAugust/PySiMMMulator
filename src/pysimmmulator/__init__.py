@@ -1,4 +1,4 @@
-__title__ = "CheetahPy"
+__title__ = "PuSiMMM"
 __author__ = "RyanAugust"
 __license__ = "MIT"
 __copyright__ = "Copyright 2024"
