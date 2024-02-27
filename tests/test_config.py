@@ -1,4 +1,4 @@
-from pysimmmulator import load_parameters
+from pysimmm import load_parameters
 
 
 def test_load_cfg():

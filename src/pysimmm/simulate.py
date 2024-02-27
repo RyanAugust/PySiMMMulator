@@ -1,4 +1,4 @@
-from pysimmmulator.param_handlers import (
+from pysimmm.param_handlers import (
     basic_parameters,
     baseline_parameters,
     ad_spend_parameters,
@@ -17,7 +17,7 @@ import logging.config
 logger = logging.getLogger(__name__)
 
 
-class simmm:
+class simulate:
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 
@@ -443,9 +443,9 @@ class simmm:
         return (self.final_df, self.channel_roi)
 
 
-class multisimmm(simmm):
+class multisim(simulate):
     def __init__(self):
-        super(multisimmm, self).__init__()
+        super(multisim, self).__init__()
         self.final_frames = []
         self.rois = []
 

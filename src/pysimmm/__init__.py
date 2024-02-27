@@ -9,5 +9,5 @@ with open(os.path.join(os.path.dirname(__file__), "VERSION")) as version_file:
     __version__ = version_file.read().strip()
 
 
-from .simulate import simmm, multisimmm
+from .simulate import simulate, multisim
 from .load_parameters import load_config, define_basic_params

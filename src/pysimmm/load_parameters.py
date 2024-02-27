@@ -1,5 +1,5 @@
 import yaml
-from pysimmmulator.param_handlers import (
+from pysimmm.param_handlers import (
     basic_parameters,
     baseline_parameters,
     ad_spend_parameters,
