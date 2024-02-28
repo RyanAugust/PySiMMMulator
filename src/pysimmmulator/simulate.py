@@ -8,6 +8,8 @@ from pysimmmulator.param_handlers import (
     output_parameters,
 )
 
+from .visualize import visualize
+
 import numpy as np
 import pandas as pd
 
@@ -17,13 +19,14 @@ import logging.config
 logger = logging.getLogger(__name__)
 
 
-class simmm:
+class simmm(visualize):
     """Takes input of basic params and provies either piece meal or single shot
     creation of MMM data using a config file,"""
 
     def __init__(self, basic_params: basic_parameters = None, random_seed = None):
         self.basic_params = basic_params
         self.rng = self._create_random_factory(seed=random_seed)
+        super().__init__()
 
     def _create_random_factory(self, seed: int) -> np.random.Generator:
         rng = np.random.default_rng(seed=seed)
