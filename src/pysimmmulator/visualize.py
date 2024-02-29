@@ -8,7 +8,7 @@ class visualize:
         self._valid_agg_levels = ['daily', 'weekly', 'monthly', 'yearly']
 
     def plot_spend(self, agg: str = None):
-        """Plot simulated data based on a passed date-wise aggregation
+        """Plot simulated spend data based on a passed date-wise aggregation
         
         Args:
             agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
@@ -21,7 +21,7 @@ class visualize:
         return self._plot_majors(columns = plot_cols)
 
     def plot_impressions(self, agg: str = None):
-        """Plot simulated data based on a passed date-wise aggregation
+        """Plot simulated impressions data based on a passed date-wise aggregation
         
         Args:
             agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
@@ -34,7 +34,7 @@ class visualize:
         return self._plot_majors(columns = plot_cols)
 
     def plot_clicks(self, agg: str = None):
-        """Plot simulated data based on a passed date-wise aggregation
+        """Plot simulated clicks data based on a passed date-wise aggregation
         
         Args:
             agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
@@ -43,6 +43,19 @@ class visualize:
         # prepare frame and filter columns for plotting
         self._plot_frame_overhead(agg_level=agg)
         plot_cols = self._filter_columns(columns = self.plot_frame.columns.tolist(), filter_string = '_clicks')
+
+        return self._plot_majors(columns = plot_cols)
+    
+    def plot_revenue(self, agg: str = None):
+        """Plot simulated data based on a passed date-wise aggregation
+        
+        Args:
+            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
+        assert agg in self._valid_agg_levels, f"Please select from [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
+
+        # prepare frame and filter columns for plotting
+        self._plot_frame_overhead(agg_level=agg)
+        plot_cols = self._filter_columns(columns = self.plot_frame.columns.tolist(), filter_string = 'total_revenue')
 
         return self._plot_majors(columns = plot_cols)
 
@@ -55,6 +68,7 @@ class visualize:
         if agg_level is not None:
             self.plot_frame = self.final_df.copy()
             self.plot_frame.reset_index(inplace=True)
+            print(self.plot_frame.columns)
             self._aggregator(agg_level)
         else:
             self.plot_frame = self.final_df.copy()
@@ -79,7 +93,7 @@ class visualize:
         
         elif agg_level == 'yearly':
             self.plot_frame["year_start"] = self.plot_frame["date"] - pd.to_timedelta(
-                self.plot_frame["date"].apply(lambda x: x.timetuple()[7]), unit=""
+                self.plot_frame["date"].apply(lambda x: x.timetuple()[7]), unit="d"
             )
             del self.plot_frame["date"]
             self.plot_frame = self.plot_frame.groupby("year_start").sum()
@@ -96,4 +110,4 @@ class visualize:
         ax.set_ylabel(f"{plot_subject}")
         ax.set_title(f"{plot_subject} by Channel")
         fig.legend(loc="upper right")
-        plt.show()
+        plt.savefig(f'{plot_subject}_by_channel.png')
