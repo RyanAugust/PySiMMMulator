@@ -6,13 +6,14 @@ class visualize:
     def __init__(self):
         self._viz_available = True
         self._valid_agg_levels = ['daily', 'weekly', 'monthly', 'yearly']
+        self._valid_agg_levels_joined = ', '.join(self._valid_agg_levels)
 
     def plot_spend(self, agg: str = None):
         """Plot simulated spend data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
-        assert agg in self._valid_agg_levels, f"Please select from [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
+            agg (str): pick from [{self._valid_agg_levels_joined}] to aggregate simulated data by"""
+        assert agg in self._valid_agg_levels, f"Please select from [{self._valid_agg_levels_joined}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
         self._plot_frame_overhead(agg_level=agg)
@@ -24,8 +25,8 @@ class visualize:
         """Plot simulated impressions data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
-        assert agg in self._valid_agg_levels, f"Please select from [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
+            agg (str): pick from [{self._valid_agg_levels_joined}] to aggregate simulated data by"""
+        assert agg in self._valid_agg_levels, f"Please select from [{self._valid_agg_levels_joined}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
         self._plot_frame_overhead(agg_level=agg)
@@ -37,8 +38,8 @@ class visualize:
         """Plot simulated clicks data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
-        assert agg in self._valid_agg_levels, f"Please select from [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
+            agg (str): pick from [{self._valid_agg_levels_joined}] to aggregate simulated data by"""
+        assert agg in self._valid_agg_levels, f"Please select from [{self._valid_agg_levels_joined}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
         self._plot_frame_overhead(agg_level=agg)
@@ -50,8 +51,8 @@ class visualize:
         """Plot simulated revenue data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
-        assert agg in self._valid_agg_levels, f"Please select from [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
+            agg (str): pick from [{self._valid_agg_levels_joined}] to aggregate simulated data by"""
+        assert agg in self._valid_agg_levels, f"Please select from [{self._valid_agg_levels_joined}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
         self._plot_frame_overhead(agg_level=agg)
