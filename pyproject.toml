@@ -8,7 +8,8 @@ description = "Python package for generating MMM (Marketing Mix Model) input dat
 dependencies = [
   "numpy",
   "pandas",
-  "pyyaml"
+  "pyyaml",
+  "matplotlib"
 ]
 requires-python = ">=3.8"
 authors = [
@@ -27,7 +28,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
-dev = ["black","flake8","pylint","pytest","matplotlib"]
+dev = ["black","flake8","pylint","pytest"]
 
 [tool.setuptools.packages.find]
 where = ["src"]  # list of folders that contain the packages (["."] by default)
