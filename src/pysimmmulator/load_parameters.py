@@ -45,15 +45,15 @@ def validate_config(config_path: str, return_individual_results: bool = False):
     try:
         define_basic_params(**cfg["basic_params"])
         results.update({"basic_params":True})
-    except:
-        results.update({"basic_params":False})
+    except Exception as e:
+        results.update({"basic_params":e})
         overall = False
     try:
         my_basic_params = define_basic_params(**cfg["basic_params"])
         baseline_parameters(basic_params=my_basic_params, **cfg["baseline_params"])
         results.update({"baseline_params":True})
-    except:
-        results.update({"baseline_params":False})
+    except Exception as e:
+        results.update({"baseline_params":e})
         overall = False
     
     matched_validation = {
@@ -68,7 +68,7 @@ def validate_config(config_path: str, return_individual_results: bool = False):
             handler(**cfg[conf_name])
             results.update({conf_name: True})
         except Exception as e:
-            results.update({conf_name: False})
+            results.update({conf_name: e})
             overall = False
 
     if return_individual_results:
