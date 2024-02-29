@@ -33,3 +33,7 @@ def test_adstock_cfg_check():
     adstock_params = load_parameters.adstock_parameters(**cfg["adstock_params"])
     adstock_params.check(basic_params=my_basic_params)
     assert True == True
+
+def test_validate_config():
+    overall = load_parameters.validate_config(config_path="./example_config.yaml")
+    assert overall == True

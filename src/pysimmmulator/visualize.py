@@ -47,7 +47,7 @@ class visualize:
         return self._plot_majors(columns = plot_cols)
     
     def plot_revenue(self, agg: str = None):
-        """Plot simulated data based on a passed date-wise aggregation
+        """Plot simulated revenue data based on a passed date-wise aggregation
         
         Args:
             agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
@@ -68,7 +68,6 @@ class visualize:
         if agg_level is not None:
             self.plot_frame = self.final_df.copy()
             self.plot_frame.reset_index(inplace=True)
-            print(self.plot_frame.columns)
             self._aggregator(agg_level)
         else:
             self.plot_frame = self.final_df.copy()
