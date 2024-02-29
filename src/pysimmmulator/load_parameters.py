@@ -37,3 +37,41 @@ def define_basic_params(
     )
 
     return my_basic_params
+
+def validate_config(config_path: str, return_individual_results: bool = False):
+    cfg = load_config(config_path=config_path)
+    results = {}
+    overall = True
+    try:
+        define_basic_params(**cfg["basic_params"])
+        results.update({"basic_params":True})
+    except Exception as e:
+        results.update({"basic_params":e})
+        overall = False
+    try:
+        my_basic_params = define_basic_params(**cfg["basic_params"])
+        baseline_parameters(basic_params=my_basic_params, **cfg["baseline_params"])
+        results.update({"baseline_params":True})
+    except Exception as e:
+        results.update({"baseline_params":e})
+        overall = False
+    
+    matched_validation = {
+        ad_spend_parameters:"ad_spend_params",
+        media_parameters:"media_params",
+        cvr_parameters:"cvr_params",
+        adstock_parameters:"adstock_params",
+        output_parameters:"output_params"
+    }
+    for handler, conf_name in matched_validation.items():
+        try:
+            handler(**cfg[conf_name])
+            results.update({conf_name: True})
+        except Exception as e:
+            results.update({conf_name: e})
+            overall = False
+
+    if return_individual_results:
+        return results
+    else:
+        return overall
