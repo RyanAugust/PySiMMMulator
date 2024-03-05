@@ -35,13 +35,25 @@ class simmm(visualize):
 
     def simulate_baseline(
         self,
-        base_p,
+        base_p: int,
         trend_p: int,
         temp_var: int,
         temp_coef_mean: int,
         temp_coef_sd: int,
         error_std: int,
     ) -> None:
+        """Simulation of baseline sales and revenue for the subject business.
+        
+        Args:
+            basic_params (basic_parameters): Number of years you want to generate data for.
+            base_p (int): Amount of baseline sales we get in a day (sales not due to ads)
+            trend_p (int): How much baseline sales is going to grow over the whole period of our data.
+            temp_var (int): How big the height of the sine function is for temperature -- i.e. how much temperature varies (used to inject seasonality into our data)
+            temp_coef_mean (int): The average of how important seasonality is in our data (the larger this number, the more important seasonality is for sales)
+            temp_coef_sd (int): The standard deviation of how important seasonality is in our data (the larger this number, the more variable the importance of seasonality is for sales)
+            error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be).
+        Returns:
+            None"""
         self.baseline_params = baseline_parameters(
             basic_params=self.basic_params,
             base_p=base_p,
@@ -95,6 +107,16 @@ class simmm(visualize):
         campaign_spend_std: int,
         max_min_proportion_on_each_channel: dict,
     ) -> None:
+        """Simulation of ad spend based on normal distribution parameters for campaign spend. 
+        Overall campaign spend is then divided amongst each channel based on passed
+        min-max proportionality.  
+        
+        Args:
+            campaign_spend_mean (int): The average amount of money spent on a campaign.
+            campaign_spend_std (int): The standard deviation of money spent on a campaign
+            max_min_proportion_on_each_channel (dict): Specifies the minimum and maximum percentages of total spend allocated to each channel.
+        Returns:
+            None"""
         ad_spend_params = ad_spend_parameters(
             campaign_spend_mean=campaign_spend_mean,
             campaign_spend_std=campaign_spend_std,
@@ -148,6 +170,15 @@ class simmm(visualize):
         logger.info("You have completed running step 2: Simulating ad spend.")
 
     def _negative_check(self, df: pd.DataFrame, column: str, channel: str) -> None:
+        """Checks each column of the dataframe for negative values. Negative values are seen as errors
+        in the case of this simulation, given that values produced typically reflect investment or media metrics.
+        
+        Args:
+            df (DataFrame): Dataframe containing columns of metrics with rows of date wise values
+            column (str): specified column to search for negativ values.
+            channel (str): context passed to the function for sake of error logging when negative values are detected
+        Returns:
+            None"""
         if df[column].min() < 0:
             sub_zero_count = (df[column] < 0).sum()
             logger.warning(
@@ -155,12 +186,29 @@ class simmm(visualize):
             )
 
     def _negative_replace(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
+        """Replaces negative velues within a passed column.
+        
+        Args:
+            df (DataFrame): Dataframe containing columns of metrics with rows of date wise values
+            column (str): specified column to search for negativ values
+        Returns:
+            df (DataFrame): Treated dataframe with replacement"""
         df.loc[df[column] < 0, column] = 0
         return df
 
     def simulate_media(
         self, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict
     ) -> None:
+        """Simulation of relevant media metrics for each channel.
+        True values are passed and noise is applied in accordance with a normal distribution described within the noisy dict.
+        Media metrics are checked for 0 values stemming from the random noise applied and will be flagged with logger when found. It is generally understood that negativ evalues should not arrise for media metrics.
+                
+        Args:
+            true_cpm (dict): Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)
+            true_cpc (dict): Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)
+            noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel.
+        Returns:
+            None"""
         media_params = media_parameters(true_cpm, true_cpc, noisy_cpm_cpc)
         media_params.check(basic_params=self.basic_params)
 
@@ -226,6 +274,12 @@ class simmm(visualize):
         logger.info("You have completed running step 3: Simulating media.")
 
     def simulate_cvr(self, noisy_cvr: dict) -> None:
+        """Generate Conversion Rate using the true conversion rates passed in the basic params in combination with noise parameters passed in this function.
+
+        Args:
+            noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CVR for each channel.
+        Returns:
+            None"""
         cvr_params = cvr_parameters(noisy_cvr)
         cvr_params.check(basic_params=self.basic_params)
 
@@ -245,6 +299,13 @@ class simmm(visualize):
         logger.info("You have completed running step 4: Simulating CVR.")
 
     def _reformat_for_mmm(self) -> None:
+        """Establishes a date based index which previously generated spend, media metric, and conversion data is then mapped to.
+        This begins to form the structure of a dataframe that can function as an MMM input.
+        Args:
+            None
+        Returns:
+            None
+        """
         date_backbone = pd.date_range(
             start=self.basic_params.start_date, end=self.basic_params.end_date, freq="D"
         )
@@ -281,12 +342,22 @@ class simmm(visualize):
 
     @staticmethod
     def _build_decay_vector(original_vector: pd.Series, decay_value: float) -> pd.Series:
+        """Helper function for the iterative portion of simulating adstocking.
+        
+        Args:
+            original_vector (Series): Original vector of media values (ie. impressions or clicks)
+            decay_value (float): Simple value which is 0 < x < 1 and describes the decay of adstock over time."""
         decayed_vector = [original_vector.values[0]]
         for i, orig_value in enumerate(original_vector.values[1:]):
             decayed_vector.append(orig_value + decay_value * decayed_vector[i])
         return pd.Series(decayed_vector)
 
     def _simulate_decay(self, true_lambda_decay: dict) -> None:
+        """Helper function for the simulation of adstocking. Ad stocking is the idea that an ad seen today has a lasting effect for some amount of time in the future.
+        This function takes an original vector and progressively adds media outcomes (impressions or clicks) to reflect the adstocking concept.
+        
+        Args:
+            true_lambda_decay (dict): mapping of channel: value. Where the values represents the decay over time of a media metrics adstock"""
         for channel in true_lambda_decay.keys():
             metric = (
                 "impressions"
@@ -299,7 +370,6 @@ class simmm(visualize):
             )
 
         logger.info("You have completed running step 5b: applying adstock decay.")
-        # Knew I could find a better way, even better now
 
     def _simulate_diminishing_returns(
         self,
@@ -336,6 +406,14 @@ class simmm(visualize):
     def simulate_decay_returns(
         self, true_lambda_decay: dict, alpha_saturation: dict, gamma_saturation: dict
     ) -> None:
+        """Generates the decay values associated with ad stocking.
+
+        Args:
+            true_lambda_decay (dict): Numbers between 0 and 1 specifying the lambda parameters for a geometric distribution for adstocking media variables.
+            alpha_saturation (dict): Specifying alpha parameter of geometric distribution for applying diminishing returns to media variables
+            gamma_saturation (dict): Between 0 and 1 specifying gamma parameter of geometric distribution for applying diminishing returns to media variables
+        Returns:
+            None"""
         adstock_params = adstock_parameters(
             true_lambda_decay, alpha_saturation, gamma_saturation
         )
@@ -348,7 +426,13 @@ class simmm(visualize):
 
         logger.info("You have completed running step 5: Simulating adstock.")
 
-    def calculate_conversions(self):
+    def calculate_conversions(self) -> None:
+        """Calculates row wise values for conversions based on the noisy cvr and the adstocked media metric associated with each channel.
+        
+        Args:
+            None
+        Returns:
+            None"""
         for channel in self.basic_params.all_channels:
             metric = (
                 "impressions"
