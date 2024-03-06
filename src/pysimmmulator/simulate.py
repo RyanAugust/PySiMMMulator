@@ -259,7 +259,7 @@ class simmm(visualize):
         self.mmm_df = pd.DataFrame(
             {"date": date_backbone, "id_map": campaign_id_to_date_map}
         )
-        self.mmm_df.set_index("id_map")
+        self.mmm_df.set_index("id_map", inplace=True)
 
         agg_media_df = self.spend_df.groupby(["channel", "campaign_id"]).sum()[
             ["daily_impressions", "daily_clicks", "daily_spend", "noisy_cvr"]
@@ -273,7 +273,6 @@ class simmm(visualize):
         agg_media_df.columns = joined_columns
 
         self.mmm_df = self.mmm_df.join(agg_media_df)
-        del self.mmm_df["id_map"]
 
         logger.info(
             "You have completed running step 5a: pivoting the data frame to an MMM format."
