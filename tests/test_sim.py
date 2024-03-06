@@ -116,3 +116,11 @@ def test_run_with_config_weekly():
     cfg["output_params"]["aggregation_level"] = "weekly"
     sim = simmm()
     sim.run_with_config(config=cfg)
+
+
+def test_run_with_high_frequency():
+    cfg = load_parameters.load_config(config_path="example_config.yaml")
+    cfg["basic_params"]["frequency_of_campaigns"] = 50
+    sim = simmm()
+    sim.run_with_config(config=cfg)
+    assert sim.final_df.dropna().shape[0] > sim.final_df.shape[0] - 5
