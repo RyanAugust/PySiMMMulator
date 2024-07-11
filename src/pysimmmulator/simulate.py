@@ -497,6 +497,12 @@ class simmm(visualize):
             self.channel_roi[channel] = total_roi
 
     def finalize_output(self, aggregation_level: str) -> None:
+        """Provide aggregation (daily, weekly) and column filtering for final output
+        
+        Args:
+            aggregation_level (str): [daily, weekly] the granulatiry at which to return output data
+        Returns:
+            None"""
         output_params = output_parameters(aggregation_level)
         metric_cols = []
         [metric_cols.append(f"{channel}_impressions") for channel in self.basic_params.channels_impressions]
