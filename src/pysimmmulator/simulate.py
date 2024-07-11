@@ -449,12 +449,17 @@ class multisimmm(simmm):
         self.final_frames = []
         self.rois = []
 
-    def store_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
+    def stash_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
         self.final_frames.append(final_df)
         self.rois.append(channel_roi)
+    
+    def get_data(self):
+        return self.data
 
     def run(self, config: dict, runs: int) -> None:
         for run in range(runs):
             frame, roi = self.run_with_config(config=config)
-            self.store_outputs(final_df=frame, channel_roi=roi)
+            self.stash_outputs(final_df=frame, channel_roi=roi)
+            logger.info(f"{run + 1}/{runs} completed")
+        self.data = zip(self.final_frames, self.rois)
         logger.info(f"{runs} runs complete and stored")
