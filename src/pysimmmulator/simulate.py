@@ -524,7 +524,6 @@ class simmm(visualize):
         )
 
     def run_with_config(self, config: dict) -> set[pd.DataFrame, dict]:
-        # import pysimmmulator.load_parameters as load_params
         if self.basic_params is None:
             self.basic_params = basic_parameters(**config["basic_params"])
         self.simulate_baseline(**config["baseline_params"])
@@ -541,6 +540,7 @@ class simmm(visualize):
 
 
 class multisimmm(simmm):
+    """Provides capability to generate multiple runs on a single configuration"""
     def __init__(self):
         super(multisimmm, self).__init__()
         self.final_frames = []
