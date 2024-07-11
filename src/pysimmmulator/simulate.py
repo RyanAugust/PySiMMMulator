@@ -448,7 +448,13 @@ class simmm(visualize):
             "You have completed running step 6: Calculating the number of conversions."
         )
 
-    def consolidate_dataframe(self):
+    def consolidate_dataframe(self) -> None:
+        """Filters and formats internal data into uniform output.
+        
+        Args:
+            None
+        Returns:
+            None"""
         metric_cols = []
         [metric_cols.append(f"{channel}_impressions") for channel in self.basic_params.channels_impressions]
         [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
@@ -475,6 +481,12 @@ class simmm(visualize):
         )
 
     def calculate_channel_roi(self) -> None:
+        """Calculates the ROI for all channels, based on pre-generated spend and conversions data
+        
+        Args:
+            None
+        Returns:
+            None"""
         self.channel_roi = {}
         for channel in self.basic_params.all_channels:
             total_cpa = (
