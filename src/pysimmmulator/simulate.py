@@ -27,10 +27,21 @@ class simmm(visualize):
         super().__init__()
 
     def _create_random_factory(self, seed: int) -> np.random.Generator:
+        """Internal helper that serves as a central random number generator, 
+        and can be initialized with a seed to enable testing.
+        Args:
+    		seed (int): Optional seed value for random number generation
+        Returns:
+    		rng (np.random.Generator): random number generator"""
         rng = np.random.default_rng(seed=seed)
         return rng
     
     def _report_random_state(self):
+        """Gives the generators bit signature
+        Args:
+        	None
+        Returns:
+        """
         return self.rng.bit_generator
 
     def simulate_baseline(
@@ -275,7 +286,7 @@ class simmm(visualize):
 
     def simulate_cvr(self, noisy_cvr: dict) -> None:
         """Generate Conversion Rate using the true conversion rates passed in the basic params in combination with noise parameters passed in this function.
-
+        
         Args:
             noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CVR for each channel.
         Returns:
@@ -552,11 +563,20 @@ class multisimmm(simmm):
         self.rois = []
 
     def stash_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
+        """Stores the final simulation dataframe as well as the ground truth channel ROI values
+        for each run of the multiple simulations.
+        """
         self.final_frames.append(final_df)
         self.rois.append(channel_roi)
     
     @property
     def get_data(self):
+        """Provies the iterable generator for simulaton final dataframes and channel ground truth ROI values
+        
+        Args:
+        	None
+        Returns:
+        	data (iterable): iterable of final sim dataframes and channel ROI values"""
         return self.data
 
     def run(self, config: dict, runs: int) -> None:
