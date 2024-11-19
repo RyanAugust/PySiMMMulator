@@ -555,6 +555,7 @@ class multisimmm(simmm):
         self.final_frames.append(final_df)
         self.rois.append(channel_roi)
     
+    @property
     def get_data(self):
         return self.data
 
