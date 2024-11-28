@@ -1,38 +1,37 @@
 import pysimmmulator as pysimmm
+import pytest
 
-def test_viz_clicks_daily():
-    cfg = pysimmm.load_parameters.load_config(config_path="example_config.yaml")
+@pytest.fixture
+def config():
+    return pysimmm.load_parameters.load_config(config_path="./example_config.yaml")
+
+def test_viz_clicks_daily(config):
     sim = pysimmm.simmm()
-    sim.run_with_config(config=cfg)
+    sim.run_with_config(config=config)
     sim.plot_clicks(agg='daily')
 
-def test_viz_clicks_weekly():
-    cfg = pysimmm.load_parameters.load_config(config_path="example_config.yaml")
+def test_viz_clicks_weekly(config):
     sim = pysimmm.simmm()
-    sim.run_with_config(config=cfg)
+    sim.run_with_config(config=config)
     sim.plot_clicks(agg='weekly')
 
-def test_viz_clicks_monthly():
-    cfg = pysimmm.load_parameters.load_config(config_path="example_config.yaml")
+def test_viz_clicks_monthly(config):
     sim = pysimmm.simmm()
-    sim.run_with_config(config=cfg)
+    sim.run_with_config(config=config)
     sim.plot_clicks(agg='monthly')
 
-def test_viz_clicks_yearly():
-    cfg = pysimmm.load_parameters.load_config(config_path="example_config.yaml")
+def test_viz_clicks_yearly(config):
     sim = pysimmm.simmm()
-    sim.run_with_config(config=cfg)
+    sim.run_with_config(config=config)
     sim.plot_clicks(agg='yearly')
 
-def test_viz_impressions_daily():
-    cfg = pysimmm.load_parameters.load_config(config_path="example_config.yaml")
+def test_viz_impressions_daily(config):
     sim = pysimmm.simmm()
-    sim.run_with_config(config=cfg)
+    sim.run_with_config(config=config)
     sim.plot_impressions(agg='daily')
 
-def test_viz_spend_daily():
-    cfg = pysimmm.load_parameters.load_config(config_path="example_config.yaml")
+def test_viz_spend_daily(config):
     sim = pysimmm.simmm()
-    sim.run_with_config(config=cfg)
+    sim.run_with_config(config=config)
     sim.plot_spend(agg='daily')
     
