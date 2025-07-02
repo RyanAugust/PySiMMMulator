@@ -1,0 +1,16 @@
+cfg_dict = {
+ 'basic_params':  {'years': 8,'channels_impressions': ['Amazon', 'TV', 'YouTube', 'Meta'],'channels_clicks': ['Search', 'Walmart'],'frequency_of_campaigns': 1,'start_date': '2017/1/1',
+   'true_cvr': {'Amazon': 0.06,'TV': 0.01,'YouTube': 0.02,'Search': 0.07,'Meta':0.12,'Walmart':0.05},
+   'revenue_per_conv': 14},
+ 'baseline_params': {'base_p': 100,'trend_p': 2,'temp_var': 8,'temp_coef_mean': 50000,'temp_coef_sd': 5000,'error_std': 90},
+ 'ad_spend_params':  {'campaign_spend_mean': 329000,
+   'campaign_spend_std': 100000,
+   'max_min_proportion_on_each_channel':{'Amazon': {'min': 0.1, 'max': 0.35},'TV': {'min': 0.05, 'max': 0.3},'YouTube': {'min': 0.01, 'max': 0.1},'Search': {'min': 0.1, 'max': 0.3},'Meta': {'min': 0.1, 'max': 0.3},'Walmart': {'min': 0.05, 'max': 0.1}}},
+ 'media_params':  {'true_cpm': {'Amazon': 3.5,'TV': 12.5,'YouTube': 6.5,'Meta': 4.25},
+   'true_cpc': {'Search': 2.6,"Walmart": 3.6},
+   'noisy_cpm_cpc': {'Amazon': {'loc': 0.0, 'scale': 0.25},'Meta': {'loc': 0.0, 'scale': 1.25},'Walmart': {'loc': 0.0, 'scale': 0.75},'TV': {'loc': 0.0, 'scale': 1.0},'YouTube': {'loc': 0.0, 'scale': 1.0},'Search': {'loc': 0.0, 'scale': 0.25}}},
+ 'cvr_params':  {'noisy_cvr': {'Amazon': {'loc': 0.0, 'scale': 0.01},'TV': {'loc': 0.0, 'scale': 0.0025},'YouTube': {'loc': 0.0, 'scale': 0.005},'Search': {'loc': 0.0, 'scale': 0.01},'Meta': {'loc': 0.0, 'scale': 0.05},'Walmart': {'loc': 0.0, 'scale': 0.05}}},
+   'adstock_params':  {'true_lambda_decay': {'Amazon': 0.1,'TV': 0.2,'YouTube': 0.15,'Search': 0.08,'Meta': 0.1,'Walmart':0.09},
+     'alpha_saturation': {'Amazon': 4.0,'TV': 3.0,'YouTube': 2.0,'Search': 1.0,'Meta':3.0,'Walmart':2.0},
+     'gamma_saturation': {'Amazon': 0.2,'TV': 0.3,'YouTube': 0.4,'Search': 0.5,'Meta':0.3,'Walmart':0.2}},
+ 'output_params': {'aggregation_level': 'daily'}}
