@@ -5,18 +5,18 @@ basic_params:
   frequency_of_campaigns: 1
   start_date: "2017/1/1"
   true_cvr:
-    Amazon: 0.06
-    TV: 0.01
-    Long-Form Video: 0.02
-    Search: 0.07
+    Amazon: 0.006
+    TV: 0.001
+    Long-Form Video: 0.002
+    Search: 0.007
   revenue_per_conv: 14
 
 baseline_params:
-  base_p: 100
-  trend_p: 2
+  base_p: 100000
+  trend_p: 100000
   temp_var: 8
-  temp_coef_mean: 50000
-  temp_coef_sd: 5000
+  temp_coef_mean: 20
+  temp_coef_sd: 3
   error_std: 90
 
 ad_spend_params:

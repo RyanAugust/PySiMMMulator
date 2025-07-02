@@ -3,6 +3,9 @@ import pandas as pd
 import argparse
 import os
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def run_with_config(config_path, output_path):
     """Initiates `simmmulator` and executes `simmmmulator.run_with_config` against the passed config filepath
@@ -10,9 +13,12 @@ def run_with_config(config_path, output_path):
     Args:
         config_path (str): path to a valid config file, see example_config.yaml as example of `simmmulator` expected config format
     """
+    logger.debug(f"running with config input ({config_path}) and output ({output_path})")
     cfg = load_config(config_path)
+    logger.debug("config loaded successfully")
     sim = simmm()
     (mmm_input_df, channel_roi) = sim.run_with_config(config=cfg)
+    logger.debug("sim run successfully, saving results")
 
     # save to current directory. Should be an optional argument for this
     mmm_input_df.to_csv(os.path.join(output_path, "mmm_input_df.csv"), index=False)

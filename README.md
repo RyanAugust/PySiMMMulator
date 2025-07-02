@@ -61,7 +61,7 @@ pysimmm -i example_config.yaml -o .
 Setting up a dev environment
 
 ```bash
-conda create --prefix=./env python=3.11
-conda activate ./env
+python3 -m venv venv
+source venv/bin/activate
 pip install -e '.[dev]'
 ```
