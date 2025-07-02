@@ -171,6 +171,11 @@ class simmm(visualize):
             spend_df[channel] = np.round(
                 campaign_spends * campaign_channel_spend_proportions[channel], 2
             )
+            # Apply random trend to the spend of each of the platforms. This creates the alignemnt to revenue trend and spend trend
+            spend_df[channel] *= (
+                self.baseline_sales_df["trend"]  # multiplies by the existing trend vector
+                * self.rng.normal(loc=1.0, scale=0.05, size=1)[0] # Applies a normaly distributed multiplier to the trend to create unique channel effects
+                )
 
         self.spend_df = spend_df.melt(
             id_vars=["campaign_id", "total_campaign_spend"],
