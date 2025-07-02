@@ -38,3 +38,6 @@ source = ["src"]
 
 [tool.hatch.version]
 path = "src/pysimmmulator/__init__.py"
+
+[project.scripts]
+pysimmm = "pysimmmulator.command_line:main"
