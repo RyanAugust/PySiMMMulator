@@ -233,7 +233,7 @@ class simmm(visualize):
             channel_noise = self.rng.normal(
                 size=len(channel_idx), **noisy_cpm_cpc[channel]
             )
-            channel_noise = self.rng.weibull((1/noisy_cpm_cpc[channel]["scale"])/10+1, size=len(channel_idx))
+            # channel_noise = self.rng.weibull((1/noisy_cpm_cpc[channel]["scale"])/10+1, size=len(channel_idx))
 
             channel_true_cpm_value = (
                 true_cpm[channel] if channel in true_cpm.keys() else np.nan
