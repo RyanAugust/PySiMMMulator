@@ -1,8 +1,8 @@
 __title__ = "PySiMMM"
 __author__ = "RyanAugust"
 __license__ = "MIT"
-__copyright__ = "Copyright 2024"
-__version__ = "0.4.2"
+__copyright__ = "Copyright 2025"
+__version__ = "0.4.3"
 
 import os
 
