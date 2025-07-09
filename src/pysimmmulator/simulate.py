@@ -527,9 +527,13 @@ class simmm(visualize):
         return name
 
     def create_geos(self, geo_specs: dict, total_population:int, universal_scale:float=1.0):
+        geo_details = {}
         for geo_name, geo_detals in geo_specs.items():
             bias = 0.0 if "loc" not in geo_details.keys() else geo_details["loc"]
             scale = universal_scale if "loc" not in geo_details.keys() else geo_details["loc"]
+            geo_details.update({geo_name: {"pop_pct": 1/len(geo_details) * abs(self.rng.normal(bias, scale, size=1)[0])}})
+        return geo_details
+
 
     def create_random_geos(self, total_population:int, universal_scale:float=1.0, count:int=250):
         return self.create_geos(geo_specs=self.invent_geos(count=count), total_population=total_population, universal_scale=universal_scale)
