@@ -511,7 +511,7 @@ class simmm(visualize):
             total_roi = (self.basic_params.revenue_per_conv - total_cpa) / total_cpa
             self.channel_roi[channel] = total_roi
 
-    def invent_geos(self, name_length:int=12, count:int=250):
+    def _invent_geos(self, name_length:int=12, count:int=250):
         geo_specs = {}
         pop_pcts = self.rng.beta(1.069, 20.0, size=count)
         pop_pcts = pop_pcts * (1/pop_pcts.sum())
@@ -535,9 +535,10 @@ class simmm(visualize):
         return geo_details
 
 
-    def create_random_geos(self, total_population:int, universal_scale:float=1.0, count:int=250):
-        return self.create_geos(geo_specs=self.invent_geos(count=count), total_population=total_population, universal_scale=universal_scale)
-
+    def create_random_geos(self, total_population:int, count:int=250):
+        geo_details = self._invent_geos(name_length=12, count=count)
+        for geo in geo_details.keys(): geo_details[geo] = int(geo_details[geo] * total_population)
+        return geo_details
 
     def finalize_output(self, aggregation_level: str) -> None:
         """Provide aggregation (daily, weekly) and column filtering for final output
