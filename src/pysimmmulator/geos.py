@@ -49,7 +49,7 @@ class geos:
         return geo_details
 
 
-def distribute_to_geos(self, mmm_inputs: 'pd.Dataframe', geo_details: dict, random_seed:int=42, dist_spec: tuple[float, float]=(0.0, 0.25), cost_spec: tuple[float, float]=(0.0, 0.25), perf_spec: tuple[float, float]=(0.0, 0.15)) -> 'pd.DataFrame':
+def distribute_to_geos(mmm_inputs: 'pd.Dataframe', geo_details: dict, random_seed:int=42, dist_spec: tuple[float, float]=(0.0, 0.25), cost_spec: tuple[float, float]=(0.0, 0.25), perf_spec: tuple[float, float]=(0.0, 0.15)) -> 'pd.DataFrame':
     """Distributes MMM data to supplied geographies. Allows randomization in the scale of the distributon"""
     geo_dataframes = []
     rng = np.random.default_rng(seed=random_seed)
