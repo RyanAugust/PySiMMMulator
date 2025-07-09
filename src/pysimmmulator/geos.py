@@ -48,3 +48,21 @@ class geos:
         for geo in geo_details.keys(): geo_details[geo] = int(geo_details[geo]["pop_pct"] * self.total_population)
         return geo_details
 
+
+def distribute_to_geos(self, mmm_inputs: 'pd.Dataframe', geo_details: dict, random_seed:int=42, dist_spec: tuple[float, float]=(0.0, 0.25), cost_spec: tuple[float, float]=(0.0, 0.25), perf_spec: tuple[float, float]=(0.0, 0.15)) -> 'pd.DataFrame':
+    """Distributes MMM data to supplied geographies. Allows randomization in the scale of the distributon"""
+    geo_dataframes = []
+    rng = np.random.default_rng(seed=random_seed)
+    for geo_name, geo_data in geo_details.items():
+        geo_prop = geo_data["pop_pct"] * rng.normal(loc=geo_data["pop_pct"] * dist_spec[0], scale=dist_spec[1])
+        geo_dataframe = mmm_inputs.copy()
+        geo_dataframe["geo_name"] = geo_name
+        geo_dataframe *= geo_prop
+        if any(cost_spec) != 0.0: geo_dataframe[[col for col in geo_data.columns if 'impressions' or 'clicks' in col]] *= rng.normal(loc=geo_data["pop_pct"] * cost_spec[0], scale=cost_spec[1])
+        if any(perf_spec) != 0.0: geo_dataframe["total_revenue"] *= rng.normal(loc=geo_data["pop_pct"] * cost_spec[0], scale=cost_spec[1])
+        geo_dataframes.append(geo_dataframe)
+    final = pd.concat(geo_dataframes, axis=0)
+    final[[col for col in final.columns if 'impressions' or 'clicks' in col]] *= mmm_inputs[[col for col in mmm_inputs.columns if 'impressions' or 'clicks' in col]].sum() / final[[col for col in final.columns if 'impressions' or 'clicks' in col]].sum()
+    final["total_revenue"] *= mmm_inputs[[col for col in mmm_inputs.columns if 'impressions' or 'clicks' in col]].sum() / final[[col for col in final.columns if 'impressions' or 'clicks' in col]].sum()
+    return final
+
