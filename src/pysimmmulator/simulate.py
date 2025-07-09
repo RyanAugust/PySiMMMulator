@@ -511,35 +511,6 @@ class simmm(visualize):
             total_roi = (self.basic_params.revenue_per_conv - total_cpa) / total_cpa
             self.channel_roi[channel] = total_roi
 
-    def _invent_geos(self, name_length:int=12, count:int=250):
-        geo_specs = {}
-        pop_pcts = self.rng.beta(1.069, 20.0, size=count)
-        pop_pcts = pop_pcts * (1/pop_pcts.sum())
-        pop_pcts[0] = pop_pcts[0] + (1 - pop_pcts.sum())
-        pop_pcts_list = pop_pcts.tolist()
-        while len(geo_specs) < count: geo_specs.update({self._namer(length=name_length):{"pop_pct":pop_pcts_list.pop()}})
-        return geo_specs
-    
-    def _namer(self, length:int=10, source:str="ABCDEFGHIJKLMNOPQRSTUVWXYZ") -> str:
-        name = ""
-        for i in self.rng.integers(0, len(source) - 1, size=length):
-            name += source[i]
-        return name
-
-    def create_geos(self, geo_specs: dict, total_population:int, universal_scale:float=1.0):
-        geo_details = {}
-        for geo_name, geo_mod in geo_specs.items():
-            bias = geo_mod.get("loc", 0.0)
-            scale = geo_mod.get("scale", universal_scale)
-            geo_details.update({geo_name: {"pop_pct": 1/len(geo_details) * abs(self.rng.normal(bias, scale, size=1)[0])}})
-        return geo_details
-
-
-    def create_random_geos(self, total_population:int, count:int=250):
-        geo_details = self._invent_geos(name_length=12, count=count)
-        for geo in geo_details.keys(): geo_details[geo] = int(geo_details[geo] * total_population)
-        return geo_details
-
     def finalize_output(self, aggregation_level: str) -> None:
         """Provide aggregation (daily, weekly) and column filtering for final output
         
