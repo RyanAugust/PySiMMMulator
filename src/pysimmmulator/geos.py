@@ -1,5 +1,6 @@
 from typing import Optional
 import numpy as np
+import pandas as pd
 
 class geos:
     def __init__(self, total_population:int, random_seed:int=42):
