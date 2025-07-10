@@ -63,7 +63,7 @@ def distribute_to_geos(mmm_input: 'pd.Dataframe', geo_details: dict, random_seed
         geo_dataframe = mmm_input.copy()
         geo_dataframe *= geo_prop
         if any(media_cost_spec) != 0.0: geo_dataframe[media_cols] *= (1 + abs(rng.normal(loc=pop_pct * media_cost_spec[0], scale=media_cost_spec[1])))
-        if any(perf_spec) != 0.0: geo_dataframe["total_revenue"] *= (1 + abs(rng.normal(loc=pop_pct * media_cost_spec[0], scale=media_cost_spec[1])))
+        if any(perf_spec) != 0.0: geo_dataframe["total_revenue"] *= (1 + abs(rng.normal(loc=pop_pct * perf_spec[0], scale=perf_spec[1])))
         geo_dataframe["geo_name"] = geo_name
         geo_dataframes.append(geo_dataframe)
     final = pd.concat(geo_dataframes, axis=0)
