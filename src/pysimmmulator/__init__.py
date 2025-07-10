@@ -8,3 +8,4 @@ import os
 
 from .simulate import simmm, multisimmm
 from .load_parameters import load_config, define_basic_params
+from .geos import geos, distribute_to_geos
