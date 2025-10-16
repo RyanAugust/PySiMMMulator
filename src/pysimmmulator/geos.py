@@ -3,11 +3,11 @@ import numpy as np
 import pandas as pd
 
 class geos:
-    def __init__(self, total_population:int, random_seed:int=42):
+    def __init__(self, total_population:int, random_seed:int=42) -> None:
         self.total_population = total_population
         self.rng = self._create_random_factory(seed=random_seed)
 
-    def __call__(self, geo_specs:Optional[dict]=None, universal_scale:Optional[float]=1.0, count:int=250):
+    def __call__(self, geo_specs:Optional[dict]=None, universal_scale:Optional[float]=1.0, count:int=250) -> dict:
         if geo_specs is not None: return self.create_geos(geo_specs=geo_specs, universal_scale=universal_scale)
         return self.create_random_geos(count=count)
 
@@ -21,8 +21,8 @@ class geos:
         rng = np.random.default_rng(seed=seed)
         return rng
 
-    def _invent_geos(self, name_length:int=12, count:int=250):
-        geo_specs = {}
+    def _invent_geos(self, name_length:int=12, count:int=250) -> dict:
+        geo_specs: dict = {}
         pop_pcts = self.rng.beta(1.069, 20.0, size=count)
         pop_pcts = pop_pcts * (1/pop_pcts.sum())
         pop_pcts[0] = pop_pcts[0] + (1 - pop_pcts.sum())
@@ -36,7 +36,7 @@ class geos:
             name += source[i]
         return name
 
-    def create_geos(self, geo_specs: dict, universal_scale:float=1.0):
+    def create_geos(self, geo_specs: dict, universal_scale:float=1.0) -> dict:
         geo_details = {}
         for geo_name, geo_mod in geo_specs.items():
             bias = geo_mod.get("loc", 0.0)
@@ -44,7 +44,7 @@ class geos:
             geo_details.update({geo_name: {"pop_pct": (1/len(geo_specs) * abs(self.rng.normal(bias, scale, size=1)[0]))*self.total_population}})
         return geo_details
 
-    def create_random_geos(self, count:int=250):
+    def create_random_geos(self, count:int=250) -> dict:
         geo_details = self._invent_geos(name_length=12, count=count)
         for geo in geo_details.keys(): geo_details[geo] = int(geo_details[geo]["pop_pct"] * self.total_population)
         return geo_details
@@ -71,4 +71,4 @@ def distribute_to_geos(mmm_input: 'pd.Dataframe', geo_details: dict, random_seed
     final[media_cols] *= mmm_input[media_cols].sum() / final[media_cols].fillna(0.0).sum()
     final["total_revenue"] *= mmm_input["total_revenue"].sum() / final["total_revenue"].sum()
     final[["total_revenue"] + media_cols] = final[["total_revenue"] + media_cols].round(0)
-    return final
+    return final.dropna()
