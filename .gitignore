@@ -131,3 +131,7 @@ dmypy.json
 
 # Mac files
 .DS_Store
+
+# Output Files
+*.png
+baseline_sales.csv
