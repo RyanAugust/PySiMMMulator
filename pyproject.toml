@@ -29,6 +29,7 @@ dynamic = ["version"]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
 dev = ["black","flake8","pylint","pytest"]
+docs = ["sphinx"]
 
 [tool.setuptools.dynamic]
 version = {file = "src/pysimmmulator/VERSION"}
