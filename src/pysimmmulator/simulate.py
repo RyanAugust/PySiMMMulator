@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class simmm(visualize):
     """Takes input of basic params and provies either piece meal or single shot
-    creation of MMM data using a config file,"""
+    creation of MMM data using a config file"""
 
     def __init__(self, basic_params: basic_parameters = None, random_seed = None):
         self.basic_params = basic_params

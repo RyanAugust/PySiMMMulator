@@ -28,7 +28,11 @@ dynamic = ["version"]
 [project.optional-dependencies]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
-dev = ["black","flake8","pylint","pytest"]
+dev = ["black","flake8","pylint","pytest","sphinx"]
+docs = ["sphinx"]
+
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
 
 [tool.setuptools.dynamic]
 version = {file = "src/pysimmmulator/VERSION"}
