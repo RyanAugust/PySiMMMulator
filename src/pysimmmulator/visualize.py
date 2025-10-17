@@ -11,7 +11,7 @@ class visualize:
         """Plot simulated spend data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
+            agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
         assert agg in self._valid_agg_levels, f"Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
@@ -24,7 +24,7 @@ class visualize:
         """Plot simulated impressions data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
+            agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
         assert agg in self._valid_agg_levels, f"Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
@@ -37,7 +37,7 @@ class visualize:
         """Plot simulated clicks data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
+            agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
         assert agg in self._valid_agg_levels, f"Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
@@ -50,7 +50,7 @@ class visualize:
         """Plot simulated revenue data based on a passed date-wise aggregation
         
         Args:
-            agg (str): pick from [{', '.join(self._valid_agg_levels)}] to aggregate simulated data by"""
+            agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
         assert agg in self._valid_agg_levels, f"Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level. {agg} is an invalid selection."
 
         # prepare frame and filter columns for plotting
