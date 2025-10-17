@@ -10,16 +10,13 @@ Objects
 Simulation
 ~~~~~~~
 
-.. automodule:: pysimmmulator.simmm
-    :members:
-    :undoc-members:
-.. automodule:: pysimmmulator.multisimmm
+.. automodule:: pysimmmulator.simulate
     :members:
     :undoc-members:
 
 Visualization
 ~~~~~~~
 
-.. automodule:: pysimmmulator.visualize.visualize
+.. automodule:: pysimmmulator.visualize
     :members:
     :undoc-members:
