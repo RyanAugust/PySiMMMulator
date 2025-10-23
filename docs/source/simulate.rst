@@ -4,12 +4,19 @@
 Simulate
 ========
 
-Simulation
-----------
+Synthetic Data
+--------------
 
-.. automodule:: pysimmmulator.simulate
-    :members:
-    :undoc-members:
+.. autoclass:: pysimmmulator.simulate.simmm
+   :members:
+   :undoc-members:
+
+Multiple Runs
+-------------
+
+.. autoclass:: pysimmmulator.simulate.multisimmm
+   :members:
+   :undoc-members:
 
 Visualization
 -------------

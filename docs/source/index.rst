@@ -5,7 +5,7 @@ Welcome to PySiMMMulator docs!
     :parser: myst_parser.sphinx_
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents:
 
     Simulate <simulate.rst>
