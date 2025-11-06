@@ -82,7 +82,7 @@ class study:
 class batch_study:
     """Object for generating study values across all channels"""
     def __init__(self, channel_rois:dict, channel_distributions:dict[str, dict]=dict(), random_seed:int=None, bias:float=DEFAULT_STUDY_BIAS, stdev:float=DEFAULT_STUDY_SCALE) -> None:
-        self._study_hold = {k: Study(channel_name=k, true_roi=v, random_seed=random_seed, bias=channel_distributions.get(k, {}).get("bias",bias), stdev=channel_distributions.get(k, {}).get("stdev",stdev)) for k, v in channel_rois.items()}
+        self._study_hold = {k: study(channel_name=k, true_roi=v, random_seed=random_seed, bias=channel_distributions.get(k, {}).get("bias",bias), stdev=channel_distributions.get(k, {}).get("stdev",stdev)) for k, v in channel_rois.items()}
 
     def generate(self, count:int=1) -> dict[str, 'np.array']:
         """Produces study results for all of the registered channels
