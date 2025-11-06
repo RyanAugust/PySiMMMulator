@@ -1,5 +1,5 @@
 """Generation of calibration study results"""
-from typing import List, Optional, Dict, Dict
+from typing import List, Optional, Dict
 import numpy as np 
 
 DEFAULT_STUDY_BIAS = 0.0 
@@ -9,10 +9,13 @@ class Study:
     """Object for generating study values from a normal distribution around true the true channel roi"""
     def __init__(self, channel_name:str, true_roi:float, random_seed:int=None, bias:float=DEFAULT_STUDY_BIAS, stdev:float=DEFAULT_STUDY_SCALE) -> None:
         self.channel_name = channel_name
-        self.true_roi = true_roi
+        self._true_roi = true_roi
         self.rng = self._create_random_factory(seed=random_seed)
         self._bias = bias
         self._stdev = stdev
+
+    @property
+    def roi(self) -> float: return self._true_roi
     
     def _create_random_factory(self, seed: int) -> np.random.Generator:
         """Internal helper that serves as a central random number generator, 
@@ -42,6 +45,15 @@ class Study:
         Returns:
             None"""
         self._stdev = value
+    
+    def update_roi(self, value:float) -> None:
+        """Updates the roi assigned to the channel as the passed value
+
+        Args:
+            value (float): value to set the channel roi to
+        Returns:
+            None"""
+        self._true_roi = value
 
     def generate(self, count:int=1) -> 'np.array': 
         """Provides a study 'result'
@@ -50,7 +62,7 @@ class Study:
             count (int): number of study results to return (default is 1)
         Retuns:
             study_results (iterable[float]): an array of study results """
-        return self.rng.normal(loc=self.true_roi + self._bias, scale=self._stdev, size=count)
+        return self.rng.normal(loc=self._true_roi + self._bias, scale=self._stdev, size=count)
 
     def generate_dynamic(self, bias:list[float], stdev:list[float]) -> list:
         """Provides study results with non-stationary distribution
