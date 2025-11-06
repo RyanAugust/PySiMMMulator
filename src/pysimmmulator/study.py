@@ -5,7 +5,7 @@ import numpy as np
 DEFAULT_STUDY_BIAS = 0.0 
 DEFAULT_STUDY_SCALE = 0.05
 
-class Study:
+class study:
     """Object for generating study values from a normal distribution around true the true channel roi"""
     def __init__(self, channel_name:str, true_roi:float, random_seed:int=None, bias:float=DEFAULT_STUDY_BIAS, stdev:float=DEFAULT_STUDY_SCALE) -> None:
         self.channel_name = channel_name
@@ -79,7 +79,7 @@ class Study:
             results.append(self.generate()[0])
         return results
 
-class BatchStudy:
+class batch_study:
     """Object for generating study values across all channels"""
     def __init__(self, channel_rois:dict, channel_distributions:dict[str, dict]=dict(), random_seed:int=None, bias:float=DEFAULT_STUDY_BIAS, stdev:float=DEFAULT_STUDY_SCALE) -> None:
         self._study_hold = {k: Study(channel_name=k, true_roi=v, random_seed=random_seed, bias=channel_distributions.get(k, {}).get("bias",bias), stdev=channel_distributions.get(k, {}).get("stdev",stdev)) for k, v in channel_rois.items()}
