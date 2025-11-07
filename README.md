@@ -31,6 +31,14 @@ sim = simmm()
 mmm_input_df, channel_roi = sim.run_with_config(config=cfg)
 ```
 
+### Run via CLI
+
+A configuration file is required as input for this and should be passed as seen below. An output path can also be passed via `-o`, however when not passed the current working directory will be used.
+
+```bash
+pysimmm -i example_config.yaml -o .
+```
+
 ### Run by stages
 
 Alternatively you may run each of the stages independently, which allows for easier debugging and in-run adjustments based on the results of each stage. The order of the stages is reflected below **(without their inputs)**. Once you've run through every stage, results are available by calling the `sim.final_df` object (channel ROI results are stored as `sim.channel_roi`).
@@ -48,14 +56,16 @@ sim.calculate_channel_roi()
 sim.finalize_output()
 ```
 
-### Run via CLI
+### Geographic distribution
 
-A configuration file is required as input for this and should be passed as seen below. An output path can also be passed via `-o`, however when not passed the current working directory will be used.
+Marketing Mix Models may use geographic grain data for the purposes of budget allocation or during the calibration phase. PySiMMMulator provies `geos` to facilitate the generation of rancomized geographies as well as a distribution funciton to allocated synthetic data across the geographies.
 
-```bash
-pysimmm -i example_config.yaml -o .
-```
 
+### Study simulation
+
+`study` and `batch_study` are also provided to simplify the simulated outcomes of marketing studies, which are an important component of MMM calibration.
+
+Within this framework studies results are drawn from a normal distribution about the true value of a channels effectiveness (defaulted to ROI within this package). Both `study` and `batch_study` provide the ability to pass bias and standard deviation prameters for stationary and non-stationary distributions—allowing users to replicate a diverse set of real-world measurement difficulties.
 ## Development
 
 Setting up a dev environment

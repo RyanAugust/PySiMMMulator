@@ -10,6 +10,7 @@ Welcome to PySiMMMulator docs!
 
     Simulate <simulate.rst>
     Geos <geos.rst>
+    Studies <study.rst>
 
 Indices and tables
 ==================
