@@ -15,7 +15,12 @@ class study:
         self._stdev = stdev
 
     @property
-    def roi(self) -> float: return self._true_roi
+    def roi(self) -> float: 
+        """Reports the true ROI of the channel set at initializaiton
+
+        Returns:
+            true_roi (float): the true ROI value for the channel."""
+        return self._true_roi
     
     def _create_random_factory(self, seed: int) -> np.random.Generator:
         """Internal helper that serves as a central random number generator, 
