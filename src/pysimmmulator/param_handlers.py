@@ -1,3 +1,4 @@
+from typing import Optional
 from dataclasses import dataclass
 import datetime
 
@@ -23,8 +24,8 @@ class basic_parameters:
     channels_clicks: list[str]
     frequency_of_campaigns: int
     start_date: str
-    true_cvr: list = None
-    revenue_per_conv: float = None
+    true_cvr: Optional[list] = None
+    revenue_per_conv: Optional[float] = None
 
     def __post_init__(self):
         self.all_channels = self.channels_clicks + self.channels_impressions
