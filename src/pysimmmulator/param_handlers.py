@@ -130,7 +130,7 @@ class ad_spend_parameters:
             ), "Max spend must be between 0 and 1 for each channel"
 
     def check(self, basic_params: basic_parameters):
-        """Validates ad_spend parameters agianst previously constructed basic
+        """Validates ad spend parameters agianst previously constructed basic
         parameter values.
 
         Args:
@@ -165,6 +165,12 @@ class media_parameters:
         self.noise_channels = list(self.noisy_cpm_cpc.keys())
 
     def check(self, basic_params: basic_parameters):
+        """Validates media parameters parameters agianst previously constructed basic
+        parameter values.
+
+        Args:
+            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
+        """
         assert sorted(self.true_cpmcpc_channels) == sorted(
             basic_params.all_channels
         ), "Channels declared within true_cpm & true_cpc must be the same as original base channel input"
@@ -205,6 +211,12 @@ class cvr_parameters:
             ), "noisy scale value must be of type float"
 
     def check(self, basic_params: basic_parameters):
+        """Validates CVR parameters agianst previously constructed basic
+        parameter values.
+
+        Args:
+            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
+        """
         assert sorted(self.noise_channels) == sorted(
             basic_params.all_channels
         ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
@@ -241,6 +253,12 @@ class adstock_parameters:
             assert 0 <= value <= 1, "gamma saturation value must be between 0 and 1"
 
     def check(self, basic_params: basic_parameters):
+        """Validates ad stock parameters agianst previously constructed basic
+        parameter values.
+
+        Args:
+            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
+        """
         for input_dict in [
             self.true_lambda_decay,
             self.alpha_saturation,

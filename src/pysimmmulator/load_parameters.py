@@ -39,6 +39,13 @@ def define_basic_params(
     return my_basic_params
 
 def validate_config(config_path: str, return_individual_results: bool = False):
+    """Loads and validates the parameters against individual 
+
+    Args:
+        config_path (os.pathlike): path to the configuration file
+        return_individual_results (bool): control for if a detailed param by param result is returned. Default is for a single bool value return
+    Returns:
+       (Union[bool, dict]): results of the validation check. Default will return a bool indicating overall valid or invalid status."""
     cfg = load_config(config_path=config_path)
     results = {}
     overall = True
