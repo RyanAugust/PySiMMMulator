@@ -16,8 +16,7 @@ class basic_parameters:
         frequency_of_campaigns (int): how often campaigns occur (for example, frequency of 1 would yield a new campaign every 1 day with each campaign lasting 1 day).
         start_date (str): format yyyy/mm/dd that determines when your daily data set starts on
         true_cvr (list): what the underlying conversion rates of all the channels are, statistical noise will be added on top of this.
-        revenue_per_conv (float): How much money we make from a conversion (i.e. profit from a unit of sale).
-    """
+        revenue_per_conv (float): How much money we make from a conversion (i.e. profit from a unit of sale)."""
 
     years: int
     channels_impressions: list[str]
@@ -31,9 +30,9 @@ class basic_parameters:
         self.all_channels = self.channels_clicks + self.channels_impressions
         self.start_date = datetime.datetime.strptime(self.start_date, "%Y/%m/%d")
         self.end_date = self.start_date + datetime.timedelta(days=(self.years * 365))
-        self.evaluate_params()
+        self.check()
 
-    def evaluate_params(self):
+    def check(self):
         assert (
             self.years > 0
         ), "You entered less than 1 year. Must generate more than a years worth of data"
@@ -82,8 +81,7 @@ class baseline_parameters:
         temp_var (int): How big the height of the sine function is for temperature -- i.e. how much temperature varies (used to inject seasonality into our data)
         temp_coef_mean (int): The average of how important seasonality is in our data (the larger this number, the more important seasonality is for sales)
         temp_coef_sd (int): The standard deviation of how important seasonality is in our data (the larger this number, the more variable the importance of seasonality is for sales)
-        error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be).
-    """
+        error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be)."""
 
     basic_params: basic_parameters
     base_p: int
@@ -107,8 +105,7 @@ class ad_spend_parameters:
     Args:
         campaign_spend_mean (int): The average amount of money spent on a campaign.
         campaign_spend_std (int): The standard deviation of money spent on a campaign
-        max_min_proportion_on_each_channel (dict): Specifies the minimum and maximum percentages of total spend allocated to each channel.
-    """
+        max_min_proportion_on_each_channel (dict): Specifies the minimum and maximum percentages of total spend allocated to each channel."""
 
     campaign_spend_mean: int
     campaign_spend_std: int
@@ -151,8 +148,7 @@ class media_parameters:
     Args:
         true_cpm (dict): Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)
         true_cpc (dict): Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)
-        noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel.
-    """
+        noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel."""
 
     true_cpm: dict
     true_cpc: dict
@@ -169,8 +165,8 @@ class media_parameters:
         parameter values.
 
         Args:
-            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
-        """
+            basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class """
+
         assert sorted(self.true_cpmcpc_channels) == sorted(
             basic_params.all_channels
         ), "Channels declared within true_cpm & true_cpc must be the same as original base channel input"
