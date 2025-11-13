@@ -28,7 +28,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
-dev = ["black","flake8","pylint","pytest","sphinx"]
+dev = ["yapf","flake8","pylint","pytest","sphinx"]
 docs = ["sphinx"]
 
 [tool.setuptools.packages.find]
@@ -45,3 +45,10 @@ path = "src/pysimmmulator/__init__.py"
 
 [project.scripts]
 pysimmm = "pysimmmulator.command_line:main"
+
+[tool.yapf]
+based_on_style = 'yapf'
+indent_width = 2
+blank_lines_around_top_level_definition = 1
+blank_line_before_nested_class_or_def = false
+column_limit = 200
