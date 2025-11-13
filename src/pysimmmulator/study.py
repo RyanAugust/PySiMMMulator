@@ -1,13 +1,18 @@
 """Generation of calibration study results"""
 from typing import List, Optional, Dict
-import numpy as np 
+import numpy as np
 
-DEFAULT_STUDY_BIAS = 0.0 
+DEFAULT_STUDY_BIAS = 0.0
 DEFAULT_STUDY_SCALE = 0.05
 
-class study:
+class Study:
     """Object for generating study values from a normal distribution around true the true channel roi"""
-    def __init__(self, channel_name:str, true_roi:float, random_seed:int=None, bias:float=DEFAULT_STUDY_BIAS, stdev:float=DEFAULT_STUDY_SCALE) -> None:
+    def __init__(self,
+                 channel_name: str,
+                 true_roi: float,
+                 random_seed: int = None,
+                 bias: float = DEFAULT_STUDY_BIAS,
+                 stdev: float = DEFAULT_STUDY_SCALE) -> None:
         self.channel_name = channel_name
         self._true_roi = true_roi
         self.rng = self._create_random_factory(seed=random_seed)
@@ -15,17 +20,17 @@ class study:
         self._stdev = stdev
 
     @property
-    def roi(self) -> float: 
+    def roi(self) -> float:
         """Reports the true ROI of the channel set at initializaiton
 
         Returns:
             true_roi (float): the true ROI value for the channel."""
         return self._true_roi
-    
+
     def _create_random_factory(self, seed: int) -> np.random.Generator:
-        """Internal helper that serves as a central random number generator, 
+        """Internal helper that serves as a central random number generator,
         and can be initialized with a seed to enable testing.
-        
+
         Args:
             seed (int): Optional seed value for random number generation
         Returns:
@@ -33,7 +38,7 @@ class study:
         rng = np.random.default_rng(seed=seed)
         return rng
 
-    def update_bias(self, value:float) -> None:
+    def update_bias(self, value: float) -> None:
         """Updates the distribution bias to the passed value
 
         Args:
@@ -41,8 +46,8 @@ class study:
         Returns:
             None"""
         self._bias = value
-    
-    def update_stdev(self, value:float) -> None:
+
+    def update_stdev(self, value: float) -> None:
         """Updates the distribution stdev to the passed value
 
         Args:
@@ -50,8 +55,8 @@ class study:
         Returns:
             None"""
         self._stdev = value
-    
-    def update_roi(self, value:float) -> None:
+
+    def update_roi(self, value: float) -> None:
         """Updates the roi assigned to the channel as the passed value
 
         Args:
@@ -60,16 +65,16 @@ class study:
             None"""
         self._true_roi = value
 
-    def generate(self, count:int=1) -> 'np.array': 
+    def generate(self, count: int = 1) -> 'np.array':
         """Provides a study 'result'
-        
+
         Args:
             count (int): number of study results to return (default is 1)
         Retuns:
             study_results (iterable[float]): an array of study results """
         return self.rng.normal(loc=self._true_roi + self._bias, scale=self._stdev, size=count)
 
-    def generate_dynamic(self, bias:list[float], stdev:list[float]) -> list:
+    def generate_dynamic(self, bias: list[float], stdev: list[float]) -> list:
         """Provides study results with non-stationary distribution
 
         Args:
@@ -84,12 +89,25 @@ class study:
             results.append(self.generate()[0])
         return results
 
-class batch_study:
+class BatchStudy:
     """Object for generating study values across all channels"""
-    def __init__(self, channel_rois:dict, channel_distributions:dict[str, dict]=dict(), random_seed:int=None, bias:float=DEFAULT_STUDY_BIAS, stdev:float=DEFAULT_STUDY_SCALE) -> None:
-        self._study_hold = {k: study(channel_name=k, true_roi=v, random_seed=random_seed, bias=channel_distributions.get(k, {}).get("bias",bias), stdev=channel_distributions.get(k, {}).get("stdev",stdev)) for k, v in channel_rois.items()}
+    def __init__(self,
+                 channel_rois: dict,
+                 channel_distributions: dict[str, dict] = dict(),
+                 random_seed: int = None,
+                 bias: float = DEFAULT_STUDY_BIAS,
+                 stdev: float = DEFAULT_STUDY_SCALE) -> None:
+        self._study_hold = {
+            k:
+                Study(channel_name=k,
+                      true_roi=v,
+                      random_seed=random_seed,
+                      bias=channel_distributions.get(k, {}).get("bias", bias),
+                      stdev=channel_distributions.get(k, {}).get("stdev", stdev))
+            for k, v in channel_rois.items()
+        }
 
-    def generate(self, count:int=1) -> dict[str, 'np.array']:
+    def generate(self, count: int = 1) -> dict[str, 'np.array']:
         """Produces study results for all of the registered channels
 
         Args:
@@ -98,8 +116,12 @@ class batch_study:
             study_results (dict[iterable[float]]): an array of study results"""
         return {k: v.generate(count) for k, v in self._study_hold.items()}
 
-    def generate_dynamic(self, universal_bias: Optional[List[float]] = None, universal_stdev: Optional[List[float]] = None, 
-                         channel_bias: Optional[dict[str, list[float]]]=None, channel_stdev: Optional[dict[str, list[float]]]=None) -> dict[str, list[float]]:
+    def generate_dynamic(
+            self,
+            universal_bias: Optional[List[float]] = None,
+            universal_stdev: Optional[List[float]] = None,
+            channel_bias: Optional[dict[str, list[float]]] = None,
+            channel_stdev: Optional[dict[str, list[float]]] = None) -> dict[str, list[float]]:
         """Produces study results for all of the registered channels
 
         Args:
@@ -109,7 +131,9 @@ class batch_study:
             channel_stdev (dict[str, list[float]]): iterable of stdev values used to update the distribution per results
         Returns:
             study_results (iterable[float]): an array of study results """
-        assert all(x is not None for x in [universal_bias, universal_stdev]) or all(x is not None for x in [channel_bias, channel_stdev]), "both Universal or both channel specs must be passed"
+        assert all(x is not None for x in [universal_bias, universal_stdev]) or all(
+            x is not None for x in [channel_bias, channel_stdev]
+        ), "both Universal or both channel specs must be passed"
         results = {channel: [] for channel in self._study_hold.keys()}
         if all(x is not None for x in [universal_bias, universal_stdev]):
             for b, z in zip(universal_bias, universal_stdev):
@@ -125,4 +149,3 @@ class batch_study:
                     study.update_stdev(z)
                     results[channel].append(study.generate()[0])
             return results
-

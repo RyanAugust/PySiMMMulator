@@ -1,4 +1,4 @@
-from pysimmmulator import simmm, command_line
+from pysimmmulator import Simulate, command_line
 import subprocess
 
 
