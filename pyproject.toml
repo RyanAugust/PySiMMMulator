@@ -47,8 +47,8 @@ path = "src/pysimmmulator/__init__.py"
 pysimmm = "pysimmmulator.command_line:main"
 
 [tool.yapf]
-based_on_style = 'yapf'
-indent_width = 2
+based_on_style = 'google'
+indent_width = 4
 blank_lines_around_top_level_definition = 1
 blank_line_before_nested_class_or_def = false
 column_limit = 200
