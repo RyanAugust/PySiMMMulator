@@ -8,15 +8,9 @@ repos:
 
   - repo: local
     hooks:
-#      - id: yapf
-#        name: yapf
-#        entry: yapf -ir -vv ./src
-#        language: system
-#        always_run: true
-#        pass_filenames: false
-      - id: flake8
-        name: flake8
-        entry: flake8 /src --indent-size=4 --select=F,E112,E113,E203,E304,E502,E702,E703,E71,E72,E731,W191,W6 --statistics -j4 --exit-zero
+      - id: ruff
+        name: ruff
+        entry: python3 -m ruff check ./src
         language: system
         always_run: true
         pass_filenames: false

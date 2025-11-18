@@ -28,7 +28,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 testing = ["pytest"]
 linting = ["flake8", "pylint"]
-dev = ["yapf","flake8","pylint","pytest","sphinx", "ruff"]
+dev = ["flake8","pylint","pytest","sphinx", "ruff"]
 docs = ["sphinx"]
 
 [tool.setuptools.packages.find]
