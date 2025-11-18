@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def config():
-    return load_parameters.load_config(config_path="./example_config.yaml")
+    return load_parameters.load_config(config_path="./examples/example_config.yaml")
 
 def test_load_cfg(config):
     assert type(config) == dict
@@ -30,5 +30,5 @@ def test_adstock_cfg_check(config):
     assert True == True
 
 def test_validate_config():
-    overall = load_parameters.validate_config(config_path="./example_config.yaml")
+    overall = load_parameters.validate_config(config_path="./examples/example_config.yaml")
     assert overall == True

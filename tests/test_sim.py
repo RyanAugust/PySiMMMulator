@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def config():
-    return load_parameters.load_config(config_path="./example_config.yaml")
+    return load_parameters.load_config(config_path="./examples/example_config.yaml")
 
 def test_initiate_sim(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
@@ -100,7 +100,7 @@ def tests_step9_consolidatedataframe(config):
 
 
 def test_run_with_config(config):
-    config = load_parameters.load_config(config_path="example_config.yaml")
+    config = load_parameters.load_config(config_path="./examples/example_config.yaml")
     sim = Simulate()
     sim.run_with_config(config=config)
 

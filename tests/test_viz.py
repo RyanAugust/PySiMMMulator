@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def cfg_sim() -> pysimmm.Simulate:
-    cfg = pysimmm.load_parameters.load_config(config_path="./example_config.yaml")
+    cfg = pysimmm.load_parameters.load_config(config_path="./examples/example_config.yaml")
     sim = pysimmm.Simulate()
     sim.run_with_config(config=cfg)
     return sim
