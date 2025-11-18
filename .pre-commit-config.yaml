@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0  # this is optional, use `pre-commit autoupdate` to get the latest rev!
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: python3 -m ruff check ./src
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: tests
+        name: tests
+        entry: pytest tests
+        language: system
+        always_run: false
+        pass_filenames: false

@@ -2,9 +2,9 @@ import pysimmmulator as pysimmm
 import pytest
 
 @pytest.fixture
-def cfg_sim() -> pysimmm.simmm:
+def cfg_sim() -> pysimmm.Simulate:
     cfg = pysimmm.load_parameters.load_config(config_path="./example_config.yaml")
-    sim = pysimmm.simmm()
+    sim = pysimmm.Simulate()
     sim.run_with_config(config=cfg)
     return sim
 
@@ -19,4 +19,3 @@ def test_viz_clicks_yearly(cfg_sim): cfg_sim.plot_clicks(agg='yearly')
 def test_viz_impressions_daily(cfg_sim): cfg_sim.plot_impressions(agg='daily')
 
 def test_viz_spend_daily(cfg_sim): cfg_sim.plot_spend(agg='daily')
-    
