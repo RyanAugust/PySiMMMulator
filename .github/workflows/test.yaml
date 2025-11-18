@@ -15,33 +15,35 @@ jobs:
     name: linters
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-      - name: Install dependencies
-        run: pip install -e '.[linting]'
-#      - name: Lint with flake8
-#        run: flake8 src/ --indent-size=4 --select=F,E112,E113,E203,E304,E502,E702,E703,E71,E72,E731,W191,W6 --statistics -j4
-      - name: Lint with pylint
-        run: pylint src/ --exit-zero # just return the warnings for now
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: pip install -e '.[linting]'
+    - name: Lint bad-indentation and trailing-whitespace with pylint
+      run: python -m pylint --disable=all -e W0311 -e C0303 --jobs=0 --indent-string='  ' --recursive=y ./src
+    - name: Lint with ruff
+      run: |
+        pip3 install --upgrade --force-reinstall ruff==0.11.0
+        python3 -m ruff check ./src
 
   tester:
     name: tester
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: python -m pip install -U --editable '.[testing]'
-      - name: Testing
-        run: pytest tests/
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install dependencies
+      run: python -m pip install -U --editable '.[testing]'
+    - name: Testing
+      run: pytest tests/
 
   build:
     runs-on: ubuntu-latest
@@ -50,15 +52,15 @@ jobs:
         python-version: [ 3.8, 3.9, "3.10", "3.11" ]
     name: Build on Python ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Install and test
-        run: |
-          python -m pip install -U --editable .
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install and test
+      run: |
+        python -m pip install -U --editable .
