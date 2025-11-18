@@ -67,4 +67,4 @@ def validate_config(config_path: str, return_individual_results: bool = False):
     except Exception as e:
       results.update({conf_name: e})
       overall = False
-  return results if return_individual_results else  overall
+  return results if return_individual_results else overall
