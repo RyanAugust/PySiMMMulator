@@ -12,7 +12,8 @@ class BasicParameters:
         years (int): Number of years you want to generate data for.
         channels_impressions (list[int]): names of media channels that use impressions as their metric of activity (Examples: Amazon, TV, etc)
         channels_clicks (list[int]): names of media channels that use clicks as their metric of activity (Examples: Search)
-        frequency_of_campaigns (int): how often campaigns occur (for example, frequency of 1 would yield a new campaign every 1 day with each campaign lasting 1 day).
+        frequency_of_campaigns (int): how often campaigns occur
+            (for example, frequency of 1 would yield a new campaign every 1 day with each campaign lasting 1 day).
         start_date (str): format yyyy/mm/dd that determines when your daily data set starts on
         true_cvr (list): what the underlying conversion rates of all the channels are, statistical noise will be added on top of this.
         revenue_per_conv (float): How much money we make from a conversion (i.e. profit from a unit of sale)."""
@@ -72,9 +73,12 @@ class BaselineParameters:
         basic_params (basic_parameters): Number of years you want to generate data for.
         base_p (int): Amount of baseline sales we get in a day (sales not due to ads)
         trend_p (int): How much baseline sales is going to grow over the whole period of our data.
-        temp_var (int): How big the height of the sine function is for temperature -- i.e. how much temperature varies (used to inject seasonality into our data)
-        temp_coef_mean (int): The average of how important seasonality is in our data (the larger this number, the more important seasonality is for sales)
-        temp_coef_sd (int): The standard deviation of how important seasonality is in our data (the larger this number, the more variable the importance of seasonality is for sales)
+        temp_var (int): How big the height of the sine function is for temperature --
+            i.e. how much temperature varies (used to inject seasonality into our data)
+        temp_coef_mean (int): The average of how important seasonality is in our data
+            (the larger this number, the more important seasonality is for sales)
+        temp_coef_sd (int): The standard deviation of how important seasonality is in our data
+            (the larger this number, the more variable the importance of seasonality is for sales)
         error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be)."""
 
     basic_params: BasicParameters
@@ -122,7 +126,8 @@ class AdSpendParameters:
         """
         assert len(self.max_min_proportion_on_each_channel.keys()) - 1 == len(
             basic_params.all_channels
-        ), "You did not input in enough numbers or put in too many numbers for proportion of spends on each channel. Must have a maximum and minimum percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."
+        ), """You did not input in enough numbers or put in too many numbers for proportion of spends on each channel.
+    Must have a max and min percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."""
 
 @dataclass
 class MediaParameters:
@@ -204,9 +209,9 @@ class AdstockParameters:
     from input to simmmulate, will provide validation checks.
 
     Args:
-        true_lambda_decay (dict): Numbers between 0 and 1 specifying the lambda parameters for a geometric distribution for adstocking media variables.
+        true_lambda_decay (dict): Numbers between 0 and 1 specifying the geometric distribution lambda parameters for adstocking media variables.
         alpha_saturation (dict): Specifying alpha parameter of geometric distribution for applying diminishing returns to media variables
-        gamma_saturation (dict): Between 0 and 1 specifying gamma parameter of geometric distribution for applying diminishing returns to media variables
+        gamma_saturation (dict): Between 0 and 1 specifying geometric distribution gamma parameter for applying diminishing returns to media vars
     """
 
     true_lambda_decay: dict
