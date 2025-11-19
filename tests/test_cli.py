@@ -3,7 +3,7 @@ import subprocess
 
 
 def test_cli():
-    subprocess.run(["pysimmm", "-i", "example_config.yaml", "-o", "."])
+    subprocess.run(["pysimmm", "-i", "./examples/example_config.yaml", "-o", "."])
     import os
 
     # cleanup
