@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to PySiMMMulator docs! &mdash; PySiMMMulator 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuration" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            PySiMMMulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulate.html">Simulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geos.html">Geographies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="study.html">Studies</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">PySiMMMulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to PySiMMMulator docs!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-pysimmmulator-docs">
+<h1>Welcome to PySiMMMulator docs!<a class="headerlink" href="#welcome-to-pysimmmulator-docs" title="Link to this heading"></a></h1>
+<img align="left" src="PySiMMMulator_logo.png" alt="logo" width="150"/>
+<section id="pysimmmulator">
+<h2>PySiMMMulator<a class="headerlink" href="#pysimmmulator" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator"><img alt="CodeFactor" src="https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator/badge" /></a>
+<a class="reference external" href="https://pypi.org/project/pysimmmulator/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/pysimmmulator.svg?label=PyPI%20downloads" /></a></p>
+<p>PySiMMMulator is an open source Python framework for simmulation of Marketing data for use in testing Marketing Mix Models (MMMs).
+While this package cointains a full pipeline for data generation (configurable via .conf file) it can also be utilized in parts to generate select portions of MMM input data (ie campaign/channel spend)</p>
+<p>Originally predicated on adapting the R-package <a class="reference external" href="https://github.com/facebookexperimental/siMMMulator">siMMMulator</a> for python. PySiMMMulator has retained core function parallels to the functions of siMMMulator but has since expanded capabilities to support a far broader array of MMM inputs and utlities.</p>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<p>Accessable via PyPI</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pysimmmulator
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h3>
+<p>PySiMMMulator’s simulator can either be run on a step-by-step basis, or can be run single-shot by passing a config file.</p>
+<section id="run-via-config">
+<h4>Run via config<a class="headerlink" href="#run-via-config" title="Link to this heading"></a></h4>
+<p>Run using this method, you’ll be returned both a dataframe of for MMM input as well as the “True ROI” values for each of your channels. These true values are critical to validating your MMM model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">config_path</span><span class="o">=</span><span class="s2">&quot;./my_config.yaml&quot;</span><span class="p">)</span>
+<span class="n">simmm</span> <span class="o">=</span> <span class="n">Simulate</span><span class="p">()</span>
+<span class="n">mmm_input_df</span><span class="p">,</span> <span class="n">channel_roi</span> <span class="o">=</span> <span class="n">simmm</span><span class="o">.</span><span class="n">run_with_config</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">cfg</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="run-via-cli">
+<h4>Run via CLI<a class="headerlink" href="#run-via-cli" title="Link to this heading"></a></h4>
+<p>A configuration file is required as input for this and should be passed as seen below. An output path can also be passed via <code class="docutils literal notranslate"><span class="pre">-o</span></code>, however when not passed the current working directory will be used.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pysimmm<span class="w"> </span>-i<span class="w"> </span>example_config.yaml<span class="w"> </span>-o<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="run-by-stages">
+<h4>Run by stages<a class="headerlink" href="#run-by-stages" title="Link to this heading"></a></h4>
+<p>Alternatively you may run each of the stages independently, which allows for easier debugging and in-run adjustments based on the results of each stage. The order of the stages is reflected below <strong>(without their inputs)</strong>. Once you’ve run through every stage, results are available by calling the <code class="docutils literal notranslate"><span class="pre">sim.final_df</span></code> object (channel ROI results are stored as <code class="docutils literal notranslate"><span class="pre">sim.channel_roi</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simmm</span> <span class="o">=</span> <span class="n">Simulate</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">simulate_baseline</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">simulate_ad_spend</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">simulate_media</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">simulate_cvr</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">simulate_decay_returns</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">calculate_conversions</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">consolidate_dataframe</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">calculate_channel_roi</span><span class="p">()</span>
+<span class="n">simmm</span><span class="o">.</span><span class="n">finalize_output</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="geographic-distribution">
+<h4>Geographic distribution<a class="headerlink" href="#geographic-distribution" title="Link to this heading"></a></h4>
+<p>Marketing Mix Models may use geographic grain data for the purposes of budget allocation or during the calibration phase. PySiMMMulator provies <code class="docutils literal notranslate"><span class="pre">Geos</span></code> to facilitate the generation of rancomized geographies as well as a distribution funciton to allocated synthetic data across the geographies.</p>
+</section>
+<section id="study-simulation">
+<h4>Study simulation<a class="headerlink" href="#study-simulation" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">Study</span></code> and <code class="docutils literal notranslate"><span class="pre">BatchStudy</span></code> are also provided to simplify the simulated outcomes of marketing studies, which are an important component of MMM calibration.</p>
+<p>Within this framework studies results are drawn from a normal distribution about the true value of a channels effectiveness (defaulted to ROI within this package). Both <code class="docutils literal notranslate"><span class="pre">Study</span></code> and <code class="docutils literal notranslate"><span class="pre">BatchStudy</span></code> provide the ability to pass bias and standard deviation prameters for stationary and non-stationary distributions—allowing users to replicate a diverse set of real-world measurement difficulties.</p>
+</section>
+</section>
+<section id="development">
+<h3>Development<a class="headerlink" href="#development" title="Link to this heading"></a></h3>
+<p>Setting up a dev environment</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.[dev]&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#handlers">Handlers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.ad_spend_parameters"><code class="docutils literal notranslate"><span class="pre">ad_spend_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.adstock_parameters"><code class="docutils literal notranslate"><span class="pre">adstock_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.baseline_parameters"><code class="docutils literal notranslate"><span class="pre">baseline_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.basic_parameters"><code class="docutils literal notranslate"><span class="pre">basic_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.cvr_parameters"><code class="docutils literal notranslate"><span class="pre">cvr_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.media_parameters"><code class="docutils literal notranslate"><span class="pre">media_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.output_parameters"><code class="docutils literal notranslate"><span class="pre">output_parameters</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#loaders">Loaders</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.load_parameters.define_basic_params"><code class="docutils literal notranslate"><span class="pre">define_basic_params()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.load_parameters.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html#pysimmmulator.load_parameters.validate_config"><code class="docutils literal notranslate"><span class="pre">validate_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulate.html">Simulate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulate.html#module-pysimmmulator.simulate">Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simulate.html#pysimmmulator.simulate.multisimmm"><code class="docutils literal notranslate"><span class="pre">multisimmm</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulate.html#pysimmmulator.simulate.simmm"><code class="docutils literal notranslate"><span class="pre">simmm</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simulate.html#module-pysimmmulator.visualize">Visualization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simulate.html#pysimmmulator.visualize.visualize"><code class="docutils literal notranslate"><span class="pre">visualize</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="geos.html">Geographies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="geos.html#pysimmmulator.geos.distribute_to_geos"><code class="docutils literal notranslate"><span class="pre">distribute_to_geos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="geos.html#pysimmmulator.geos.geos"><code class="docutils literal notranslate"><span class="pre">geos</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="geos.html#pysimmmulator.geos.geos.create_geos"><code class="docutils literal notranslate"><span class="pre">geos.create_geos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="geos.html#pysimmmulator.geos.geos.create_random_geos"><code class="docutils literal notranslate"><span class="pre">geos.create_random_geos()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="study.html">Studies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="study.html#pysimmmulator.study.batch_study"><code class="docutils literal notranslate"><span class="pre">batch_study</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.batch_study.generate"><code class="docutils literal notranslate"><span class="pre">batch_study.generate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.batch_study.generate_dynamic"><code class="docutils literal notranslate"><span class="pre">batch_study.generate_dynamic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="study.html#pysimmmulator.study.study"><code class="docutils literal notranslate"><span class="pre">study</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.study.generate"><code class="docutils literal notranslate"><span class="pre">study.generate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.study.generate_dynamic"><code class="docutils literal notranslate"><span class="pre">study.generate_dynamic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.study.roi"><code class="docutils literal notranslate"><span class="pre">study.roi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.study.update_bias"><code class="docutils literal notranslate"><span class="pre">study.update_bias()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.study.update_roi"><code class="docutils literal notranslate"><span class="pre">study.update_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="study.html#pysimmmulator.study.study.update_stdev"><code class="docutils literal notranslate"><span class="pre">study.update_stdev()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ryan Duecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
