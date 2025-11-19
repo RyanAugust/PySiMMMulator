@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-from pysimmmulator import load_parameters, simmm
+from pysimmmulator import load_parameters, Simulate
 
 cfg = load_parameters.load_config(config_path="./example_config.yaml")
 my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-sim = simmm(my_basic_params)
+sim = Simulate(my_basic_params)
 sim.simulate_baseline(**cfg["baseline_params"])
 sim.simulate_ad_spend(**cfg["ad_spend_params"])
 sim.simulate_media(**cfg["media_params"])

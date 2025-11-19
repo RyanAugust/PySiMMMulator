@@ -8,8 +8,10 @@ Welcome to PySiMMMulator docs!
    :maxdepth: 2
    :caption: Contents:
 
+    Configuration <config.rst>
     Simulate <simulate.rst>
     Geos <geos.rst>
+    Studies <study.rst>
 
 Indices and tables
 ==================
