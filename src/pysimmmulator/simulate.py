@@ -129,12 +129,19 @@ class Simulate(Visualize):
     # if campaign spend number is negative, automatically make it 0
     campaign_spends[campaign_spends < 0] = 0
     campaign_channel_spend_proportions = {}
+    total_proportions = np.zeros(campaign_count)
     for (channel, proportions,) in ad_spend_params.max_min_proportion_on_each_channel.items():
       campaign_channel_spend_proportions[channel] = self.rng.uniform(low=proportions["min"], high=proportions["max"], size=campaign_count,)
+      total_proportions += campaign_channel_spend_proportions[channel]
+
+    remaining_channels = [c for c in self.basic_params.all_channels if c not in ad_spend_params.max_min_proportion_on_each_channel.keys()]
+    if remaining_channels:
+      remaining_channel = remaining_channels[0]
+      campaign_channel_spend_proportions[remaining_channel] = np.maximum(0, 1.0 - total_proportions)
 
     spend_df = pd.DataFrame({"campaign_id": np.arange(campaign_count), "total_campaign_spend": campaign_spends, })
 
-    for channel in max_min_proportion_on_each_channel.keys():
+    for channel in self.basic_params.all_channels:
       spend_df[channel] = np.round(campaign_spends * campaign_channel_spend_proportions[channel], 2)
       # Apply random trend to the spend of each of the platforms. This creates the alignemnt to revenue trend and spend trend
       spend_df[channel] *= (

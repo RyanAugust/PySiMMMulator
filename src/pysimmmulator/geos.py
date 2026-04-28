@@ -84,10 +84,8 @@ class Geos:
       bias = geo_mod.get("loc", 0.0)
       scale = geo_mod.get("scale", universal_scale)
       geo_details.update({
-        geo_name: {
-          "pop_pct": (1 / len(geo_specs) * abs(self.rng.normal(bias, scale, size=1)[0])) *
-                 self.total_population
-        }
+        geo_name: int((1 / len(geo_specs) * abs(self.rng.normal(bias, scale, size=1)[0])) *
+                 self.total_population)
       })
     return geo_details
 

@@ -124,9 +124,9 @@ class AdSpendParameters:
     Args:
       basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
     """
-    assert len(self.max_min_proportion_on_each_channel.keys()) - 1 == len(
+    assert len(self.max_min_proportion_on_each_channel.keys()) == len(
       basic_params.all_channels
-    ), """You did not input in enough numbers or put in too many numbers for proportion of spends on each channel.
+    ) - 1, """You did not input in enough numbers or put in too many numbers for proportion of spends on each channel.
   Must have a max and min percentage specified for all channels except the last channel, which will be auto calculated as any remaining amount."""
 
 @dataclass

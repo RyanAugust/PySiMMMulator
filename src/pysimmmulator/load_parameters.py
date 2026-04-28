@@ -62,7 +62,9 @@ def validate_config(config_path: str, return_individual_results: bool = False):
   }
   for handler, conf_name in matched_validation.items():
     try:
-      handler(**cfg[conf_name])
+      inst = handler(**cfg[conf_name])
+      if hasattr(inst, "check"):
+        inst.check(basic_params=my_basic_params)
       results.update({conf_name: True})
     except Exception as e:
       results.update({conf_name: e})
