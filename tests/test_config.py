@@ -6,7 +6,7 @@ def config():
     return load_parameters.load_config(config_path="./examples/example_config.yaml")
 
 def test_load_cfg(config):
-    assert type(config) == dict
+    assert isinstance(config,dict)
 
 def test_cfg_base_keys(config):
     assert "basic_params" in config.keys()

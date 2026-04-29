@@ -7,6 +7,7 @@ from pysimmmulator.param_handlers import (
   CVRParameters,
   AdstockParameters,
   OutputParameters,
+  GeoParameters,
 )
 
 def load_config(config_path: str) -> dict:
@@ -16,7 +17,7 @@ def load_config(config_path: str) -> dict:
 
 def define_basic_params(years, channels_clicks, channels_impressions, frequency_of_campaigns, start_date, true_cvr, revenue_per_conv,):
   "Takes in requirements for basic_params and loads with dataclass for validation as precursor"
-  my_basic_params = BasicParameters(
+  return BasicParameters(
     years=years,
     channels_clicks=channels_clicks,
     channels_impressions=channels_impressions,
@@ -26,7 +27,37 @@ def define_basic_params(years, channels_clicks, channels_impressions, frequency_
     revenue_per_conv=revenue_per_conv,
   )
 
-  return my_basic_params
+def create_all_parameters(config: dict) -> dict:
+  """Instantiates all parameter dataclasses from a configuration dictionary.
+
+  Args:
+    config (dict): Complete configuration dictionary.
+  Returns:
+    dict: Dictionary containing instantiated parameter objects."""
+  params = {}
+  params["basic_params"] = define_basic_params(**config["basic_params"])
+
+  params["baseline_params"] = BaselineParameters(
+      basic_params=params["basic_params"], **config["baseline_params"]
+  )
+
+  params["ad_spend_params"] = AdSpendParameters(**config["ad_spend_params"])
+
+  params["media_params"] = MediaParameters(**config["media_params"])
+  params["media_params"].check(basic_params=params["basic_params"])
+
+  params["cvr_params"] = CVRParameters(**config["cvr_params"])
+  params["cvr_params"].check(basic_params=params["basic_params"])
+
+  params["adstock_params"] = AdstockParameters(**config["adstock_params"])
+  params["adstock_params"].check(basic_params=params["basic_params"])
+
+  params["output_params"] = OutputParameters(**config["output_params"])
+
+  if "geo_params" in config:
+      params["geo_params"] = GeoParameters(**config["geo_params"])
+
+  return params
 
 def validate_config(config_path: str, return_individual_results: bool = False):
   """Loads and validates the parameters against individual

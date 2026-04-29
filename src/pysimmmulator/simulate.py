@@ -59,7 +59,7 @@ class Simulate(Visualize):
     """
     return self.rng.bit_generator
 
-  def simulate_baseline( self, base_p: int, trend_p: int, temp_var: int, temp_coef_mean: int, temp_coef_sd: int, error_std: int,) -> pd.DataFrame:
+  def simulate_baseline(self, params: BaselineParameters) -> pd.DataFrame:
     """Simulation of baseline sales and revenue for the subject business.
 
     The simulation calculates daily baseline sales as a sum of:
@@ -72,23 +72,10 @@ class Simulate(Visualize):
     If the combined terms result in negative sales, they are clamped to zero.
 
     Args:
-      base_p (int): Daily base sales units (non-marketing driven).
-      trend_p (int): Total linear growth units over the full duration.
-      temp_var (int): Amplitude of the seasonal sine function.
-      temp_coef_mean (int): Mean scaling factor for seasonal impact.
-      temp_coef_sd (int): Standard deviation of seasonal impact scaling.
-      error_std (int): Standard deviation of daily statistical noise.
+      params (BaselineParameters): Parameters for baseline simulation.
     Returns:
       pd.DataFrame: Daily baseline sales components."""
-    self.baseline_params = BaselineParameters(
-      basic_params=self.basic_params,
-      base_p=base_p,
-      trend_p=trend_p,
-      temp_var=temp_var,
-      temp_coef_mean=temp_coef_mean,
-      temp_coef_sd=temp_coef_sd,
-      error_std=error_std,
-    )
+    self.baseline_params = params
 
     days = np.arange(0, self.basic_params.years * 365)
     base = (np.zeros(shape=self.basic_params.years * 365) + self.baseline_params.base_p)
@@ -103,7 +90,7 @@ class Simulate(Visualize):
 
     baseline_sales = base + trend + seasonality + error
     if np.any(baseline_sales < 0):
-      baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
+        baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
 
     return pd.DataFrame({
       "days": days,
@@ -114,43 +101,34 @@ class Simulate(Visualize):
       "seasonality": seasonality,
       "error": error,
     })
-
-  def simulate_ad_spend( self, baseline_sales_df: pd.DataFrame, campaign_spend_mean: int, campaign_spend_std: int, max_min_proportion_on_each_channel: dict) -> pd.DataFrame:
+  def simulate_ad_spend( self, baseline_sales_df: pd.DataFrame, params: AdSpendParameters) -> pd.DataFrame:
     """Simulation of ad spend based on normal distribution parameters for campaign spend.
     Overall campaign spend is then divided amongst each channel based on passed
     min-max proportionality.
 
     Args:
       baseline_sales_df (pd.DataFrame): DataFrame containing baseline sales
-      campaign_spend_mean (int): The average amount of money spent on a campaign.
-      campaign_spend_std (int): The standard deviation of money spent on a campaign
-      max_min_proportion_on_each_channel (dict): Specifies the minimum and maximum percentages of total spend allocated to each channel.
+      params (AdSpendParameters): Parameters for ad spend simulation.
     Returns:
       pd.DataFrame: DataFrame containing ad spend data"""
-    ad_spend_params = AdSpendParameters(
-      campaign_spend_mean=campaign_spend_mean,
-      campaign_spend_std=campaign_spend_std,
-      max_min_proportion_on_each_channel=max_min_proportion_on_each_channel,
-    )
-
     campaign_count = int(self.basic_params.years * 365 / self.basic_params.frequency_of_campaigns)
 
     # specify amount spent on each campaign according to a normal distribution
     campaign_spends = np.round(
       self._truncated_normal(
-        loc=ad_spend_params.campaign_spend_mean,
-        scale=ad_spend_params.campaign_spend_std,
+        loc=params.campaign_spend_mean,
+        scale=params.campaign_spend_std,
         size=campaign_count,
       ),
       2,
     )
     campaign_channel_spend_proportions = {}
     total_proportions = np.zeros(campaign_count)
-    for (channel, proportions,) in ad_spend_params.max_min_proportion_on_each_channel.items():
+    for (channel, proportions,) in params.max_min_proportion_on_each_channel.items():
       campaign_channel_spend_proportions[channel] = self.rng.uniform(low=proportions["min"], high=proportions["max"], size=campaign_count,)
       total_proportions += campaign_channel_spend_proportions[channel]
 
-    remaining_channels = [c for c in self.basic_params.all_channels if c not in ad_spend_params.max_min_proportion_on_each_channel.keys()]
+    remaining_channels = [c for c in self.basic_params.all_channels if c not in params.max_min_proportion_on_each_channel.keys()]
     if remaining_channels:
       remaining_channel = remaining_channels[0]
       campaign_channel_spend_proportions[remaining_channel] = np.maximum(0, 1.0 - total_proportions)
@@ -216,7 +194,7 @@ class Simulate(Visualize):
       df.loc[df[column] < 0, column] = 0
     return df
 
-  def simulate_media(self, spend_df: pd.DataFrame, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict) -> pd.DataFrame:
+  def simulate_media(self, spend_df: pd.DataFrame, params: MediaParameters) -> pd.DataFrame:
     """Simulation of relevant media metrics for each channel.
     True values are passed and noise is applied in accordance with a normal distribution described within the noisy dict.
     Media metrics are checked for 0 values stemming from the random noise applied and will be flagged with logger when found.
@@ -224,29 +202,24 @@ class Simulate(Visualize):
 
     Args:
       spend_df (pd.DataFrame): DataFrame containing ad spend data
-      true_cpm (dict): Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)
-      true_cpc (dict): Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)
-      noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel.
+      params (MediaParameters): Parameters for media simulation.
     Returns:
       pd.DataFrame: Updated spend DataFrame"""
-    media_params = MediaParameters(true_cpm, true_cpc, noisy_cpm_cpc)
-    media_params.check(basic_params=self.basic_params)
-
-    for channel in media_params.noise_channels:
+    for channel in params.noise_channels:
       channel_idx = spend_df[spend_df["channel"] == channel].index
 
       channel_noise = self._truncated_normal(
         size=len(channel_idx),
-        **noisy_cpm_cpc[channel],
-        low=-min(true_cpm.get(channel, np.inf), true_cpc.get(channel, np.inf)))
+        **params.noisy_cpm_cpc[channel],
+        low=-min(params.true_cpm.get(channel, np.inf), params.true_cpc.get(channel, np.inf)))
 
-      channel_true_cpm_value = (true_cpm[channel] if channel in true_cpm.keys() else np.nan)
-      channel_noisy_cpm_value = (true_cpm[channel] + channel_noise if channel in true_cpm.keys() else np.nan)
+      channel_true_cpm_value = (params.true_cpm[channel] if channel in params.true_cpm.keys() else np.nan)
+      channel_noisy_cpm_value = (params.true_cpm[channel] + channel_noise if channel in params.true_cpm.keys() else np.nan)
       spend_df.loc[channel_idx, "true_cpm"] = channel_true_cpm_value
       spend_df.loc[channel_idx, "noisy_cpm"] = channel_noisy_cpm_value
 
-      channel_true_cpc_value = (true_cpc[channel] if channel in true_cpc.keys() else np.nan)
-      channel_noisy_cpc_value = (true_cpc[channel] + channel_noise if channel in true_cpc.keys() else np.nan)
+      channel_true_cpc_value = (params.true_cpc[channel] if channel in params.true_cpc.keys() else np.nan)
+      channel_noisy_cpc_value = (params.true_cpc[channel] + channel_noise if channel in params.true_cpc.keys() else np.nan)
       spend_df.loc[channel_idx, "true_cpc"] = channel_true_cpc_value
       spend_df.loc[channel_idx, "noisy_cpc"] = channel_noisy_cpc_value
 
@@ -266,22 +239,18 @@ class Simulate(Visualize):
     logger.info("You have completed running step 3: Simulating media.")
     return spend_df
 
-  def simulate_cvr(self, spend_df: pd.DataFrame, noisy_cvr: dict) -> pd.DataFrame:
+  def simulate_cvr(self, spend_df: pd.DataFrame, params: CVRParameters) -> pd.DataFrame:
     """Generate Conversion Rate using the true conversion rates passed in the basic params with noise parameters passed in this function.
 
     Args:
       spend_df (pd.DataFrame): DataFrame containing ad spend data
-      noisy_cvr (dict): Specifies the bias and scale of noise added to the true value CVR for each channel.
+      params (CVRParameters): Parameters for CVR simulation.
     Returns:
       pd.DataFrame: Updated spend DataFrame"""
-    cvr_params = CVRParameters(noisy_cvr)
-    cvr_params.check(basic_params=self.basic_params)
-
-    for channel in cvr_params.noise_channels:
+    for channel in params.noise_channels:
       channel_idx = spend_df[spend_df["channel"] == channel].index
 
-      channel_noise = self.rng.normal(size=len(channel_idx), **noisy_cvr[channel])
-      channel_noise = self.rng.weibull((1 / noisy_cvr[channel]["scale"]) / 10 + 1, size=len(channel_idx))
+      channel_noise = self.rng.weibull((1 / params.noisy_cvr[channel]["scale"]) / 10 + 1, size=len(channel_idx))
       spend_df.loc[channel_idx, "noisy_cvr"] = (channel_noise * self.basic_params.true_cvr[channel])
 
       self._negative_check(spend_df.loc[channel_idx], column="noisy_cvr", channel=channel)
@@ -360,35 +329,32 @@ class Simulate(Visualize):
     logger.info("You have completed running step 5c: apply diminishing marginal returns.")
     return mmm_df
 
-  def simulate_decay_returns(self, spend_df: pd.DataFrame, adstock: dict, saturation: dict) -> pd.DataFrame:
+  def simulate_decay_returns(self, spend_df: pd.DataFrame, params: AdstockParameters) -> pd.DataFrame:
     """Generates the decay and returns values associated with ad stocking and diminishing returns.
 
     Args:
       spend_df (pd.DataFrame): DataFrame containing ad spend data
-      adstock (dict): Nested dictionary for adstock configuration
-      saturation (dict): Nested dictionary for saturation configuration
+      params (AdstockParameters): Parameters for adstock and saturation.
     Returns:
       pd.DataFrame: MMM input DataFrame with decay and returns applied"""
-    adstock_params = AdstockParameters(adstock, saturation)
     mmm_df = self._reformat_for_mmm(spend_df=spend_df)
-    mmm_df = self._simulate_decay(mmm_df=mmm_df, adstock_config=adstock_params.adstock)
+    mmm_df = self._simulate_decay(mmm_df=mmm_df, adstock_config=params.adstock)
     mmm_df = self._simulate_diminishing_returns(
       mmm_df=mmm_df,
-      saturation_config=adstock_params.saturation,
+      saturation_config=params.saturation,
     )
 
     logger.info("You have completed running step 5: Simulating adstock.")
     return mmm_df
 
-  def simulate_geos(self, mmm_df: pd.DataFrame, geo_params: dict) -> pd.DataFrame:
+  def simulate_geos(self, mmm_df: pd.DataFrame, params: GeoParameters) -> pd.DataFrame:
     """Distributes the consolidated MMM dataframe into geographies.
 
     Args:
       mmm_df (pd.DataFrame): Consolidated MMM DataFrame
-      geo_params (dict): Parameters for geographic distribution
+      params (GeoParameters): Parameters for geographic distribution.
     Returns:
       pd.DataFrame: MMM DataFrame with geographic distribution"""
-    params = GeoParameters(**geo_params)
     geos = Geos(total_population=params.total_population, random_seed=None)
     geo_details = geos(geo_specs=params.geo_specs, universal_scale=params.universal_scale, count=params.count)
 
@@ -459,21 +425,20 @@ class Simulate(Visualize):
       channel_roi[channel] = total_roi
     return channel_roi
 
-  def finalize_output(self, mmm_df: pd.DataFrame, aggregation_level: str) -> pd.DataFrame:
+  def finalize_output(self, mmm_df: pd.DataFrame, params: OutputParameters) -> pd.DataFrame:
     """Provide aggregation (daily, weekly) and column filtering for final output
 
     Args:
       mmm_df (pd.DataFrame): Consolidated MMM DataFrame
-      aggregation_level (str): [daily, weekly] the granulatiry at which to return output data
+      params (OutputParameters): Parameters for output finalization.
     Returns:
       pd.DataFrame: Finalized output DataFrame"""
-    output_params = OutputParameters(aggregation_level)
     metric_cols = [f"{channel}_impressions" for channel in self.basic_params.channels_impressions]
     [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
     spend_cols = []
     [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
-    if output_params.aggregation_level == "daily":
+    if params.aggregation_level == "daily":
       if "geo_name" in mmm_df.index.names:
         final_df = mmm_df[metric_cols + spend_cols + ["total_revenue"]]
       else:
@@ -493,24 +458,27 @@ class Simulate(Visualize):
       final_df = (mmm_df[metric_cols + spend_cols + ["total_revenue"] +
                      group_cols].groupby(group_cols).sum())
 
-    logger.info(f"You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level")
+    logger.info(f"You have completed running step 9: Finalization of output dataframe at the {params.aggregation_level} level")
     return final_df
 
   def run_with_config(self, config: dict) -> tuple[pd.DataFrame, dict]:
-    if self.basic_params is None: self.basic_params = BasicParameters(**config["basic_params"])
-    baseline_sales_df = self.simulate_baseline(**config["baseline_params"])
-    spend_df = self.simulate_ad_spend(baseline_sales_df=baseline_sales_df, **config["ad_spend_params"])
-    spend_df = self.simulate_media(spend_df=spend_df, **config["media_params"])
-    spend_df = self.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
-    mmm_df = self.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
+    from .load_parameters import create_all_parameters
+    params = create_all_parameters(config)
+    self.basic_params = params["basic_params"]
+
+    baseline_sales_df = self.simulate_baseline(params["baseline_params"])
+    spend_df = self.simulate_ad_spend(baseline_sales_df=baseline_sales_df, params=params["ad_spend_params"])
+    spend_df = self.simulate_media(spend_df=spend_df, params=params["media_params"])
+    spend_df = self.simulate_cvr(spend_df=spend_df, params=params["cvr_params"])
+    mmm_df = self.simulate_decay_returns(spend_df=spend_df, params=params["adstock_params"])
     mmm_df = self.calculate_conversions(mmm_df=mmm_df)
     mmm_df = self.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_sales_df)
 
-    if "geo_params" in config:
-      mmm_df = self.simulate_geos(mmm_df=mmm_df, geo_params=config["geo_params"])
+    if "geo_params" in params:
+      mmm_df = self.simulate_geos(mmm_df=mmm_df, params=params["geo_params"])
 
     channel_roi = self.calculate_channel_roi(mmm_df=mmm_df)
-    final_df = self.finalize_output(mmm_df=mmm_df, **config["output_params"])
+    final_df = self.finalize_output(mmm_df=mmm_df, params=params["output_params"])
 
     return (final_df, channel_roi)
 

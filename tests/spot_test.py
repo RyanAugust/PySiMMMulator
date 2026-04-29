@@ -3,12 +3,12 @@ import numpy as np
 from pysimmmulator import load_parameters, Simulate
 
 cfg = load_parameters.load_config(config_path="./examples/example_config.yaml")
-my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
-sim = Simulate(my_basic_params)
-baseline_df = sim.simulate_baseline(**cfg["baseline_params"])
-spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **cfg["ad_spend_params"])
-spend_df = sim.simulate_media(spend_df=spend_df, **cfg["media_params"])
-spend_df = sim.simulate_cvr(spend_df=spend_df, **cfg["cvr_params"])
+params = load_parameters.create_all_parameters(cfg)
+sim = Simulate(params["basic_params"])
+baseline_df = sim.simulate_baseline(params["baseline_params"])
+spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, params=params["ad_spend_params"])
+spend_df = sim.simulate_media(spend_df=spend_df, params=params["media_params"])
+spend_df = sim.simulate_cvr(spend_df=spend_df, params=params["cvr_params"])
 
 date_backbone = pd.date_range(
     start=sim.basic_params.start_date, end=sim.basic_params.end_date, freq="D"

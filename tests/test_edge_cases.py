@@ -4,7 +4,7 @@ import yaml
 from pysimmmulator import (
     Simulate, Geos, Study, BatchStudy, load_parameters
 )
-from pysimmmulator.param_handlers import BasicParameters
+from pysimmmulator.param_handlers import BasicParameters, BaselineParameters
 
 def test_basic_parameters_repr():
     params = BasicParameters(
@@ -81,15 +81,14 @@ def test_simulate_negative_baseline_sales():
         revenue_per_conv=10.0
     )
     sim = Simulate(basic_params)
-    # base_p=100, error_std=90 satisfies error_std < base_p
-    # temp_var=1000, temp_coef_mean=-1 will make baseline_sales negative
-    df = sim.simulate_baseline(
+    params = BaselineParameters(
+        basic_params=basic_params,
         base_p=100, trend_p=0, temp_var=1000,
         temp_coef_mean=-1, temp_coef_sd=0, error_std=90
     )
+    df = sim.simulate_baseline(params)
     assert (df["baseline_sales"] >= 0).all()
     assert (df["seasonality"].min() < -500)
-
 def test_negative_check_warning(caplog):
     sim = Simulate()
     df = pd.DataFrame({"test_col": [-1, 2, 3]})
