@@ -14,7 +14,6 @@ class Visualize:
       agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
     assert agg in self._valid_agg_levels, f"""Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level.
       {agg} is an invalid selection."""
-    # prepare frame and filter columns for plotting
     plot_frame = self._plot_frame_overhead(df, agg_level=agg)
     plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='_spend')
     return self._plot_majors(plot_frame, columns=plot_cols)
@@ -27,7 +26,6 @@ class Visualize:
       agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
     assert agg in self._valid_agg_levels, f"""Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level.
       {agg} is an invalid selection."""
-    # prepare frame and filter columns for plotting
     plot_frame = self._plot_frame_overhead(df, agg_level=agg)
     plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='_impressions')
     return self._plot_majors(plot_frame, columns=plot_cols)
@@ -40,7 +38,6 @@ class Visualize:
       agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
     assert agg in self._valid_agg_levels, f"""Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level.
       {agg} is an invalid selection."""
-    # prepare frame and filter columns for plotting
     plot_frame = self._plot_frame_overhead(df, agg_level=agg)
     plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='_clicks')
     return self._plot_majors(plot_frame, columns=plot_cols)
@@ -53,7 +50,6 @@ class Visualize:
       agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
     assert agg in self._valid_agg_levels, f"""Please select ["{', '.join(self._valid_agg_levels)}] for your aggregation level.
       {agg} is an invalid selection."""
-    # prepare frame and filter columns for plotting
     plot_frame = self._plot_frame_overhead(df, agg_level=agg)
     plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='total_revenue')
     return self._plot_majors(plot_frame, columns=plot_cols)

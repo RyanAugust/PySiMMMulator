@@ -69,13 +69,17 @@ class Geos:
     return name
 
   def create_geos(self, geo_specs: dict, universal_scale: float = 1.0) -> dict:
-    """Evaluates distirbution specification for each geo and returns a finalized mapping of geo names to generated population sizes.
+    """Evaluates distribution specification for each geo and returns a finalized mapping of geo names to generated population sizes.
+
+    For each geography, a raw value is sampled from an absolute normal distribution 
+    (loc=bias, scale=geo_scale). These raw values are then normalized to sum to 1.0 
+    and multiplied by the total population to ensure the total is preserved.
 
     Args:
       geo_specs (Optional[dict]): Geography names coupled with a dict of parameters for the normal distribution of that geos population
         (ie {"California":{"loc": 3.0, "scale": 0.5}}). 'loc' in this case is the multiplicative bias relative to an
         equal apportionment of the total population.
-      universal_scale (Optional[flaot]): Scale parameter to be used universally for all geographies.
+      universal_scale (Optional[float]): Scale parameter to be used universally for all geographies.
         Increased value means increased spread in the distribution of all geos
     Returns:
       geo_details (dict): Geo names and their associated populations"""
@@ -83,13 +87,11 @@ class Geos:
     for geo_name, geo_mod in geo_specs.items():
       bias = geo_mod.get("loc", 0.0)
       scale = geo_mod.get("scale", universal_scale)
-      # Sample raw values from normal distribution
       raw_val = abs(self.rng.normal(bias, scale, size=1)[0])
       raw_pops.append(raw_val)
 
-    # Normalize raw values to sum to 1.0, then multiply by total_population
     total_raw = sum(raw_pops)
-    if total_raw == 0: # Handle edge case where all samples might be 0
+    if total_raw == 0:
         normalized_pops = [1.0/len(geo_specs)] * len(geo_specs)
     else:
         normalized_pops = [p / total_raw for p in raw_pops]
