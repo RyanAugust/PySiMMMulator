@@ -32,9 +32,6 @@ ad_spend_params:
     Long-Form Video:
       min: 0.01
       max: 0.10
-    Search:
-      min: 0.10
-      max: 0.30
 
 media_params:
   true_cpm:
@@ -73,21 +70,44 @@ cvr_params:
       scale: 0.01
 
 adstock_params:
-  true_lambda_decay:
-    Amazon: 0.1
-    TV: 0.2
-    Long-Form Video: 0.15
-    Search: 0.08
-  alpha_saturation:
-    Amazon: 4.0
-    TV: 3.0
-    Long-Form Video: 2.0
-    Search: 1.0
-  gamma_saturation:
-    Amazon: 0.20
-    TV: 0.30
-    Long-Form Video: 0.40
-    Search: 0.50
+  adstock:
+    Amazon:
+      type: geometric
+      params:
+        lambda: 0.1
+    TV:
+      type: geometric
+      params:
+        lambda: 0.2
+    Long-Form Video:
+      type: geometric
+      params:
+        lambda: 0.15
+    Search:
+      type: geometric
+      params:
+        lambda: 0.08
+  saturation:
+    Amazon:
+      type: scurve
+      params:
+        alpha: 4.0
+        gamma: 0.20
+    TV:
+      type: scurve
+      params:
+        alpha: 3.0
+        gamma: 0.30
+    Long-Form Video:
+      type: scurve
+      params:
+        alpha: 2.0
+        gamma: 0.40
+    Search:
+      type: scurve
+      params:
+        alpha: 1.0
+        gamma: 0.50
 
 output_params:
   aggregation_level: daily
