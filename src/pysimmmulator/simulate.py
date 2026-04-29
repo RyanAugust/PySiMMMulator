@@ -169,7 +169,8 @@ class Simulate(Visualize):
       )
 
   def _negative_replace(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """Replaces negative velues within a passed column.
+    """Replaces negative velues within a passed column. 
+    For spend based metrics (cost per click and impression) <=0 is replaced with 1st percentile of positive values (minimum 1e-6).
 
     Args:
       df (DataFrame): Dataframe containing columns of metrics with rows of date wise values
