@@ -115,7 +115,7 @@ class Simulate(Visualize):
       "error": error,
     })
 
-  def simulate_ad_spend( self, baseline_sales_df: pd.DataFrame, campaign_spend_mean: int, campaign_spend_std: int, max_min_proportion_on_each_channel: dict,) -> pd.DataFrame:
+  def simulate_ad_spend( self, baseline_sales_df: pd.DataFrame, campaign_spend_mean: int, campaign_spend_std: int, max_min_proportion_on_each_channel: dict) -> pd.DataFrame:
     """Simulation of ad spend based on normal distribution parameters for campaign spend.
     Overall campaign spend is then divided amongst each channel based on passed
     min-max proportionality.
@@ -193,7 +193,7 @@ class Simulate(Visualize):
       )
 
   def _negative_replace(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """Replaces negative velues within a passed column. 
+    """Replaces negative velues within a passed column.
     For spend based metrics (cost per click and impression) <=0 is replaced with 1st percentile of positive values (minimum 1e-6).
 
     Args:
@@ -235,7 +235,10 @@ class Simulate(Visualize):
     for channel in media_params.noise_channels:
       channel_idx = spend_df[spend_df["channel"] == channel].index
 
-      channel_noise = self._truncated_normal(size=len(channel_idx), **noisy_cpm_cpc[channel], low=-min(true_cpm.get(channel, np.inf), true_cpc.get(channel, np.inf)))
+      channel_noise = self._truncated_normal(
+        size=len(channel_idx),
+        **noisy_cpm_cpc[channel],
+        low=-min(true_cpm.get(channel, np.inf), true_cpc.get(channel, np.inf)))
 
       channel_true_cpm_value = (true_cpm[channel] if channel in true_cpm.keys() else np.nan)
       channel_noisy_cpm_value = (true_cpm[channel] + channel_noise if channel in true_cpm.keys() else np.nan)

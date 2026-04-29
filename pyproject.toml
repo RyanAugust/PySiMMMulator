@@ -49,7 +49,7 @@ pysimmm = "pysimmmulator.command_line:main"
 [tool.ruff]
 preview = true
 target-version = "py311"
-line-length = 150
+line-length = 200
 indent-width = 2
 exclude = [
   ".git/",
