@@ -6,9 +6,11 @@ from pysimmmulator.param_handlers import (
   CVRParameters,
   AdstockParameters,
   OutputParameters,
+  GeoParameters,
 )
 
 from .visualize import Visualize
+from .geos import Geos, distribute_to_geos
 
 import numpy as np
 import pandas as pd
@@ -370,6 +372,28 @@ class Simulate(Visualize):
     logger.info("You have completed running step 5: Simulating adstock.")
     return mmm_df
 
+  def simulate_geos(self, mmm_df: pd.DataFrame, geo_params: dict) -> pd.DataFrame:
+    """Distributes the consolidated MMM dataframe into geographies.
+
+    Args:
+      mmm_df (pd.DataFrame): Consolidated MMM DataFrame
+      geo_params (dict): Parameters for geographic distribution
+    Returns:
+      pd.DataFrame: MMM DataFrame with geographic distribution"""
+    params = GeoParameters(**geo_params)
+    geos = Geos(total_population=params.total_population, random_seed=None)
+    geo_details = geos(geo_specs=params.geo_specs, universal_scale=params.universal_scale, count=params.count)
+
+    mmm_df = distribute_to_geos(
+        mmm_input=mmm_df,
+        geo_details=geo_details,
+        dist_spec=params.dist_spec,
+        media_cost_spec=params.media_cost_spec,
+        perf_spec=params.perf_spec
+    )
+    logger.info("You have completed running step 8: Distributing data to geographies.")
+    return mmm_df
+
   def calculate_conversions(self, mmm_df: pd.DataFrame) -> pd.DataFrame:
     """Calculates row wise values for conversions based on the noisy cvr and the adstocked media metric associated with each channel.
 
@@ -442,13 +466,24 @@ class Simulate(Visualize):
     [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
     if output_params.aggregation_level == "daily":
-      mmm_df = mmm_df.set_index("date")
-      final_df = mmm_df[metric_cols + spend_cols + ["total_revenue"]]
+      if "geo_name" in mmm_df.index.names:
+        final_df = mmm_df[metric_cols + spend_cols + ["total_revenue"]]
+      else:
+        mmm_df = mmm_df.set_index("date")
+        final_df = mmm_df[metric_cols + spend_cols + ["total_revenue"]]
     else:
+      if "geo_name" in mmm_df.index.names:
+        mmm_df = mmm_df.reset_index()
+
       mmm_df["week_start"] = mmm_df["date"] - pd.to_timedelta(
-        mmm_df["date"].apply(lambda x: x.weekday()), unit="d")
+        mmm_df["date"].dt.weekday, unit="D")
+
+      group_cols = ["week_start"]
+      if "geo_name" in mmm_df.columns:
+        group_cols = ["geo_name", "week_start"]
+
       final_df = (mmm_df[metric_cols + spend_cols + ["total_revenue"] +
-                     ["week_start"]].groupby(["week_start"]).sum())
+                     group_cols].groupby(group_cols).sum())
 
     logger.info(f"You have completed running step 9: Finalization of output dataframe at the {aggregation_level} level")
     return final_df
@@ -462,6 +497,10 @@ class Simulate(Visualize):
     mmm_df = self.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
     mmm_df = self.calculate_conversions(mmm_df=mmm_df)
     mmm_df = self.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_sales_df)
+    
+    if "geo_params" in config:
+        mmm_df = self.simulate_geos(mmm_df=mmm_df, geo_params=config["geo_params"])
+
     channel_roi = self.calculate_channel_roi(mmm_df=mmm_df)
     final_df = self.finalize_output(mmm_df=mmm_df, **config["output_params"])
 

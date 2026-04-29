@@ -130,6 +130,9 @@ def distribute_to_geos(
   Returns:
     (pd.DataFrame): simulated MMM data divided into geographies as specified"""
   mmm_input = mmm_input.dropna()
+  if "date" in mmm_input.columns:
+    mmm_input = mmm_input.set_index("date")
+
   geo_dataframes = []
   total_population: int = sum(geo_details.values())
   rng = np.random.default_rng(seed=random_seed)

@@ -19,84 +19,84 @@ def test_step1_baseline(config):
 def test_step2_adspend(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
 
 
 def test_step3_media(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    sim.simulate_media(spend_df=spend_df, **config["media_params"])
 
 
 def test_step4_cvr(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
-    sim.simulate_cvr(**config["cvr_params"])
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    spend_df = sim.simulate_media(spend_df=spend_df, **config["media_params"])
+    sim.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
 
 
 def tests_step5_adstock(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
-    sim.simulate_cvr(**config["cvr_params"])
-    sim.simulate_decay_returns(**config["adstock_params"])
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    spend_df = sim.simulate_media(spend_df=spend_df, **config["media_params"])
+    spend_df = sim.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
+    sim.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
 
 
 def tests_step6_conversions(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
-    sim.simulate_cvr(**config["cvr_params"])
-    sim.simulate_decay_returns(**config["adstock_params"])
-    sim.calculate_conversions()
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    spend_df = sim.simulate_media(spend_df=spend_df, **config["media_params"])
+    spend_df = sim.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
+    mmm_df = sim.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
+    sim.calculate_conversions(mmm_df=mmm_df)
 
 
 def tests_step7_consolidatedataframe(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
-    sim.simulate_cvr(**config["cvr_params"])
-    sim.simulate_decay_returns(**config["adstock_params"])
-    sim.calculate_conversions()
-    sim.consolidate_dataframe()
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    spend_df = sim.simulate_media(spend_df=spend_df, **config["media_params"])
+    spend_df = sim.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
+    mmm_df = sim.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
+    mmm_df = sim.calculate_conversions(mmm_df=mmm_df)
+    sim.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_df)
 
 
 def tests_step8_roi(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
-    sim.simulate_cvr(**config["cvr_params"])
-    sim.simulate_decay_returns(**config["adstock_params"])
-    sim.calculate_conversions()
-    sim.consolidate_dataframe()
-    sim.calculate_channel_roi()
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    spend_df = sim.simulate_media(spend_df=spend_df, **config["media_params"])
+    spend_df = sim.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
+    mmm_df = sim.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
+    mmm_df = sim.calculate_conversions(mmm_df=mmm_df)
+    mmm_df = sim.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_df)
+    sim.calculate_channel_roi(mmm_df=mmm_df)
 
 
 def tests_step9_consolidatedataframe(config):
     my_basic_params = load_parameters.define_basic_params(**config["basic_params"])
     sim = Simulate(my_basic_params)
-    sim.simulate_baseline(**config["baseline_params"])
-    sim.simulate_ad_spend(**config["ad_spend_params"])
-    sim.simulate_media(**config["media_params"])
-    sim.simulate_cvr(**config["cvr_params"])
-    sim.simulate_decay_returns(**config["adstock_params"])
-    sim.calculate_conversions()
-    sim.consolidate_dataframe()
-    sim.finalize_output(**config["output_params"])
+    baseline_df = sim.simulate_baseline(**config["baseline_params"])
+    spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **config["ad_spend_params"])
+    spend_df = sim.simulate_media(spend_df=spend_df, **config["media_params"])
+    spend_df = sim.simulate_cvr(spend_df=spend_df, **config["cvr_params"])
+    mmm_df = sim.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
+    mmm_df = sim.calculate_conversions(mmm_df=mmm_df)
+    mmm_df = sim.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_df)
+    sim.finalize_output(mmm_df=mmm_df, **config["output_params"])
 
 
 def test_run_with_config(config):
@@ -114,5 +114,5 @@ def test_run_with_config_weekly(config):
 def test_run_with_high_frequency(config):
     config["basic_params"]["frequency_of_campaigns"] = 50
     sim = Simulate()
-    sim.run_with_config(config=config)
-    assert sim.final_df.dropna().shape[0] > sim.final_df.shape[0] - 5
+    final_df, _ = sim.run_with_config(config=config)
+    assert final_df.dropna().shape[0] > final_df.shape[0] - 5

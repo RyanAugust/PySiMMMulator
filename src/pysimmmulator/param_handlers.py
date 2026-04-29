@@ -260,3 +260,27 @@ class OutputParameters:
       "daily",
       "weekly",
     ], "{self.aggregation_level} is invalid. Aggregation level must be in [daily, weekly]"
+
+@dataclass
+class GeoParameters:
+  """Handler for loading in parameters used by simmmulate class to generate geographic distribution data.
+
+  Args:
+    total_population (int): Total population to distribute across geos.
+    geo_specs (Optional[dict]): Geography names coupled with a dict of parameters for the normal distribution of that geos population.
+    universal_scale (Optional[float]): Scale parameter to be used universally for all geographies.
+    count (int): in the absense of specified geographies, this is the number of geos to be created.
+    dist_spec (tuple[float, float]): Parameters to control the normal distribution function for populations of the geographies.
+    media_cost_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of spend across geographies.
+    perf_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of performance across geographies.
+  """
+  total_population: int
+  geo_specs: Optional[dict] = None
+  universal_scale: float = 1.0
+  count: int = 250
+  dist_spec: tuple[float, float] = (0.0, 0.25)
+  media_cost_spec: tuple[float, float] = (0.0, 0.069)
+  perf_spec: tuple[float, float] = (0.0, 0.069)
+
+  def __post_init__(self):
+    assert self.total_population > 0, "Total population must be greater than 0"

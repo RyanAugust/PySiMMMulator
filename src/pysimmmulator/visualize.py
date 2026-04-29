@@ -65,12 +65,12 @@ class Visualize:
 
   def _plot_frame_overhead(self, df: pd.DataFrame, agg_level: str = None) -> pd.DataFrame:
     plot_frame = df.copy()
-    if plot_frame.index.name == 'date':
+    if 'date' in (plot_frame.index.names if plot_frame.index.names else [plot_frame.index.name]):
       plot_frame.reset_index(inplace=True)
-    
+
     if agg_level is not None:
       plot_frame = self._aggregator(plot_frame, agg_level)
-    
+
     return plot_frame
 
   def _aggregator(self, plot_frame: pd.DataFrame, agg_level: str) -> pd.DataFrame:
@@ -78,21 +78,21 @@ class Visualize:
       plot_frame = plot_frame.groupby("date").sum()
 
     elif agg_level == 'weekly':
-      plot_frame["week_start"] = plot_frame["date"] - pd.to_timedelta(plot_frame["date"].apply(lambda x: x.weekday()), unit="d")
+      plot_frame["week_start"] = plot_frame["date"] - pd.to_timedelta(plot_frame["date"].dt.weekday, unit="D")
       if "date" in plot_frame.columns:
         del plot_frame["date"]
       plot_frame = plot_frame.groupby("week_start").sum()
 
     elif agg_level == 'monthly':
       plot_frame["month_start"] = plot_frame["date"] - pd.to_timedelta(
-        plot_frame["date"].apply(lambda x: x.day), unit="d")
+        plot_frame["date"].dt.day - 1, unit="D")
       if "date" in plot_frame.columns:
         del plot_frame["date"]
       plot_frame = plot_frame.groupby("month_start").sum()
 
     elif agg_level == 'yearly':
       plot_frame["year_start"] = plot_frame["date"] - pd.to_timedelta(
-        plot_frame["date"].apply(lambda x: x.timetuple()[7]), unit="d")
+        plot_frame["date"].dt.dayofyear - 1, unit="D")
       if "date" in plot_frame.columns:
         del plot_frame["date"]
       plot_frame = plot_frame.groupby("year_start").sum()
