@@ -307,66 +307,121 @@ class Simulate(Visualize):
     return mmm_df
 
   @staticmethod
-  def _build_decay_vector(original_vector: pd.Series, decay_value: float) -> pd.Series:
-    """Helper function for the iterative portion of simulating adstocking.
+  def _geometric_adstock(vector: pd.Series, lambda_: float) -> pd.Series:
+    """Applies geometric decay adstock to a vector."""
+    decayed_vector = [vector.values[0]]
+    for i, val in enumerate(vector.values[1:]):
+      decayed_vector.append(val + lambda_ * decayed_vector[i])
+    return pd.Series(decayed_vector, index=vector.index)
 
+  @staticmethod
+  def _weibull_adstock(vector: pd.Series, shape: float, scale: float, adstock_type: str = 'pdf') -> pd.Series:
+    """Applies Weibull adstock to a vector.
+    
     Args:
-      original_vector (Series): Original vector of media values (ie. impressions or clicks)
-      decay_value (float): Simple value which is 0 < x < 1 and describes the decay of adstock over time."""
-    decayed_vector = [original_vector.values[0]]
-    for i, orig_value in enumerate(original_vector.values[1:]):
-      decayed_vector.append(orig_value + decay_value * decayed_vector[i])
-    return pd.Series(decayed_vector)
+      vector (pd.Series): media vector
+      shape (float): shape parameter (k)
+      scale (float): scale parameter (theta)
+      adstock_type (str): 'pdf' or 'cdf'
+    """
+    n = len(vector)
+    x = np.arange(n)
+    if adstock_type == 'pdf':
+      # Weibull PDF: (k/theta) * (x/theta)**(k-1) * exp(-(x/theta)**k)
+      # We normalize it so it can be used as a weighting vector
+      weights = (shape / scale) * (x / scale)**(shape - 1) * np.exp(-(x / scale)**shape)
+    else:
+      # Weibull CDF: 1 - exp(-(x/theta)**k)
+      # For adstock, we typically use the survival function (1-CDF) or its increments
+      weights = np.exp(-(x / scale)**shape)
+    
+    weights = weights / weights.sum() if weights.sum() > 0 else weights
+    
+    # Convolution for adstock
+    # We use 'full' and then slice to maintain length
+    adstocked = np.convolve(vector.values, weights)[:n]
+    return pd.Series(adstocked, index=vector.index)
 
-  def _simulate_decay(self, mmm_df: pd.DataFrame, true_lambda_decay: dict) -> pd.DataFrame:
+  @staticmethod
+  def _scurve_saturation(vector: pd.Series, alpha: float, gamma: float) -> pd.Series:
+    """Applies S-curve saturation (Logistic) to a vector."""
+    # gamma is treated as a quantile to find the inflection point
+    gamma_trans = np.quantile(np.linspace(min(vector), max(vector), num=100), gamma)
+    denom = vector**alpha + gamma_trans**alpha
+    return (vector**alpha / denom) * vector if np.any(denom != 0) else vector
+
+  @staticmethod
+  def _hill_saturation(vector: pd.Series, alpha: float, gamma: float) -> pd.Series:
+    """Applies Hill saturation to a vector.
+    
+    Args:
+      vector (pd.Series): adstocked media vector
+      alpha (float): shape parameter (slope)
+      gamma (float): scale parameter (half-saturation point)
+    """
+    # Hill function: x**alpha / (x**alpha + gamma**alpha)
+    # Often gamma is specified as a value in the same scale as x
+    # Here we'll treat gamma as a quantile similar to scurve for consistency in config if preferred,
+    # but the classic Hill uses an absolute value.
+    # Let's use absolute value for Hill to differentiate it.
+    inflection = gamma * np.max(vector) if gamma <= 1.0 else gamma
+    denom = vector**alpha + inflection**alpha
+    return (vector**alpha / denom) * vector if np.any(denom != 0) else vector
+
+  def _simulate_decay(self, mmm_df: pd.DataFrame, adstock_config: dict) -> pd.DataFrame:
     """Helper function for the simulation of adstocking.
     Ad stocking is the idea that an ad has a lasting effect for some amount of time in the future.
-    This function takes an original vector and progressively adds media outcomes (impressions or clicks) to reflect the adstocking concept.
-
-    Args:
-      mmm_df (pd.DataFrame): MMM input DataFrame
-      true_lambda_decay (dict): mapping of channel: value. Where the values represents the decay over time of a media metrics adstock
-    Returns:
-      pd.DataFrame: Updated mmm_df"""
-    for channel in true_lambda_decay.keys():
+    """
+    for channel, config in adstock_config.items():
       metric = ("impressions" if channel in self.basic_params.channels_impressions else "clicks")
-      mmm_df[f"{channel}_{metric}_adstocked"] = self._build_decay_vector(
-        original_vector=mmm_df[f"{channel}_{metric}"],
-        decay_value=true_lambda_decay[channel],
-      )
+      vector = mmm_df[f"{channel}_{metric}"]
+      
+      if config["type"] == "geometric":
+        params = config["params"].copy()
+        if 'lambda' in params:
+          params['lambda_'] = params.pop('lambda')
+        mmm_df[f"{channel}_{metric}_adstocked"] = self._geometric_adstock(vector, **params)
+      elif config["type"] == "weibull":
+        mmm_df[f"{channel}_{metric}_adstocked"] = self._weibull_adstock(vector, **config["params"])
+      else:
+        logger.warning(f"Unknown adstock type {config['type']} for channel {channel}. Using raw values.")
+        mmm_df[f"{channel}_{metric}_adstocked"] = vector
 
     logger.info("You have completed running step 5b: applying adstock decay.")
     return mmm_df
 
-  def _simulate_diminishing_returns( self, mmm_df: pd.DataFrame, alpha_saturation: dict, gamma_saturation: dict,) -> pd.DataFrame:
-    for channel in alpha_saturation.keys():
+  def _simulate_diminishing_returns(self, mmm_df: pd.DataFrame, saturation_config: dict) -> pd.DataFrame:
+    """Helper function for the simulation of diminishing returns."""
+    for channel, config in saturation_config.items():
       metric = ("impressions" if channel in self.basic_params.channels_impressions else "clicks")
       target = mmm_df[f"{channel}_{metric}_adstocked"]
-      gamma_trans = np.round( np.quantile( np.linspace(min(target), max(target), num=100), gamma_saturation[channel],), 4,)
-      x_scurve = target**alpha_saturation[channel] / (target**alpha_saturation[channel] + gamma_trans**alpha_saturation[channel])
-      mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = (x_scurve * target)
+      
+      if config["type"] == "scurve":
+        mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = self._scurve_saturation(target, **config["params"])
+      elif config["type"] == "hill":
+        mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = self._hill_saturation(target, **config["params"])
+      else:
+        logger.warning(f"Unknown saturation type {config['type']} for channel {channel}. Using adstocked values.")
+        mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = target
 
     logger.info("You have completed running step 5c: apply diminishing marginal returns.")
     return mmm_df
 
-  def simulate_decay_returns(self, spend_df: pd.DataFrame, true_lambda_decay: dict, alpha_saturation: dict,
-                 gamma_saturation: dict) -> pd.DataFrame:
-    """Generates the decay values associated with ad stocking.
+  def simulate_decay_returns(self, spend_df: pd.DataFrame, adstock: dict, saturation: dict) -> pd.DataFrame:
+    """Generates the decay and returns values associated with ad stocking and diminishing returns.
 
     Args:
       spend_df (pd.DataFrame): DataFrame containing ad spend data
-      true_lambda_decay (dict): Numbers between 0 and 1 specifying the lambda parameters for a geometric distribution for adstocking media variables.
-      alpha_saturation (dict): Specifying alpha parameter of geometric distribution for applying diminishing returns to media variables
-      gamma_saturation (dict): Between 0 and 1 specifying gamma parameter of geometric distribution for applying diminishing returns to media vars
+      adstock (dict): Nested dictionary for adstock configuration
+      saturation (dict): Nested dictionary for saturation configuration
     Returns:
       pd.DataFrame: MMM input DataFrame with decay and returns applied"""
-    adstock_params = AdstockParameters(true_lambda_decay, alpha_saturation, gamma_saturation)
+    adstock_params = AdstockParameters(adstock, saturation)
     mmm_df = self._reformat_for_mmm(spend_df=spend_df)
-    mmm_df = self._simulate_decay(mmm_df=mmm_df, true_lambda_decay=adstock_params.true_lambda_decay)
+    mmm_df = self._simulate_decay(mmm_df=mmm_df, adstock_config=adstock_params.adstock)
     mmm_df = self._simulate_diminishing_returns(
       mmm_df=mmm_df,
-      alpha_saturation=adstock_params.alpha_saturation,
-      gamma_saturation=adstock_params.gamma_saturation,
+      saturation_config=adstock_params.saturation,
     )
 
     logger.info("You have completed running step 5: Simulating adstock.")

@@ -5,10 +5,10 @@ from pysimmmulator import load_parameters, Simulate
 cfg = load_parameters.load_config(config_path="./examples/example_config.yaml")
 my_basic_params = load_parameters.define_basic_params(**cfg["basic_params"])
 sim = Simulate(my_basic_params)
-sim.simulate_baseline(**cfg["baseline_params"])
-sim.simulate_ad_spend(**cfg["ad_spend_params"])
-sim.simulate_media(**cfg["media_params"])
-sim.simulate_cvr(**cfg["cvr_params"])
+baseline_df = sim.simulate_baseline(**cfg["baseline_params"])
+spend_df = sim.simulate_ad_spend(baseline_sales_df=baseline_df, **cfg["ad_spend_params"])
+spend_df = sim.simulate_media(spend_df=spend_df, **cfg["media_params"])
+spend_df = sim.simulate_cvr(spend_df=spend_df, **cfg["cvr_params"])
 
 date_backbone = pd.date_range(
     start=sim.basic_params.start_date, end=sim.basic_params.end_date, freq="D"
@@ -21,13 +21,13 @@ campaign_id_to_date_map = np.trunc(
         start=0, stop=campaigns_in_period - 1, num=date_backbone.shape[0]
     )
 ).astype(int)
-sim.mmm_df = pd.DataFrame(
+mmm_df = pd.DataFrame(
     {"date": date_backbone, "id_map": campaign_id_to_date_map}
 )
-sim.mmm_df.set_index("id_map", inplace=True)
+mmm_df.set_index("id_map", inplace=True)
 
 
-agg_media_df = sim.spend_df.groupby(["channel", "campaign_id"]).sum()[
+agg_media_df = spend_df.groupby(["channel", "campaign_id"]).sum()[
     ["daily_impressions", "daily_clicks", "daily_spend", "noisy_cvr"]
 ]
 agg_media_df = agg_media_df.unstack(level=0)
@@ -38,6 +38,5 @@ for _metric, _channel in agg_media_df.columns:
     joined_columns.append(col_name)
 agg_media_df.columns = joined_columns
 
-print(sim.mmm_df)
-
+print(mmm_df)
 print(agg_media_df)

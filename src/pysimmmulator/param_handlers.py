@@ -210,24 +210,21 @@ class AdstockParameters:
   from input to simmmulate, will provide validation checks.
 
   Args:
-    true_lambda_decay (dict): Numbers between 0 and 1 specifying the geometric distribution lambda parameters for adstocking media variables.
-    alpha_saturation (dict): Specifying alpha parameter of geometric distribution for applying diminishing returns to media variables
-    gamma_saturation (dict): Between 0 and 1 specifying geometric distribution gamma parameter for applying diminishing returns to media vars
+    adstock (dict): Nested dictionary specifying the adstock type and parameters per channel.
+    saturation (dict): Nested dictionary specifying the saturation type and parameters per channel.
   """
 
-  true_lambda_decay: dict
-  alpha_saturation: dict
-  gamma_saturation: dict
+  adstock: dict
+  saturation: dict
 
   def __post_init__(self):
-    for channel, value in self.true_lambda_decay.items():
-      assert isinstance(value, float), "lambda decay value must be of type float"
-      assert 0 <= value <= 1, "lambda decay value must be between 0 and 1"
-    for channel, value in self.alpha_saturation.items():
-      assert isinstance(value, float), "alpha saturation value must be of type float"
-    for channel, value in self.gamma_saturation.items():
-      assert isinstance(value, float), "gamma saturation value must be of type float"
-      assert 0 <= value <= 1, "gamma saturation value must be between 0 and 1"
+    for channel, config in self.adstock.items():
+      assert "type" in config, f"Adstock config for {channel} must specify 'type'"
+      assert "params" in config, f"Adstock config for {channel} must specify 'params'"
+      
+    for channel, config in self.saturation.items():
+      assert "type" in config, f"Saturation config for {channel} must specify 'type'"
+      assert "params" in config, f"Saturation config for {channel} must specify 'params'"
 
   def check(self, basic_params: BasicParameters):
     """Validates ad stock parameters agianst previously constructed basic
@@ -236,14 +233,13 @@ class AdstockParameters:
     Args:
       basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
     """
-    for input_dict in [
-        self.true_lambda_decay,
-        self.alpha_saturation,
-        self.gamma_saturation,
-    ]:
-      assert sorted(list(input_dict.keys())) == sorted(
-        basic_params.all_channels
-      ), f"Channels declared within {input_dict.__name__} must be the same as original base channel input"
+    assert sorted(list(self.adstock.keys())) == sorted(
+      basic_params.all_channels
+    ), f"Channels declared within adstock must be the same as original base channel input"
+    
+    assert sorted(list(self.saturation.keys())) == sorted(
+      basic_params.all_channels
+    ), f"Channels declared within saturation must be the same as original base channel input"
 
 @dataclass
 class OutputParameters:
