@@ -193,14 +193,27 @@ class Simulate(Visualize):
       )
 
   def _negative_replace(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """Replaces negative velues within a passed column.
+    """Replaces negative velues within a passed column. 
+    For spend based metrics (cost per click and impression) <=0 is replaced with 1st percentile of positive values (minimum 1e-6).
 
     Args:
       df (DataFrame): Dataframe containing columns of metrics with rows of date wise values
       column (str): specified column to search for negativ values
     Returns:
       df (DataFrame): Treated dataframe with replacement"""
-    df.loc[df[column] < 0, column] = 0
+    col_lower = column.lower()
+    is_cost_metric = ("cpc" in col_lower) or ("cpm" in col_lower)
+
+    if is_cost_metric:
+      positives = df.loc[df[column] > 0, column]
+      epsilon = 1e-6
+      if len(positives) > 0:
+        replacement = max(positives.quantile(0.01), epsilon)
+      else:
+        replacement = epsilon
+      df.loc[df[column] <= 0, column] = replacement
+    else:
+      df.loc[df[column] < 0, column] = 0
     return df
 
   def simulate_media(self, spend_df: pd.DataFrame, true_cpm: dict, true_cpc: dict, noisy_cpm_cpc: dict) -> pd.DataFrame:
