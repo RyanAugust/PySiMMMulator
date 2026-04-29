@@ -3,8 +3,7 @@
 # PySiMMMulator
 
 [![CodeFactor](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator/badge)](https://www.codefactor.io/repository/github/ryanaugust/pysimmmulator)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/pysimmmulator.svg?label=PyPI%20downloads)](
-https://pypi.org/project/pysimmmulator/)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/pysimmmulator?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=Downloads)](https://pepy.tech/projects/pysimmmulator)
 
 PySiMMMulator is an open source Python framework for simulation of Marketing data for use in testing Marketing Mix Models (MMMs).
 While this package contains a full pipeline for data generation (configurable via YAML) it can also be utilized in parts to generate select portions of MMM input data (e.g. campaign/channel spend).
