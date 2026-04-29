@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from dataclasses import dataclass
 import datetime
 
@@ -22,13 +22,14 @@ class BasicParameters:
   channels_impressions: list[str]
   channels_clicks: list[str]
   frequency_of_campaigns: int
-  start_date: str
+  start_date: Union[str, datetime.datetime]
   true_cvr: Optional[list] = None
   revenue_per_conv: Optional[float] = None
 
   def __post_init__(self):
     self.all_channels = self.channels_clicks + self.channels_impressions
-    self.start_date = datetime.datetime.strptime(self.start_date, "%Y/%m/%d")
+    if isinstance(self.start_date, str):
+      self.start_date = datetime.datetime.strptime(self.start_date, "%Y/%m/%d")
     self.end_date = self.start_date + datetime.timedelta(days=(self.years * 365))
     self.check()
 

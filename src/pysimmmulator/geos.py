@@ -79,14 +79,25 @@ class Geos:
         Increased value means increased spread in the distribution of all geos
     Returns:
       geo_details (dict): Geo names and their associated populations"""
-    geo_details = {}
+    raw_pops = []
     for geo_name, geo_mod in geo_specs.items():
       bias = geo_mod.get("loc", 0.0)
       scale = geo_mod.get("scale", universal_scale)
-      geo_details.update({
-        geo_name: int((1 / len(geo_specs) * abs(self.rng.normal(bias, scale, size=1)[0])) *
-                 self.total_population)
-      })
+      # Sample raw values from normal distribution
+      raw_val = abs(self.rng.normal(bias, scale, size=1)[0])
+      raw_pops.append(raw_val)
+
+    # Normalize raw values to sum to 1.0, then multiply by total_population
+    total_raw = sum(raw_pops)
+    if total_raw == 0: # Handle edge case where all samples might be 0
+        normalized_pops = [1.0/len(geo_specs)] * len(geo_specs)
+    else:
+        normalized_pops = [p / total_raw for p in raw_pops]
+
+    geo_details = {}
+    for i, geo_name in enumerate(geo_specs.keys()):
+      geo_details[geo_name] = int(normalized_pops[i] * self.total_population)
+
     return geo_details
 
   def create_random_geos(self, count: int = 250) -> dict:
