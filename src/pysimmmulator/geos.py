@@ -71,8 +71,8 @@ class Geos:
   def create_geos(self, geo_specs: dict, universal_scale: float = 1.0) -> dict:
     """Evaluates distribution specification for each geo and returns a finalized mapping of geo names to generated population sizes.
 
-    For each geography, a raw value is sampled from an absolute normal distribution 
-    (loc=bias, scale=geo_scale). These raw values are then normalized to sum to 1.0 
+    For each geography, a raw value is sampled from an absolute normal distribution
+    (loc=bias, scale=geo_scale). These raw values are then normalized to sum to 1.0
     and multiplied by the total population to ensure the total is preserved.
 
     Args:
@@ -92,9 +92,9 @@ class Geos:
 
     total_raw = sum(raw_pops)
     if total_raw == 0:
-        normalized_pops = [1.0/len(geo_specs)] * len(geo_specs)
+      normalized_pops = [1.0/len(geo_specs)] * len(geo_specs)
     else:
-        normalized_pops = [p / total_raw for p in raw_pops]
+      normalized_pops = [p / total_raw for p in raw_pops]
 
     geo_details = {}
     for i, geo_name in enumerate(geo_specs.keys()):

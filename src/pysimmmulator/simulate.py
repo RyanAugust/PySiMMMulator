@@ -44,9 +44,9 @@ class Simulate(Visualize):
     samples = self.rng.normal(loc=loc, scale=scale, size=size)
     mask = samples < low
     while np.any(mask):
-        resample_count = np.sum(mask)
-        samples[mask] = self.rng.normal(loc=loc, scale=scale, size=resample_count)
-        mask = samples < low
+      resample_count = np.sum(mask)
+      samples[mask] = self.rng.normal(loc=loc, scale=scale, size=resample_count)
+      mask = samples < low
     return samples
 
   def _report_random_state(self) -> int:
@@ -61,14 +61,14 @@ class Simulate(Visualize):
 
   def simulate_baseline( self, base_p: int, trend_p: int, temp_var: int, temp_coef_mean: int, temp_coef_sd: int, error_std: int,) -> pd.DataFrame:
     """Simulation of baseline sales and revenue for the subject business.
-    
+
     The simulation calculates daily baseline sales as a sum of:
     - Base sales: A constant value (base_p)
     - Trend: Linear growth over the period (total growth of trend_p)
-    - Seasonality: Modeled via a sine function (height temp_var) scaled by a random 
+    - Seasonality: Modeled via a sine function (height temp_var) scaled by a random
       importance coefficient (mean temp_coef_mean, std temp_coef_sd)
     - Error: Gaussian noise (std error_std)
-    
+
     If the combined terms result in negative sales, they are clamped to zero.
 
     Args:
@@ -92,18 +92,18 @@ class Simulate(Visualize):
 
     days = np.arange(0, self.basic_params.years * 365)
     base = (np.zeros(shape=self.basic_params.years * 365) + self.baseline_params.base_p)
-    
+
     trend_cal = (self.baseline_params.trend_p / (self.basic_params.years * 365))
     trend = trend_cal * days
-    
+
     temp = self.baseline_params.temp_var * np.sin(days * 3.14 / 182.5)
     seasonality = self.rng.normal(loc=self.baseline_params.temp_coef_mean, scale=self.baseline_params.temp_coef_sd, size=1) * temp
-    
+
     error = self._truncated_normal(loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365, low=-np.inf)
-    
+
     baseline_sales = base + trend + seasonality + error
     if np.any(baseline_sales < 0):
-        baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
+      baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
 
     return pd.DataFrame({
       "days": days,
@@ -314,7 +314,7 @@ class Simulate(Visualize):
   @staticmethod
   def _weibull_adstock(vector: pd.Series, shape: float, scale: float, adstock_type: str = 'pdf') -> pd.Series:
     """Applies Weibull adstock to a vector.
-    
+
     Args:
       vector (pd.Series): media vector
       shape (float): shape parameter (k)
@@ -331,9 +331,9 @@ class Simulate(Visualize):
       # Weibull CDF: 1 - exp(-(x/theta)**k)
       # For adstock, we typically use the survival function (1-CDF) or its increments
       weights = np.exp(-(x / scale)**shape)
-    
+
     weights = weights / weights.sum() if weights.sum() > 0 else weights
-    
+
     # Convolution for adstock
     # We use 'full' and then slice to maintain length
     adstocked = np.convolve(vector.values, weights)[:n]
@@ -350,7 +350,7 @@ class Simulate(Visualize):
   @staticmethod
   def _hill_saturation(vector: pd.Series, alpha: float, gamma: float) -> pd.Series:
     """Applies Hill saturation to a vector.
-    
+
     Args:
       vector (pd.Series): adstocked media vector
       alpha (float): shape parameter (slope)
@@ -372,7 +372,7 @@ class Simulate(Visualize):
     for channel, config in adstock_config.items():
       metric = ("impressions" if channel in self.basic_params.channels_impressions else "clicks")
       vector = mmm_df[f"{channel}_{metric}"]
-      
+
       if config["type"] == "geometric":
         params = config["params"].copy()
         if 'lambda' in params:
@@ -392,7 +392,7 @@ class Simulate(Visualize):
     for channel, config in saturation_config.items():
       metric = ("impressions" if channel in self.basic_params.channels_impressions else "clicks")
       target = mmm_df[f"{channel}_{metric}_adstocked"]
-      
+
       if config["type"] == "scurve":
         mmm_df[f"{channel}_{metric}_adstocked_decay_diminishing"] = self._scurve_saturation(target, **config["params"])
       elif config["type"] == "hill":
@@ -549,9 +549,9 @@ class Simulate(Visualize):
     mmm_df = self.simulate_decay_returns(spend_df=spend_df, **config["adstock_params"])
     mmm_df = self.calculate_conversions(mmm_df=mmm_df)
     mmm_df = self.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_sales_df)
-    
+
     if "geo_params" in config:
-        mmm_df = self.simulate_geos(mmm_df=mmm_df, geo_params=config["geo_params"])
+      mmm_df = self.simulate_geos(mmm_df=mmm_df, geo_params=config["geo_params"])
 
     channel_roi = self.calculate_channel_roi(mmm_df=mmm_df)
     final_df = self.finalize_output(mmm_df=mmm_df, **config["output_params"])

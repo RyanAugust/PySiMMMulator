@@ -1,12 +1,10 @@
-import pytest
 import pandas as pd
 import numpy as np
 import yaml
-import os
 from pysimmmulator import (
     Simulate, Geos, Study, BatchStudy, load_parameters
 )
-from pysimmmulator.param_handlers import BasicParameters, BaselineParameters
+from pysimmmulator.param_handlers import BasicParameters
 
 def test_basic_parameters_repr():
     params = BasicParameters(
@@ -31,8 +29,8 @@ def test_validate_config_invalid(tmp_path):
     cfg_path = tmp_path / "invalid_config.yaml"
     with open(cfg_path, "w") as f:
         yaml.dump(invalid_cfg, f)
-    
-    assert load_parameters.validate_config(str(cfg_path)) == False
+
+    assert not load_parameters.validate_config(str(cfg_path))
 
     # Test invalid baseline_params
     invalid_cfg = {
@@ -52,7 +50,7 @@ def test_validate_config_invalid(tmp_path):
     }
     with open(cfg_path, "w") as f:
         yaml.dump(invalid_cfg, f)
-    assert load_parameters.validate_config(str(cfg_path)) == False
+    assert not load_parameters.validate_config(str(cfg_path))
 
 import unittest.mock
 
@@ -62,7 +60,7 @@ def test_geos_zero_population():
     mock_rng = unittest.mock.MagicMock()
     mock_rng.normal.return_value = np.array([0.0])
     geo_maker.rng = mock_rng
-    
+
     geo_specs = {"Geo1": {"loc": 0.0, "scale": 1.0}}
     geo_details = geo_maker.create_geos(geo_specs=geo_specs)
     assert geo_details["Geo1"] == 100
@@ -86,7 +84,7 @@ def test_simulate_negative_baseline_sales():
     # base_p=100, error_std=90 satisfies error_std < base_p
     # temp_var=1000, temp_coef_mean=-1 will make baseline_sales negative
     df = sim.simulate_baseline(
-        base_p=100, trend_p=0, temp_var=1000, 
+        base_p=100, trend_p=0, temp_var=1000,
         temp_coef_mean=-1, temp_coef_sd=0, error_std=90
     )
     assert (df["baseline_sales"] >= 0).all()
@@ -102,12 +100,12 @@ def test_simulate_modular_types(caplog):
     sim = Simulate()
     sim.basic_params = type('obj', (object,), {'channels_impressions': ['TV'], 'all_channels': ['TV']})
     mmm_df = pd.DataFrame({"TV_impressions": [100, 100]})
-    
+
     # Weibull adstock
     adstock_config = {"TV": {"type": "weibull", "params": {"shape": 2.0, "scale": 1.0}}}
     sim._simulate_decay(mmm_df, adstock_config)
     assert "TV_impressions_adstocked" in mmm_df.columns
-    
+
     # Scurve saturation
     saturation_config = {"TV": {"type": "scurve", "params": {"alpha": 3.0, "gamma": 0.5}}}
     sim._simulate_diminishing_returns(mmm_df, saturation_config)
@@ -117,7 +115,7 @@ def test_simulate_modular_types(caplog):
     adstock_config = {"TV": {"type": "unknown", "params": {}}}
     sim._simulate_decay(mmm_df, adstock_config)
     assert "Unknown adstock type unknown" in caplog.text
-    
+
     # Unknown saturation type
     mmm_df["TV_impressions_adstocked"] = [100, 100]
     saturation_config = {"TV": {"type": "unknown", "params": {}}}
@@ -128,18 +126,18 @@ def test_study_misc():
     s = Study(channel_name="test", true_roi=0.5)
     s.update_roi(0.6)
     assert s.roi == 0.6
-    
+
     results = s.generate_dynamic(bias=[0.1, 0.2], stdev=[0.05, 0.05])
     assert len(results) == 2
 
 def test_batch_study_dynamic():
     rois = {"A": 0.5, "B": 0.3}
     bs = BatchStudy(channel_rois=rois)
-    
+
     # Universal dynamic
     res_univ = bs.generate_dynamic(universal_bias=[0.1, 0.2], universal_stdev=[0.05, 0.05])
     assert len(res_univ["A"]) == 2
-    
+
     # Channel specific dynamic
     res_chan = bs.generate_dynamic(
         channel_bias={"A": [0.1], "B": [0.2]},

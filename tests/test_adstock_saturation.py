@@ -1,4 +1,3 @@
-import pytest
 import pandas as pd
 import numpy as np
 from pysimmmulator.simulate import Simulate
@@ -54,30 +53,30 @@ def test_modular_integration():
         all_channels = ["Test"]
         channels_impressions = ["Test"]
         channels_clicks = []
-    
+
     sim = Simulate()
     sim.basic_params = MockParams()
-    
+
     mmm_df = pd.DataFrame({
         "Test_impressions": [100.0, 100.0, 100.0, 100.0]
     })
-    
+
     adstock_config = {
         "Test": {
             "type": "geometric",
             "params": {"lambda": 0.5}
         }
     }
-    
+
     saturation_config = {
         "Test": {
             "type": "hill",
             "params": {"alpha": 1.0, "gamma": 100.0}
         }
     }
-    
+
     mmm_df = sim._simulate_decay(mmm_df, adstock_config)
     assert "Test_impressions_adstocked" in mmm_df.columns
-    
+
     mmm_df = sim._simulate_diminishing_returns(mmm_df, saturation_config)
     assert "Test_impressions_adstocked_decay_diminishing" in mmm_df.columns

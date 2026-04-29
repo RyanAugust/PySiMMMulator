@@ -221,7 +221,7 @@ class AdstockParameters:
     for channel, config in self.adstock.items():
       assert "type" in config, f"Adstock config for {channel} must specify 'type'"
       assert "params" in config, f"Adstock config for {channel} must specify 'params'"
-      
+
     for channel, config in self.saturation.items():
       assert "type" in config, f"Saturation config for {channel} must specify 'type'"
       assert "params" in config, f"Saturation config for {channel} must specify 'params'"
@@ -235,11 +235,11 @@ class AdstockParameters:
     """
     assert sorted(list(self.adstock.keys())) == sorted(
       basic_params.all_channels
-    ), f"Channels declared within adstock must be the same as original base channel input"
-    
+    ), "Channels declared within adstock must be the same as original base channel input"
+
     assert sorted(list(self.saturation.keys())) == sorted(
       basic_params.all_channels
-    ), f"Channels declared within saturation must be the same as original base channel input"
+    ), "Channels declared within saturation must be the same as original base channel input"
 
 @dataclass
 class OutputParameters:

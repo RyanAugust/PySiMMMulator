@@ -2,13 +2,13 @@ from pysimmmulator import Geos, distribute_to_geos
 
 def test_random_geo_create():
     geo_maker = Geos(total_population=330_000_000)
-    geo_details = geo_maker(count=200)
+    geo_maker(count=200)
     assert 1 == 1
 
 def test_geo_create():
     geo_specs = {"ABC": {"loc":1.0, "scale": 2.0}}
     geo_maker = Geos(total_population=330_000_000)
-    geo_details = geo_maker(geo_specs=geo_specs, universal_scale=1.0)
+    geo_maker(geo_specs=geo_specs, universal_scale=1.0)
     assert 1 == 1
 
 def test_distribution():
@@ -19,5 +19,5 @@ def test_distribution():
     mmm_input.index.name = 'date'
     country = Geos(total_population=20_000_000)
     geo_details = country(count=50)
-    s = distribute_to_geos(mmm_input=mmm_input, geo_details=geo_details, random_seed=42, dist_spec=(0.0, 0.25), media_cost_spec=(0.0, 0.25), perf_spec=(0.0, 0.15))
+    distribute_to_geos(mmm_input=mmm_input, geo_details=geo_details, random_seed=42, dist_spec=(0.0, 0.25), media_cost_spec=(0.0, 0.25), perf_spec=(0.0, 0.15))
     assert 1 == 1

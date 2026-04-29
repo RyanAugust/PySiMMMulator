@@ -1,7 +1,7 @@
 from pysimmmulator import load_parameters, Multisim
 
 def test_initiate_msim():
-    msim = Multisim()
+    Multisim()
     assert 1 == 1
 
 def test_multiple_runs():

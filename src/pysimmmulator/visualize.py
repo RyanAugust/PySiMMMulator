@@ -61,7 +61,7 @@ class Visualize:
 
   def _plot_frame_overhead(self, df: pd.DataFrame, agg_level: str = None) -> pd.DataFrame:
     plot_frame = df.copy()
-    if 'date' in (plot_frame.index.names if plot_frame.index.names else [plot_frame.index.name]):
+    if 'date' in (plot_frame.index.names or [plot_frame.index.name]):
       plot_frame.reset_index(inplace=True)
 
     if agg_level is not None:
@@ -92,12 +92,12 @@ class Visualize:
       if "date" in plot_frame.columns:
         del plot_frame["date"]
       plot_frame = plot_frame.groupby("year_start").sum()
-    
+
     return plot_frame
 
   def _plot_majors(self, plot_frame: pd.DataFrame, columns: list):
     if not columns:
-        return
+      return
     plot_subject = columns[-1].split('_')[1] if '_' in columns[-1] else columns[-1]
     plot_subject = plot_subject[0].upper() + plot_subject[1:]
 
