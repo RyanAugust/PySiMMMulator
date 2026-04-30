@@ -321,7 +321,7 @@ class Simulate(Visualize):
   def _simulate_decay(self, mmm_df: pd.DataFrame, adstock_config: dict) -> pd.DataFrame:
     """Helper function for the simulation of adstocking.
     Ad stocking is the idea that an ad has a lasting effect for some amount of time in the future.
-    
+
     Args:
       mmm_df (pd.DataFrame): MMM DataFrame containing media metrics.
       adstock_config (dict): Nested dictionary mapping channels to adstock types and parameters.
@@ -348,7 +348,7 @@ class Simulate(Visualize):
 
   def _simulate_diminishing_returns(self, mmm_df: pd.DataFrame, saturation_config: dict) -> pd.DataFrame:
     """Helper function for the simulation of diminishing returns.
-    
+
     Args:
       mmm_df (pd.DataFrame): MMM DataFrame containing adstocked media metrics.
       saturation_config (dict): Nested dictionary mapping channels to saturation types and parameters.
@@ -506,14 +506,14 @@ class Simulate(Visualize):
   def run_with_config(self, config: dict) -> tuple[pd.DataFrame, dict]:
     """Orchestrates the full simulation pipeline using a configuration dictionary.
 
-    This method handles parameter instantiation, baseline simulation, media and CVR 
-    simulation, adstock/saturation, conversion calculation, and optional 
+    This method handles parameter instantiation, baseline simulation, media and CVR
+    simulation, adstock/saturation, conversion calculation, and optional
     geographic distribution.
 
     Args:
       config (dict): Complete configuration dictionary.
     Returns:
-      tuple[pd.DataFrame, dict]: Finalized simulation DataFrame and a dictionary 
+      tuple[pd.DataFrame, dict]: Finalized simulation DataFrame and a dictionary
         of ground-truth ROI values per channel."""
     from .load_parameters import create_all_parameters
     params = create_all_parameters(config)
