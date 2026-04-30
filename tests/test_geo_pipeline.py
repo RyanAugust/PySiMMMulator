@@ -10,11 +10,11 @@ def base_config():
 
 def test_run_with_config_no_geo(base_config):
     sim = Simulate()
-    final_df, channel_roi = sim.run_with_config(base_config)
+    result = sim.run_with_config(base_config)
 
-    assert final_df.index.name == "date"
-    assert "geo_name" not in final_df.index.names
-    assert len(final_df) > 0
+    assert result.df.index.name == "date"
+    assert "geo_name" not in result.df.index.names
+    assert len(result.df) > 0
 
 def test_run_with_config_with_geo(base_config):
     base_config["geo_params"] = {
@@ -24,11 +24,11 @@ def test_run_with_config_with_geo(base_config):
     }
 
     sim = Simulate()
-    final_df, channel_roi = sim.run_with_config(base_config)
+    result = sim.run_with_config(base_config)
 
-    assert "geo_name" in final_df.index.names
-    assert "date" in final_df.index.names
-    geos = final_df.index.get_level_values("geo_name").unique()
+    assert "geo_name" in result.df.index.names
+    assert "date" in result.df.index.names
+    geos = result.df.index.get_level_values("geo_name").unique()
     assert len(geos) == 5
 
 def test_run_with_config_weekly_geo(base_config):
@@ -39,11 +39,11 @@ def test_run_with_config_weekly_geo(base_config):
     }
 
     sim = Simulate()
-    final_df, channel_roi = sim.run_with_config(base_config)
+    result = sim.run_with_config(base_config)
 
-    assert "geo_name" in final_df.index.names
-    assert "week_start" in final_df.index.names
-    geos = final_df.index.get_level_values("geo_name").unique()
+    assert "geo_name" in result.df.index.names
+    assert "week_start" in result.df.index.names
+    geos = result.df.index.get_level_values("geo_name").unique()
     assert len(geos) == 3
 
 def test_run_with_config_single_geo(base_config):
@@ -53,11 +53,11 @@ def test_run_with_config_single_geo(base_config):
     }
 
     sim = Simulate()
-    final_df, channel_roi = sim.run_with_config(base_config)
+    result = sim.run_with_config(base_config)
 
-    assert "geo_name" in final_df.index.names
-    assert "date" in final_df.index.names
-    geos = final_df.index.get_level_values("geo_name").unique()
+    assert "geo_name" in result.df.index.names
+    assert "date" in result.df.index.names
+    geos = result.df.index.get_level_values("geo_name").unique()
     assert len(geos) == 1
 
 def test_geo_visualization(base_config):
@@ -67,14 +67,14 @@ def test_geo_visualization(base_config):
     }
 
     sim = Simulate()
-    final_df, _ = sim.run_with_config(base_config)
+    result = sim.run_with_config(base_config)
 
     # Test plotting with multi-indexed geo data
     try:
-        sim.plot_spend(final_df, agg="weekly")
+        sim.plot_spend(result.df, agg="weekly")
         assert os.path.exists("Spend_by_channel.png")
 
-        sim.plot_revenue(final_df, agg="monthly")
+        sim.plot_revenue(result.df, agg="monthly")
         assert os.path.exists("Revenue_by_channel.png")
     finally:
         # Cleanup

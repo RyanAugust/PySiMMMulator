@@ -6,8 +6,8 @@ import os
 def sim_output():
     cfg = pysimmm.load_parameters.load_config(config_path="./examples/example_config.yaml")
     sim = pysimmm.Simulate()
-    final_df, _ = sim.run_with_config(config=cfg)
-    return sim, final_df
+    result = sim.run_with_config(config=cfg)
+    return sim, result.df
 
 def test_viz_clicks_daily(sim_output):
     sim, df = sim_output

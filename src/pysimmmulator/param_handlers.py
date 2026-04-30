@@ -1,6 +1,7 @@
 from typing import Optional, Union
 from dataclasses import dataclass
 import datetime
+import pandas as pd
 
 @dataclass
 class BasicParameters:
@@ -283,3 +284,21 @@ class GeoParameters:
 
   def __post_init__(self):
     assert self.total_population > 0, "Total population must be greater than 0"
+
+@dataclass
+class SimulationResult:
+  """Object for holding the results and metadata of a simulation run.
+
+  Args:
+    df (pd.DataFrame): Final simulation DataFrame.
+    channel_roi (dict): Ground-truth ROI values per channel.
+    config (dict): The configuration dictionary used for the run.
+    random_state (object): The bit generator state of the RNG used.
+  """
+  df: pd.DataFrame
+  channel_roi: dict
+  config: dict
+  random_state: object
+
+  def __repr__(self):
+    return f"SimulationResult(rows={len(self.df)}, channels={list(self.channel_roi.keys())})"

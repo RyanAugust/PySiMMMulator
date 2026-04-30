@@ -154,7 +154,7 @@ def test_visualize_empty_columns():
 def test_multisim_get_data_coverage():
     from pysimmmulator.simulate import Multisim
     ms = Multisim()
-    ms.data = "test_data"
+    ms.results = "test_data"
     assert ms.get_data == "test_data"
 
 def test_reproducibility():
@@ -168,10 +168,11 @@ def test_reproducibility():
 
     seed = 42
     sim1 = Simulate(random_seed=seed)
-    df1, roi1 = sim1.run_with_config(config)
+    result1 = sim1.run_with_config(config)
 
     sim2 = Simulate(random_seed=seed)
-    df2, roi2 = sim2.run_with_config(config)
+    result2 = sim2.run_with_config(config)
 
-    pd.testing.assert_frame_equal(df1, df2)
-    assert roi1 == roi2
+    pd.testing.assert_frame_equal(result1.df, result2.df)
+    assert result1.channel_roi == result2.channel_roi
+
