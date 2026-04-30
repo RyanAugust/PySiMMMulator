@@ -507,14 +507,14 @@ class Simulate(Visualize):
   def run_with_config(self, config: dict) -> SimulationResult:
     """Orchestrates the full simulation pipeline using a configuration dictionary.
 
-    This method handles parameter instantiation, baseline simulation, media and CVR 
-    simulation, adstock/saturation, conversion calculation, and optional 
+    This method handles parameter instantiation, baseline simulation, media and CVR
+    simulation, adstock/saturation, conversion calculation, and optional
     geographic distribution.
 
     Args:
       config (dict): Complete configuration dictionary.
     Returns:
-      SimulationResult: Object containing the output DataFrame, ground-truth ROI, 
+      SimulationResult: Object containing the output DataFrame, ground-truth ROI,
         configuration used, and random state metadata."""
     from .load_parameters import create_all_parameters
     params = create_all_parameters(config)

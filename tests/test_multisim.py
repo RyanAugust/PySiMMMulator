@@ -1,5 +1,4 @@
 from pysimmmulator import load_parameters, Multisim
-import pytest
 
 def test_initiate_msim():
     Multisim()
