@@ -70,7 +70,7 @@ class Study:
 
     Args:
       count (int): number of study results to return (default is 1)
-    Retuns:
+    Returns:
       study_results (iterable[float]): an array of study results """
     return self.rng.normal(loc=self._true_roi + self._bias, scale=self._stdev, size=count)
 
@@ -113,7 +113,7 @@ class BatchStudy:
 
     Args:
       count (int): number of study results to return (default is 1)
-    Retuns:
+    Returns:
       study_results (dict[iterable[float]]): an array of study results"""
     return {k: v.generate(count) for k, v in self._study_hold.items()}
 

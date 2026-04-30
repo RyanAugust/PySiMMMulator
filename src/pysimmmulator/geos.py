@@ -121,13 +121,13 @@ def distribute_to_geos(
   media_cost_spec: tuple[float, float] = (0.0, 0.069),
   perf_spec: tuple[float, float] = (0.0, 0.069)
 ) -> 'pd.DataFrame':
-  """Distributes MMM data to supplied geographies. Allows randomization in the scale of the distributon
+  """Distributes MMM data to supplied geographies. Allows randomization in the scale of the distribution.
 
   Args:
     mmm_input (pd.DataFrame): simulated MMM data that was generated as part of a prior process
     geo_details (dict): formulated dict or output of the `geos` creation call (ie `geos(count=50)`)
     random_seed (int): random seed for rng--if needed
-    rng (np.random.Generator): optional random number generator
+    rng (np.random.Generator): optional pre-instantiated random number generator
     dist_spec (tuple[float, float]): Parameters to control the normal distribution function for populations of the geographies
     media_cost_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of spend across geographies
     perf_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of performance across geographies
