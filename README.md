@@ -51,21 +51,61 @@ pysimmm -i example_config.yaml -o .
 Alternatively you may run each of the stages independently, which allows for easier debugging and in-run adjustments. Due to the stateless architecture, each stage returns its results which are then passed to the next stage.
 
 ```python
-from pysimmmulator import load_config, Simulate, define_basic_params
+from pysimmmulator import load_config, Simulate, define_basic_params, create_all_parameters
 
 cfg = load_config("./my_config.yaml")
-basic_params = define_basic_params(**cfg["basic_params"])
-simmm = Simulate(basic_params)
+params = create_all_parameters(cfg)
+simmm = Simulate(params["basic_params"])
 
-baseline_df = simmm.simulate_baseline(**cfg["baseline_params"])
-spend_df = simmm.simulate_ad_spend(baseline_sales_df=baseline_df, **cfg["ad_spend_params"])
-spend_df = simmm.simulate_media(spend_df=spend_df, **cfg["media_params"])
-spend_df = simmm.simulate_cvr(spend_df=spend_df, **cfg["cvr_params"])
-mmm_df = simmm.simulate_decay_returns(spend_df=spend_df, **cfg["adstock_params"])
+baseline_df = simmm.simulate_baseline(params["baseline_params"])
+spend_df = simmm.simulate_ad_spend(baseline_sales_df=baseline_df, params=params["ad_spend_params"])
+spend_df = simmm.simulate_media(spend_df=spend_df, params=params["media_params"])
+spend_df = simmm.simulate_cvr(spend_df=spend_df, params=params["cvr_params"])
+mmm_df = simmm.simulate_decay_returns(spend_df=spend_df, params=params["adstock_params"])
 mmm_df = simmm.calculate_conversions(mmm_df=mmm_df)
 mmm_df = simmm.consolidate_dataframe(mmm_df=mmm_df, baseline_sales_df=baseline_df)
 channel_roi = simmm.calculate_channel_roi(mmm_df=mmm_df)
-final_df = simmm.finalize_output(mmm_df=mmm_df, **cfg["output_params"])
+final_df = simmm.finalize_output(mmm_df=mmm_df, params=params["output_params"])
+```
+
+### Exogenous Factors
+
+PySiMMMulator supports the inclusion of external shocks, holidays, and promotions. These can be specified as either multipliers or additive impacts within the `baseline_params` block.
+
+```yaml
+baseline_params:
+  ...
+  exogenous_factors:
+    - name: "Black Friday"
+      dates: ["2023-11-24"]
+      impact: 3.5
+      type: "multiplier"
+    - name: "Christmas Peak"
+      start_date: "2023-12-20"
+      end_date: "2023-12-24"
+      impact: 2.0
+      type: "multiplier"
+```
+
+### Automated Sensitivity Analysis (Monte Carlo)
+
+The `Multisim` class enables Monte Carlo simulations by allowing you to define uncertainty ranges for any configuration parameter. This helps researchers understand how sensitive an MMM is to data volatility.
+
+```python
+from pysimmmulator import Multisim, load_config
+
+base_cfg = load_config("my_config.yaml")
+sensitivity_config = {
+    "baseline_params": {
+        "error_std": [20.0, 150.0]  # sample noise level for each run
+    }
+}
+
+msim = Multisim(random_seed=42)
+msim.run(config=base_cfg, runs=100, sensitivity_config=sensitivity_config)
+
+# results is a list of SimulationResult objects
+results = msim.get_data
 ```
 
 ### Geographic distribution
