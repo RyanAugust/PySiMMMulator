@@ -175,4 +175,3 @@ def test_reproducibility():
 
     pd.testing.assert_frame_equal(result1.df, result2.df)
     assert result1.channel_roi == result2.channel_roi
-

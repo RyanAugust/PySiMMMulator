@@ -602,4 +602,3 @@ class Multisim(Simulate):
       self.stash_outputs(result=result)
       logger.info(f"{run + 1}/{runs} completed")
     logger.info(f"{runs} runs complete and stored")
-

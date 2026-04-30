@@ -10,7 +10,7 @@ import pysimmmulator
 project = 'PySiMMMulator'
 copyright = '2024, Ryan Duecker'
 author = 'Ryan Duecker'
-release = pysimmmulator.__version__ 
+release = pysimmmulator.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
