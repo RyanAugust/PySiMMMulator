@@ -80,7 +80,9 @@ class BaselineParameters:
       (the larger this number, the more important seasonality is for sales)
     temp_coef_sd (int): The standard deviation of how important seasonality is in our data
       (the larger this number, the more variable the importance of seasonality is for sales)
-    error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be)."""
+    error_std (int): Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be).
+    exogenous_factors (Optional[list[dict]]): List of external factors like holidays or shocks.
+  """
 
   basic_params: BasicParameters
   base_p: int
@@ -89,6 +91,7 @@ class BaselineParameters:
   temp_coef_mean: int
   temp_coef_sd: int
   error_std: int
+  exogenous_factors: Optional[list[dict]] = None
 
   def __post_init__(self):
     assert self.error_std < self.base_p, "Error std can not exceed base sales value"
