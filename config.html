@@ -1,0 +1,573 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration &mdash; PySiMMMulator 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Simulate" href="simulate.html" />
+    <link rel="prev" title="Welcome to PySiMMMulator docs!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PySiMMMulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#handlers">Handlers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.AdSpendParameters"><code class="docutils literal notranslate"><span class="pre">AdSpendParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdSpendParameters.campaign_spend_mean"><code class="docutils literal notranslate"><span class="pre">AdSpendParameters.campaign_spend_mean</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdSpendParameters.campaign_spend_std"><code class="docutils literal notranslate"><span class="pre">AdSpendParameters.campaign_spend_std</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdSpendParameters.check"><code class="docutils literal notranslate"><span class="pre">AdSpendParameters.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdSpendParameters.max_min_proportion_on_each_channel"><code class="docutils literal notranslate"><span class="pre">AdSpendParameters.max_min_proportion_on_each_channel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.AdstockParameters"><code class="docutils literal notranslate"><span class="pre">AdstockParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdstockParameters.adstock"><code class="docutils literal notranslate"><span class="pre">AdstockParameters.adstock</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdstockParameters.check"><code class="docutils literal notranslate"><span class="pre">AdstockParameters.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.AdstockParameters.saturation"><code class="docutils literal notranslate"><span class="pre">AdstockParameters.saturation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters"><code class="docutils literal notranslate"><span class="pre">BaselineParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.base_p"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.base_p</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.basic_params"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.basic_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.error_std"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.error_std</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.temp_coef_mean"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.temp_coef_mean</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.temp_coef_sd"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.temp_coef_sd</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.temp_var"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.temp_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BaselineParameters.trend_p"><code class="docutils literal notranslate"><span class="pre">BaselineParameters.trend_p</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters"><code class="docutils literal notranslate"><span class="pre">BasicParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.channels_clicks"><code class="docutils literal notranslate"><span class="pre">BasicParameters.channels_clicks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.channels_impressions"><code class="docutils literal notranslate"><span class="pre">BasicParameters.channels_impressions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.check"><code class="docutils literal notranslate"><span class="pre">BasicParameters.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.frequency_of_campaigns"><code class="docutils literal notranslate"><span class="pre">BasicParameters.frequency_of_campaigns</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.revenue_per_conv"><code class="docutils literal notranslate"><span class="pre">BasicParameters.revenue_per_conv</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.start_date"><code class="docutils literal notranslate"><span class="pre">BasicParameters.start_date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.true_cvr"><code class="docutils literal notranslate"><span class="pre">BasicParameters.true_cvr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters.years"><code class="docutils literal notranslate"><span class="pre">BasicParameters.years</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.CVRParameters"><code class="docutils literal notranslate"><span class="pre">CVRParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.CVRParameters.check"><code class="docutils literal notranslate"><span class="pre">CVRParameters.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.CVRParameters.noisy_cvr"><code class="docutils literal notranslate"><span class="pre">CVRParameters.noisy_cvr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters"><code class="docutils literal notranslate"><span class="pre">GeoParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.count"><code class="docutils literal notranslate"><span class="pre">GeoParameters.count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.dist_spec"><code class="docutils literal notranslate"><span class="pre">GeoParameters.dist_spec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.geo_specs"><code class="docutils literal notranslate"><span class="pre">GeoParameters.geo_specs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.media_cost_spec"><code class="docutils literal notranslate"><span class="pre">GeoParameters.media_cost_spec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.perf_spec"><code class="docutils literal notranslate"><span class="pre">GeoParameters.perf_spec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.total_population"><code class="docutils literal notranslate"><span class="pre">GeoParameters.total_population</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.GeoParameters.universal_scale"><code class="docutils literal notranslate"><span class="pre">GeoParameters.universal_scale</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.MediaParameters"><code class="docutils literal notranslate"><span class="pre">MediaParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.MediaParameters.check"><code class="docutils literal notranslate"><span class="pre">MediaParameters.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.MediaParameters.noisy_cpm_cpc"><code class="docutils literal notranslate"><span class="pre">MediaParameters.noisy_cpm_cpc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.MediaParameters.true_cpc"><code class="docutils literal notranslate"><span class="pre">MediaParameters.true_cpc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.MediaParameters.true_cpm"><code class="docutils literal notranslate"><span class="pre">MediaParameters.true_cpm</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.param_handlers.OutputParameters"><code class="docutils literal notranslate"><span class="pre">OutputParameters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.param_handlers.OutputParameters.aggregation_level"><code class="docutils literal notranslate"><span class="pre">OutputParameters.aggregation_level</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#loaders">Loaders</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.load_parameters.define_basic_params"><code class="docutils literal notranslate"><span class="pre">define_basic_params()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.load_parameters.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.load_parameters.validate_config"><code class="docutils literal notranslate"><span class="pre">validate_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulate.html">Simulate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geos.html">Geographies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="study.html">Studies</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PySiMMMulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/config.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h1>
+<section id="handlers">
+<h2>Handlers<a class="headerlink" href="#handlers" title="Link to this heading"></a></h2>
+<p>Handlers provide a framework for specifiying the inputs to a simulation, critically providing validation checks for each handler that will notify the user if inputs validate global tolerances.</p>
+<dl class="py class" id="module-pysimmmulator.param_handlers">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdSpendParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">AdSpendParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">campaign_spend_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campaign_spend_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_min_proportion_on_each_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.AdSpendParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to generate ad spend approximation.
+After init, this class will also preform logic checks for the values of the
+parameters. Also provided is a check function that when passed basic_params
+from input to simmmulate, will provide futher validation checks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>campaign_spend_mean</strong> (<em>int</em>) – The average amount of money spent on a campaign.</p></li>
+<li><p><strong>campaign_spend_std</strong> (<em>int</em>) – The standard deviation of money spent on a campaign</p></li>
+<li><p><strong>max_min_proportion_on_each_channel</strong> (<em>dict</em>) – Specifies the minimum and maximum percentages of total spend allocated to each channel.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdSpendParameters.campaign_spend_mean">
+<span class="sig-name descname"><span class="pre">campaign_spend_mean</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.AdSpendParameters.campaign_spend_mean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdSpendParameters.campaign_spend_std">
+<span class="sig-name descname"><span class="pre">campaign_spend_std</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.AdSpendParameters.campaign_spend_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdSpendParameters.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.AdSpendParameters.check" title="Link to this definition"></a></dt>
+<dd><p>Validates ad spend parameters agianst previously constructed basic
+parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>basic_params</strong> (<em>basic_parameters</em>) – Previously submitted parameters as required by the simmmulate class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdSpendParameters.max_min_proportion_on_each_channel">
+<span class="sig-name descname"><span class="pre">max_min_proportion_on_each_channel</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.AdSpendParameters.max_min_proportion_on_each_channel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdstockParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">AdstockParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adstock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.AdstockParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to augment adstock data.
+Provided is a check function that when passed basic_params
+from input to simmmulate, will provide validation checks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adstock</strong> (<em>dict</em>) – Nested dictionary specifying the adstock type and parameters per channel.</p></li>
+<li><p><strong>saturation</strong> (<em>dict</em>) – Nested dictionary specifying the saturation type and parameters per channel.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdstockParameters.adstock">
+<span class="sig-name descname"><span class="pre">adstock</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.AdstockParameters.adstock" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdstockParameters.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.AdstockParameters.check" title="Link to this definition"></a></dt>
+<dd><p>Validates ad stock parameters agianst previously constructed basic
+parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>basic_params</strong> (<em>basic_parameters</em>) – Previously submitted parameters as required by the simmmulate class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.AdstockParameters.saturation">
+<span class="sig-name descname"><span class="pre">saturation</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.AdstockParameters.saturation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">BaselineParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_coef_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_coef_sd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to generate a baseline of sales.
+After init, this class will also preform logic checks for the values of the
+parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>basic_params</strong> (<em>basic_parameters</em>) – Number of years you want to generate data for.</p></li>
+<li><p><strong>base_p</strong> (<em>int</em>) – Amount of baseline sales we get in a day (sales not due to ads)</p></li>
+<li><p><strong>trend_p</strong> (<em>int</em>) – How much baseline sales is going to grow over the whole period of our data.</p></li>
+<li><p><strong>temp_var</strong> (<em>int</em>) – How big the height of the sine function is for temperature –
+i.e. how much temperature varies (used to inject seasonality into our data)</p></li>
+<li><p><strong>temp_coef_mean</strong> (<em>int</em>) – The average of how important seasonality is in our data
+(the larger this number, the more important seasonality is for sales)</p></li>
+<li><p><strong>temp_coef_sd</strong> (<em>int</em>) – The standard deviation of how important seasonality is in our data
+(the larger this number, the more variable the importance of seasonality is for sales)</p></li>
+<li><p><strong>error_std</strong> (<em>int</em>) – Amount of statistical noise added to baseline sales (the larger this number, the noisier baseline sales will be).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.base_p">
+<span class="sig-name descname"><span class="pre">base_p</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.base_p" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.basic_params">
+<span class="sig-name descname"><span class="pre">basic_params</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.basic_params" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.error_std">
+<span class="sig-name descname"><span class="pre">error_std</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.error_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.temp_coef_mean">
+<span class="sig-name descname"><span class="pre">temp_coef_mean</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.temp_coef_mean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.temp_coef_sd">
+<span class="sig-name descname"><span class="pre">temp_coef_sd</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.temp_coef_sd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.temp_var">
+<span class="sig-name descname"><span class="pre">temp_var</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.temp_var" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BaselineParameters.trend_p">
+<span class="sig-name descname"><span class="pre">trend_p</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BaselineParameters.trend_p" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">BasicParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_impressions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_clicks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency_of_campaigns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_cvr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">revenue_per_conv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in basic parameters used by simmmulate class.
+After init, this class will also preform logic checks for the values of the
+parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>years</strong> (<em>int</em>) – Number of years you want to generate data for.</p></li>
+<li><p><strong>channels_impressions</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – names of media channels that use impressions as their metric of activity (Examples: Amazon, TV, etc)</p></li>
+<li><p><strong>channels_clicks</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – names of media channels that use clicks as their metric of activity (Examples: Search)</p></li>
+<li><p><strong>frequency_of_campaigns</strong> (<em>int</em>) – how often campaigns occur
+(for example, frequency of 1 would yield a new campaign every 1 day with each campaign lasting 1 day).</p></li>
+<li><p><strong>start_date</strong> (<em>str</em>) – format yyyy/mm/dd that determines when your daily data set starts on</p></li>
+<li><p><strong>true_cvr</strong> (<em>list</em>) – what the underlying conversion rates of all the channels are, statistical noise will be added on top of this.</p></li>
+<li><p><strong>revenue_per_conv</strong> (<em>float</em>) – How much money we make from a conversion (i.e. profit from a unit of sale).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.channels_clicks">
+<span class="sig-name descname"><span class="pre">channels_clicks</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.channels_clicks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.channels_impressions">
+<span class="sig-name descname"><span class="pre">channels_impressions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.channels_impressions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.check" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.frequency_of_campaigns">
+<span class="sig-name descname"><span class="pre">frequency_of_campaigns</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.frequency_of_campaigns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.revenue_per_conv">
+<span class="sig-name descname"><span class="pre">revenue_per_conv</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.revenue_per_conv" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.start_date">
+<span class="sig-name descname"><span class="pre">start_date</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">datetime</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.start_date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.true_cvr">
+<span class="sig-name descname"><span class="pre">true_cvr</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.true_cvr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.BasicParameters.years">
+<span class="sig-name descname"><span class="pre">years</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.BasicParameters.years" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.CVRParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">CVRParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noisy_cvr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.CVRParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to generate cvr data.
+Provided is a check function that when passed basic_params
+from input to simmmulate, will provide validation checks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>noisy_cpm_cpc</strong> (<em>dict</em>) – Specifies the bias and scale of noise added to the true value CVR for each channel.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.CVRParameters.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.CVRParameters.check" title="Link to this definition"></a></dt>
+<dd><p>Validates CVR parameters agianst previously constructed basic
+parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>basic_params</strong> (<em>basic_parameters</em>) – Previously submitted parameters as required by the simmmulate class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.CVRParameters.noisy_cvr">
+<span class="sig-name descname"><span class="pre">noisy_cvr</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.CVRParameters.noisy_cvr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">GeoParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_population</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_specs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universal_scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.25)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_cost_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.069)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perf_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.069)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to generate geographic distribution data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>total_population</strong> (<em>int</em>) – Total population to distribute across geos.</p></li>
+<li><p><strong>geo_specs</strong> (<em>Optional</em><em>[</em><em>dict</em><em>]</em>) – Geography names coupled with a dict of parameters for the normal distribution of that geos population.</p></li>
+<li><p><strong>universal_scale</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>) – Scale parameter to be used universally for all geographies.</p></li>
+<li><p><strong>count</strong> (<em>int</em>) – in the absense of specified geographies, this is the number of geos to be created.</p></li>
+<li><p><strong>dist_spec</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Parameters to control the normal distribution function for populations of the geographies.</p></li>
+<li><p><strong>media_cost_spec</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Parameters to control the normal distribution function for allocation of spend across geographies.</p></li>
+<li><p><strong>perf_spec</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Parameters to control the normal distribution function for allocation of performance across geographies.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">250</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.count" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.dist_spec">
+<span class="sig-name descname"><span class="pre">dist_spec</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.25)</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.dist_spec" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.geo_specs">
+<span class="sig-name descname"><span class="pre">geo_specs</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.geo_specs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.media_cost_spec">
+<span class="sig-name descname"><span class="pre">media_cost_spec</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.069)</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.media_cost_spec" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.perf_spec">
+<span class="sig-name descname"><span class="pre">perf_spec</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.069)</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.perf_spec" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.total_population">
+<span class="sig-name descname"><span class="pre">total_population</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.total_population" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.GeoParameters.universal_scale">
+<span class="sig-name descname"><span class="pre">universal_scale</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.GeoParameters.universal_scale" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.MediaParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">MediaParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true_cpm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_cpc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisy_cpm_cpc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.MediaParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to generate media data.
+After init, this class will also preform logic checks for the values of the
+parameters. Also provided is a check function that when passed basic_params
+from input to simmmulate, will provide futher validation checks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>true_cpm</strong> (<em>dict</em>) – Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)</p></li>
+<li><p><strong>true_cpc</strong> (<em>dict</em>) – Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)</p></li>
+<li><p><strong>noisy_cpm_cpc</strong> (<em>dict</em>) – Specifies the bias and scale of noise added to the true value CPM or CPC for each channel.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.MediaParameters.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.MediaParameters.check" title="Link to this definition"></a></dt>
+<dd><p>Validates media parameters parameters agianst previously constructed basic
+parameter values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>basic_params</strong> (<em>basic_parameters</em>) – Previously submitted parameters as required by the simmmulate class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.MediaParameters.noisy_cpm_cpc">
+<span class="sig-name descname"><span class="pre">noisy_cpm_cpc</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.MediaParameters.noisy_cpm_cpc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.MediaParameters.true_cpc">
+<span class="sig-name descname"><span class="pre">true_cpc</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.MediaParameters.true_cpc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.MediaParameters.true_cpm">
+<span class="sig-name descname"><span class="pre">true_cpm</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.MediaParameters.true_cpm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.OutputParameters">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.param_handlers.</span></span><span class="sig-name descname"><span class="pre">OutputParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.param_handlers.OutputParameters" title="Link to this definition"></a></dt>
+<dd><p>Handler for loading in parameters used by simmmulate class to generate final output data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>aggregation_level</strong> (<em>str</em>) – Specifies the aggregation level of final output data. choose between [daily, weekly].</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pysimmmulator.param_handlers.OutputParameters.aggregation_level">
+<span class="sig-name descname"><span class="pre">aggregation_level</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#pysimmmulator.param_handlers.OutputParameters.aggregation_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="loaders">
+<h2>Loaders<a class="headerlink" href="#loaders" title="Link to this heading"></a></h2>
+<p>Functions which automate steps within the parameter workflow. Most notably providing a load from file option <cite>load_config</cite> as well as a comprehensive validation function <cite>validate_config</cite>.</p>
+<dl class="py function" id="module-pysimmmulator.load_parameters">
+<dt class="sig sig-object py" id="pysimmmulator.load_parameters.define_basic_params">
+<span class="sig-prename descclassname"><span class="pre">pysimmmulator.load_parameters.</span></span><span class="sig-name descname"><span class="pre">define_basic_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">years</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_clicks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_impressions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency_of_campaigns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_cvr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">revenue_per_conv</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.load_parameters.define_basic_params" title="Link to this definition"></a></dt>
+<dd><p>Takes in requirements for basic_params and loads with dataclass for validation as precursor</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysimmmulator.load_parameters.load_config">
+<span class="sig-prename descclassname"><span class="pre">pysimmmulator.load_parameters.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pysimmmulator.load_parameters.load_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pysimmmulator.load_parameters.validate_config">
+<span class="sig-prename descclassname"><span class="pre">pysimmmulator.load_parameters.</span></span><span class="sig-name descname"><span class="pre">validate_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_individual_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.load_parameters.validate_config" title="Link to this definition"></a></dt>
+<dd><p>Loads and validates the parameters against individual</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_path</strong> (<em>os.pathlike</em>) – path to the configuration file</p></li>
+<li><p><strong>return_individual_results</strong> (<em>bool</em>) – control for if a detailed param by param result is returned. Default is for a single bool value return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>results of the validation check. Default will return a bool indicating overall valid or invalid status.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Union[bool, dict])</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PySiMMMulator docs!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulate.html" class="btn btn-neutral float-right" title="Simulate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ryan Duecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

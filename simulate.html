@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulate &mdash; PySiMMMulator 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Geographies" href="geos.html" />
+    <link rel="prev" title="Configuration" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PySiMMMulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysimmmulator.simulate">Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.simulate.Multisim"><code class="docutils literal notranslate"><span class="pre">Multisim</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Multisim.get_data"><code class="docutils literal notranslate"><span class="pre">Multisim.get_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Multisim.run"><code class="docutils literal notranslate"><span class="pre">Multisim.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Multisim.stash_outputs"><code class="docutils literal notranslate"><span class="pre">Multisim.stash_outputs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.simulate.Simulate"><code class="docutils literal notranslate"><span class="pre">Simulate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.calculate_channel_roi"><code class="docutils literal notranslate"><span class="pre">Simulate.calculate_channel_roi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.calculate_conversions"><code class="docutils literal notranslate"><span class="pre">Simulate.calculate_conversions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.consolidate_dataframe"><code class="docutils literal notranslate"><span class="pre">Simulate.consolidate_dataframe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.finalize_output"><code class="docutils literal notranslate"><span class="pre">Simulate.finalize_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.run_with_config"><code class="docutils literal notranslate"><span class="pre">Simulate.run_with_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.simulate_ad_spend"><code class="docutils literal notranslate"><span class="pre">Simulate.simulate_ad_spend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.simulate_baseline"><code class="docutils literal notranslate"><span class="pre">Simulate.simulate_baseline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.simulate_cvr"><code class="docutils literal notranslate"><span class="pre">Simulate.simulate_cvr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.simulate_decay_returns"><code class="docutils literal notranslate"><span class="pre">Simulate.simulate_decay_returns()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.simulate_geos"><code class="docutils literal notranslate"><span class="pre">Simulate.simulate_geos()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.simulate.Simulate.simulate_media"><code class="docutils literal notranslate"><span class="pre">Simulate.simulate_media()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysimmmulator.visualize">Visualization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pysimmmulator.visualize.Visualize"><code class="docutils literal notranslate"><span class="pre">Visualize</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.visualize.Visualize.plot_clicks"><code class="docutils literal notranslate"><span class="pre">Visualize.plot_clicks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.visualize.Visualize.plot_impressions"><code class="docutils literal notranslate"><span class="pre">Visualize.plot_impressions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.visualize.Visualize.plot_revenue"><code class="docutils literal notranslate"><span class="pre">Visualize.plot_revenue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pysimmmulator.visualize.Visualize.plot_spend"><code class="docutils literal notranslate"><span class="pre">Visualize.plot_spend()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="geos.html">Geographies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="study.html">Studies</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PySiMMMulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Simulate</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/simulate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<section id="simulate">
+<h1>Simulate<a class="headerlink" href="#simulate" title="Link to this heading"></a></h1>
+<section id="module-pysimmmulator.simulate">
+<span id="simulation"></span><h2>Simulation<a class="headerlink" href="#module-pysimmmulator.simulate" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Multisim">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.simulate.</span></span><span class="sig-name descname"><span class="pre">Multisim</span></span><a class="headerlink" href="#pysimmmulator.simulate.Multisim" title="Link to this definition"></a></dt>
+<dd><p>Provides capability to generate multiple runs on a single configuration</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Multisim.get_data">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_data</span></span><a class="headerlink" href="#pysimmmulator.simulate.Multisim.get_data" title="Link to this definition"></a></dt>
+<dd><p>Provies the iterable generator for simulaton final dataframes and channel ground truth ROI values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>iterable of final sim dataframes and channel ROI values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data (iterable)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Multisim.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Multisim.run" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Multisim.stash_outputs">
+<span class="sig-name descname"><span class="pre">stash_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">final_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.simulate.Multisim.stash_outputs" title="Link to this definition"></a></dt>
+<dd><p>Stores the final simulation dataframe as well as the ground truth channel ROI values
+for each run of the multiple simulations.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.simulate.</span></span><span class="sig-name descname"><span class="pre">Simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="config.html#pysimmmulator.param_handlers.BasicParameters" title="pysimmmulator.param_handlers.BasicParameters"><span class="pre">BasicParameters</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.simulate.Simulate" title="Link to this definition"></a></dt>
+<dd><p>Takes input of basic params and provies either piece meal or single shot creation of MMM data using a config file</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.calculate_channel_roi">
+<span class="sig-name descname"><span class="pre">calculate_channel_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmm_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.calculate_channel_roi" title="Link to this definition"></a></dt>
+<dd><p>Calculates the ROI for all channels, based on pre-generated spend and conversions data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mmm_df</strong> (<em>pd.DataFrame</em>) – Consolidated MMM DataFrame</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Channel ROI mapping</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.calculate_conversions">
+<span class="sig-name descname"><span class="pre">calculate_conversions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmm_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.calculate_conversions" title="Link to this definition"></a></dt>
+<dd><p>Calculates row wise values for conversions based on the noisy cvr and the adstocked media metric associated with each channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mmm_df</strong> (<em>pd.DataFrame</em>) – MMM input DataFrame</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated mmm_df</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.consolidate_dataframe">
+<span class="sig-name descname"><span class="pre">consolidate_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmm_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_sales_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.consolidate_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Filters and formats internal data into uniform output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mmm_df</strong> (<em>pd.DataFrame</em>) – MMM input DataFrame</p></li>
+<li><p><strong>baseline_sales_df</strong> (<em>pd.DataFrame</em>) – Baseline sales DataFrame</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Consolidated MMM DataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.finalize_output">
+<span class="sig-name descname"><span class="pre">finalize_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmm_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.finalize_output" title="Link to this definition"></a></dt>
+<dd><p>Provide aggregation (daily, weekly) and column filtering for final output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mmm_df</strong> (<em>pd.DataFrame</em>) – Consolidated MMM DataFrame</p></li>
+<li><p><strong>aggregation_level</strong> (<em>str</em>) – [daily, weekly] the granulatiry at which to return output data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Finalized output DataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.run_with_config">
+<span class="sig-name descname"><span class="pre">run_with_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.run_with_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.simulate_ad_spend">
+<span class="sig-name descname"><span class="pre">simulate_ad_spend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">baseline_sales_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campaign_spend_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campaign_spend_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_min_proportion_on_each_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.simulate_ad_spend" title="Link to this definition"></a></dt>
+<dd><p>Simulation of ad spend based on normal distribution parameters for campaign spend.
+Overall campaign spend is then divided amongst each channel based on passed
+min-max proportionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>baseline_sales_df</strong> (<em>pd.DataFrame</em>) – DataFrame containing baseline sales</p></li>
+<li><p><strong>campaign_spend_mean</strong> (<em>int</em>) – The average amount of money spent on a campaign.</p></li>
+<li><p><strong>campaign_spend_std</strong> (<em>int</em>) – The standard deviation of money spent on a campaign</p></li>
+<li><p><strong>max_min_proportion_on_each_channel</strong> (<em>dict</em>) – Specifies the minimum and maximum percentages of total spend allocated to each channel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame containing ad spend data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.simulate_baseline">
+<span class="sig-name descname"><span class="pre">simulate_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_coef_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_coef_sd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.simulate_baseline" title="Link to this definition"></a></dt>
+<dd><p>Simulation of baseline sales and revenue for the subject business.</p>
+<p>The simulation calculates daily baseline sales as a sum of:
+- Base sales: A constant value (base_p)
+- Trend: Linear growth over the period (total growth of trend_p)
+- Seasonality: Modeled via a sine function (height temp_var) scaled by a random</p>
+<blockquote>
+<div><p>importance coefficient (mean temp_coef_mean, std temp_coef_sd)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Error: Gaussian noise (std error_std)</p></li>
+</ul>
+<p>If the combined terms result in negative sales, they are clamped to zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_p</strong> (<em>int</em>) – Daily base sales units (non-marketing driven).</p></li>
+<li><p><strong>trend_p</strong> (<em>int</em>) – Total linear growth units over the full duration.</p></li>
+<li><p><strong>temp_var</strong> (<em>int</em>) – Amplitude of the seasonal sine function.</p></li>
+<li><p><strong>temp_coef_mean</strong> (<em>int</em>) – Mean scaling factor for seasonal impact.</p></li>
+<li><p><strong>temp_coef_sd</strong> (<em>int</em>) – Standard deviation of seasonal impact scaling.</p></li>
+<li><p><strong>error_std</strong> (<em>int</em>) – Standard deviation of daily statistical noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Daily baseline sales components.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.simulate_cvr">
+<span class="sig-name descname"><span class="pre">simulate_cvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spend_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisy_cvr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.simulate_cvr" title="Link to this definition"></a></dt>
+<dd><p>Generate Conversion Rate using the true conversion rates passed in the basic params with noise parameters passed in this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spend_df</strong> (<em>pd.DataFrame</em>) – DataFrame containing ad spend data</p></li>
+<li><p><strong>noisy_cvr</strong> (<em>dict</em>) – Specifies the bias and scale of noise added to the true value CVR for each channel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated spend DataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.simulate_decay_returns">
+<span class="sig-name descname"><span class="pre">simulate_decay_returns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spend_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adstock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.simulate_decay_returns" title="Link to this definition"></a></dt>
+<dd><p>Generates the decay and returns values associated with ad stocking and diminishing returns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spend_df</strong> (<em>pd.DataFrame</em>) – DataFrame containing ad spend data</p></li>
+<li><p><strong>adstock</strong> (<em>dict</em>) – Nested dictionary for adstock configuration</p></li>
+<li><p><strong>saturation</strong> (<em>dict</em>) – Nested dictionary for saturation configuration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MMM input DataFrame with decay and returns applied</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.simulate_geos">
+<span class="sig-name descname"><span class="pre">simulate_geos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mmm_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geo_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.simulate_geos" title="Link to this definition"></a></dt>
+<dd><p>Distributes the consolidated MMM dataframe into geographies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mmm_df</strong> (<em>pd.DataFrame</em>) – Consolidated MMM DataFrame</p></li>
+<li><p><strong>geo_params</strong> (<em>dict</em>) – Parameters for geographic distribution</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MMM DataFrame with geographic distribution</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.simulate.Simulate.simulate_media">
+<span class="sig-name descname"><span class="pre">simulate_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spend_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_cpm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_cpc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noisy_cpm_cpc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pysimmmulator.simulate.Simulate.simulate_media" title="Link to this definition"></a></dt>
+<dd><p>Simulation of relevant media metrics for each channel.
+True values are passed and noise is applied in accordance with a normal distribution described within the noisy dict.
+Media metrics are checked for 0 values stemming from the random noise applied and will be flagged with logger when found.
+It is generally understood that negativ evalues should not arrise for media metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spend_df</strong> (<em>pd.DataFrame</em>) – DataFrame containing ad spend data</p></li>
+<li><p><strong>true_cpm</strong> (<em>dict</em>) – Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)</p></li>
+<li><p><strong>true_cpc</strong> (<em>dict</em>) – Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)</p></li>
+<li><p><strong>noisy_cpm_cpc</strong> (<em>dict</em>) – Specifies the bias and scale of noise added to the true value CPM or CPC for each channel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated spend DataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pysimmmulator.visualize">
+<span id="visualization"></span><h2>Visualization<a class="headerlink" href="#module-pysimmmulator.visualize" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pysimmmulator.visualize.Visualize">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pysimmmulator.visualize.</span></span><span class="sig-name descname"><span class="pre">Visualize</span></span><a class="headerlink" href="#pysimmmulator.visualize.Visualize" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.visualize.Visualize.plot_clicks">
+<span class="sig-name descname"><span class="pre">plot_clicks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.visualize.Visualize.plot_clicks" title="Link to this definition"></a></dt>
+<dd><p>Plot simulated clicks data based on a passed date-wise aggregation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing simulated data</p></li>
+<li><p><strong>agg</strong> (<em>str</em>) – pick from [‘daily’, ‘weekly’, ‘monthly’, ‘yearly’] to aggregate simulated data by</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.visualize.Visualize.plot_impressions">
+<span class="sig-name descname"><span class="pre">plot_impressions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.visualize.Visualize.plot_impressions" title="Link to this definition"></a></dt>
+<dd><p>Plot simulated impressions data based on a passed date-wise aggregation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing simulated data</p></li>
+<li><p><strong>agg</strong> (<em>str</em>) – pick from [‘daily’, ‘weekly’, ‘monthly’, ‘yearly’] to aggregate simulated data by</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.visualize.Visualize.plot_revenue">
+<span class="sig-name descname"><span class="pre">plot_revenue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.visualize.Visualize.plot_revenue" title="Link to this definition"></a></dt>
+<dd><p>Plot simulated revenue data based on a passed date-wise aggregation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing simulated data</p></li>
+<li><p><strong>agg</strong> (<em>str</em>) – pick from [‘daily’, ‘weekly’, ‘monthly’, ‘yearly’] to aggregate simulated data by</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pysimmmulator.visualize.Visualize.plot_spend">
+<span class="sig-name descname"><span class="pre">plot_spend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysimmmulator.visualize.Visualize.plot_spend" title="Link to this definition"></a></dt>
+<dd><p>Plot simulated spend data based on a passed date-wise aggregation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing simulated data</p></li>
+<li><p><strong>agg</strong> (<em>str</em>) – pick from [‘daily’, ‘weekly’, ‘monthly’, ‘yearly’] to aggregate simulated data by</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="geos.html" class="btn btn-neutral float-right" title="Geographies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ryan Duecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
