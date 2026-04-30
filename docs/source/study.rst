@@ -7,4 +7,3 @@ Studies
 .. automodule:: pysimmmulator.study
     :members:
     :undoc-members:
-
