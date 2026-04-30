@@ -598,7 +598,6 @@ class Multisim(Simulate):
       current_config = config
       if sensitivity_config:
         current_config = self._apply_sensitivity(config, sensitivity_config)
-        
       result = self.run_with_config(config=current_config)
       self.stash_outputs(result=result)
       logger.info(f"{run + 1}/{runs} completed")
