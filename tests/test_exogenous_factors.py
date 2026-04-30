@@ -96,9 +96,9 @@ def test_us_retail_example_run():
     from pysimmmulator.load_parameters import load_config, create_all_parameters
     cfg = load_config("examples/us_retail_exogenous_config.yaml")
     sim = Simulate()
-    df, roi = sim.run_with_config(cfg)
-    assert len(df) > 0
-    assert "baseline_sales" not in df.columns # it's aggregated in total_revenue
+    result = sim.run_with_config(cfg)
+    assert len(result.df) > 0
+    assert "baseline_sales" not in result.df.columns # it's aggregated in total_revenue
 
     # We can check specific dates in the internal baseline if we run it manually
     params = create_all_parameters(cfg)

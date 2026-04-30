@@ -18,13 +18,13 @@ def run_with_config(config_path, output_path):
   cfg = load_config(config_path)
   logger.debug("config loaded successfully")
   sim = Simulate()
-  (mmm_input_df, channel_roi) = sim.run_with_config(config=cfg)
+  result = sim.run_with_config(config=cfg)
   logger.debug("sim run successfully, saving results")
 
   # save to current directory. Should be an optional argument for this
   os.makedirs(output_path, exist_ok=True)
-  mmm_input_df.to_csv(os.path.join(output_path, "mmm_input_df.csv"), index=False)
-  pd.DataFrame.from_dict(channel_roi, orient="index", columns=["true_roi"]).to_csv(os.path.join(output_path, "channel_roi.csv"))
+  result.df.to_csv(os.path.join(output_path, "mmm_input_df.csv"), index=True)
+  pd.DataFrame.from_dict(result.channel_roi, orient="index", columns=["true_roi"]).to_csv(os.path.join(output_path, "channel_roi.csv"))
 
 def main():
   arg_parser = argparse.ArgumentParser()

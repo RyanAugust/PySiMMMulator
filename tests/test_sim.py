@@ -104,8 +104,9 @@ def test_run_with_config_weekly(config):
     sim.run_with_config(config=config)
 
 
-def test_run_with_high_frequency(config):
+def test_run_with_high_frequency(params):
+    config = load_parameters.load_config(config_path="./examples/example_config.yaml")
     config["basic_params"]["frequency_of_campaigns"] = 50
     sim = Simulate()
-    final_df, _ = sim.run_with_config(config=config)
-    assert final_df.dropna().shape[0] > final_df.shape[0] - 5
+    result = sim.run_with_config(config=config)
+    assert result.df.dropna().shape[0] > result.df.shape[0] - 5

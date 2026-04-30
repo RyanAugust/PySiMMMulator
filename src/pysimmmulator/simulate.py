@@ -7,6 +7,7 @@ from pysimmmulator.param_handlers import (
   AdstockParameters,
   OutputParameters,
   GeoParameters,
+  SimulationResult,
 )
 
 from .visualize import Visualize
@@ -503,18 +504,18 @@ class Simulate(Visualize):
     logger.info(f"You have completed running step 9: Finalization of output dataframe at the {params.aggregation_level} level")
     return final_df
 
-  def run_with_config(self, config: dict) -> tuple[pd.DataFrame, dict]:
+  def run_with_config(self, config: dict) -> SimulationResult:
     """Orchestrates the full simulation pipeline using a configuration dictionary.
 
-    This method handles parameter instantiation, baseline simulation, media and CVR
-    simulation, adstock/saturation, conversion calculation, and optional
+    This method handles parameter instantiation, baseline simulation, media and CVR 
+    simulation, adstock/saturation, conversion calculation, and optional 
     geographic distribution.
 
     Args:
       config (dict): Complete configuration dictionary.
     Returns:
-      tuple[pd.DataFrame, dict]: Finalized simulation DataFrame and a dictionary
-        of ground-truth ROI values per channel."""
+      SimulationResult: Object containing the output DataFrame, ground-truth ROI, 
+        configuration used, and random state metadata."""
     from .load_parameters import create_all_parameters
     params = create_all_parameters(config)
     self.basic_params = params["basic_params"]
@@ -533,41 +534,73 @@ class Simulate(Visualize):
     channel_roi = self.calculate_channel_roi(mmm_df=mmm_df)
     final_df = self.finalize_output(mmm_df=mmm_df, params=params["output_params"])
 
-    return (final_df, channel_roi)
+    return SimulationResult(
+        df=final_df,
+        channel_roi=channel_roi,
+        config=config,
+        random_state=self._report_random_state()
+    )
 
 class Multisim(Simulate):
   """Provides capability to generate multiple runs on a single configuration"""
-  def __init__(self):
-    super(Multisim, self).__init__()
-    self.final_frames = []
-    self.rois = []
+  def __init__(self, random_seed=None):
+    super(Multisim, self).__init__(random_seed=random_seed)
+    self.results = []
 
-  def stash_outputs(self, final_df: pd.DataFrame, channel_roi: dict):
+  def stash_outputs(self, result: SimulationResult):
     """Stores the outputs of a single simulation run.
 
     Args:
-      final_df (pd.DataFrame): Final simulation DataFrame.
-      channel_roi (dict): Ground-truth ROI values."""
-    self.final_frames.append(final_df)
-    self.rois.append(channel_roi)
+      result (SimulationResult): The result object from run_with_config."""
+    self.results.append(result)
 
   @property
   def get_data(self):
-    """Provides the iterable generator for simulation final dataframes and channel ground truth ROI values
+    """Provides the list of SimulationResult objects generated.
 
     Returns:
-      data (iterable): iterable of final sim dataframes and channel ROI values"""
-    return self.data
+      results (list[SimulationResult]): List of simulation results."""
+    return self.results
 
-  def run(self, config: dict, runs: int) -> None:
+  def _apply_sensitivity(self, config: dict, sensitivity_config: dict) -> dict:
+    """Recursively applies sensitivity ranges to a configuration.
+
+    Args:
+      config (dict): The base configuration to copy and update.
+      sensitivity_config (dict): Configuration specifying ranges [low, high] for parameters.
+    Returns:
+      dict: A new configuration with sampled values."""
+    import copy
+    new_config = copy.deepcopy(config)
+
+    def recursive_update(target, source):
+      for key, value in source.items():
+        if isinstance(value, dict) and key in target and isinstance(target[key], dict):
+          recursive_update(target[key], value)
+        elif isinstance(value, list) and len(value) == 2 and all(isinstance(x, (int, float)) for x in value):
+          # Sample from Uniform distribution
+          target[key] = self.rng.uniform(low=value[0], high=value[1])
+        else:
+          target[key] = value
+
+    recursive_update(new_config, sensitivity_config)
+    return new_config
+
+  def run(self, config: dict, runs: int, sensitivity_config: dict = None) -> None:
     """Executes multiple simulation runs.
 
     Args:
       config (dict): Simulation configuration.
-      runs (int): Number of runs to execute."""
+      runs (int): Number of runs to execute.
+      sensitivity_config (dict): Optional configuration for Monte Carlo sensitivity analysis.
+    """
     for run in range(runs):
-      frame, roi = self.run_with_config(config=config)
-      self.stash_outputs(final_df=frame, channel_roi=roi)
+      current_config = config
+      if sensitivity_config:
+        current_config = self._apply_sensitivity(config, sensitivity_config)
+        
+      result = self.run_with_config(config=current_config)
+      self.stash_outputs(result=result)
       logger.info(f"{run + 1}/{runs} completed")
-    self.data = zip(self.final_frames, self.rois)
     logger.info(f"{runs} runs complete and stored")
+

@@ -24,14 +24,18 @@ PySiMMMulator's simulator can either be run on a step-by-step basis, or can be r
 
 ### Run via config
 
-Run using this method, you'll be returned both a dataframe of for MMM input as well as the "True ROI" values for each of your channels. These true values are critical to validating your MMM model.
+Run using this method, you'll be returned a `SimulationResult` object containing both a dataframe for MMM input as well as the "True ROI" values for each of your channels, and associated metadata. These true values are critical to validating your MMM model.
 
 ```python
 from pysimmmulator import load_config, Simulate
 
 cfg = load_config(config_path="./my_config.yaml")
 simmm = Simulate()
-mmm_input_df, channel_roi = simmm.run_with_config(config=cfg)
+result = simmm.run_with_config(config=cfg)
+
+# Access results
+mmm_input_df = result.df
+channel_roi = result.channel_roi
 ```
 
 ### Run via CLI
