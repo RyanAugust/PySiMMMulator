@@ -55,7 +55,7 @@ def create_all_parameters(config: dict) -> dict:
   params["output_params"] = OutputParameters(**config["output_params"])
 
   if "geo_params" in config:
-      params["geo_params"] = GeoParameters(**config["geo_params"])
+    params["geo_params"] = GeoParameters(**config["geo_params"])
 
   return params
 

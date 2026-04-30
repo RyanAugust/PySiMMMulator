@@ -90,7 +90,7 @@ class Simulate(Visualize):
 
     baseline_sales = base + trend + seasonality + error
     if np.any(baseline_sales < 0):
-        baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
+      baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
 
     return pd.DataFrame({
       "days": days,
