@@ -4,9 +4,9 @@ import pandas as pd
 
 class Geos:
   """Provides randomized generation of population subsets"""
-  def __init__(self, total_population: int, random_seed: Optional[int] = None) -> None:
+  def __init__(self, total_population: int, random_seed: Optional[int] = None, rng: Optional[np.random.Generator] = None) -> None:
     self.total_population = total_population
-    self.rng = self._create_random_factory(seed=random_seed)
+    self.rng = rng if rng is not None else self._create_random_factory(seed=random_seed)
 
   def __call__(self,
          geo_specs: Optional[dict] = None,
@@ -18,7 +18,7 @@ class Geos:
       geo_specs (Optional[dict]): Geography names coupled with a dict of parameters for the normal distribution of that geos population
         (ie {"California":{"loc": 3.0, "scale": 0.5}}). 'loc' in this case is the multiplicative bias relative to an
         equal apportionment of the total population.
-      universal_scale (Optional[flaot]): Scale parameter to be used universally for all geographies. Increased value means increased
+      universal_scale (Optional[float]): Scale parameter to be used universally for all geographies. Increased value means increased
         spread in the distribution of all geos
       count (int): in the absense of specified geographies, this is the number of geos to be created using the `create_random_geos` function.
     Returns:
@@ -116,6 +116,7 @@ def distribute_to_geos(
   mmm_input: 'pd.DataFrame',
   geo_details: dict,
   random_seed: Optional[int] = None,
+  rng: Optional[np.random.Generator] = None,
   dist_spec: tuple[float, float] = (0.0, 0.25),
   media_cost_spec: tuple[float, float] = (0.0, 0.069),
   perf_spec: tuple[float, float] = (0.0, 0.069)
@@ -126,6 +127,7 @@ def distribute_to_geos(
     mmm_input (pd.DataFrame): simulated MMM data that was generated as part of a prior process
     geo_details (dict): formulated dict or output of the `geos` creation call (ie `geos(count=50)`)
     random_seed (int): random seed for rng--if needed
+    rng (np.random.Generator): optional random number generator
     dist_spec (tuple[float, float]): Parameters to control the normal distribution function for populations of the geographies
     media_cost_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of spend across geographies
     perf_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of performance across geographies
@@ -137,7 +139,7 @@ def distribute_to_geos(
 
   geo_dataframes = []
   total_population: int = sum(geo_details.values())
-  rng = np.random.default_rng(seed=random_seed)
+  rng = rng if rng is not None else np.random.default_rng(seed=random_seed)
   media_cols = [w for w in mmm_input.columns if "impressions" in w or "clicks" in w]
   for geo_name, geo_pop in geo_details.items():
     pop_pct = geo_pop / total_population

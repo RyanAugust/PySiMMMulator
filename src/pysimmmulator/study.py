@@ -11,11 +11,12 @@ class Study:
          channel_name: str,
          true_roi: float,
          random_seed: int = None,
+         rng: Optional[np.random.Generator] = None,
          bias: float = DEFAULT_STUDY_BIAS,
          stdev: float = DEFAULT_STUDY_SCALE) -> None:
     self.channel_name = channel_name
     self._true_roi = true_roi
-    self.rng = self._create_random_factory(seed=random_seed)
+    self.rng = rng if rng is not None else self._create_random_factory(seed=random_seed)
     self._bias = bias
     self._stdev = stdev
 
@@ -94,12 +95,14 @@ class BatchStudy:
          channel_rois: dict,
          channel_distributions: dict[str, dict] = dict(),
          random_seed: int = None,
+         rng: Optional[np.random.Generator] = None,
          bias: float = DEFAULT_STUDY_BIAS,
          stdev: float = DEFAULT_STUDY_SCALE) -> None:
     self._study_hold = {
       k: Study(channel_name=k,
                true_roi=v,
                random_seed=random_seed,
+               rng=rng,
                bias=channel_distributions.get(k, {}).get("bias", bias),
                stdev=channel_distributions.get(k, {}).get("stdev", stdev))
       for k, v in channel_rois.items()

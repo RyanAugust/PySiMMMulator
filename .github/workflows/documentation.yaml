@@ -1,6 +1,9 @@
 name: documentation
 
-on: [pull_request, workflow_dispatch]
+on:
+  release:
+    types: [published] # Runs only on official releases
+  workflow_dispatch:
 
 permissions:
   contents: write
