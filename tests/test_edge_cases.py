@@ -156,3 +156,22 @@ def test_multisim_get_data_coverage():
     ms = Multisim()
     ms.data = "test_data"
     assert ms.get_data == "test_data"
+
+def test_reproducibility():
+    with open("examples/example_config.yaml", "r") as f:
+        config = yaml.safe_load(f)
+    
+    config["geo_params"] = {
+        "total_population": 1000000,
+        "count": 5
+    }
+    
+    seed = 42
+    sim1 = Simulate(random_seed=seed)
+    df1, roi1 = sim1.run_with_config(config)
+    
+    sim2 = Simulate(random_seed=seed)
+    df2, roi2 = sim2.run_with_config(config)
+    
+    pd.testing.assert_frame_equal(df1, df2)
+    assert roi1 == roi2

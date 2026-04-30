@@ -355,12 +355,13 @@ class Simulate(Visualize):
       params (GeoParameters): Parameters for geographic distribution.
     Returns:
       pd.DataFrame: MMM DataFrame with geographic distribution"""
-    geos = Geos(total_population=params.total_population, random_seed=None)
+    geos = Geos(total_population=params.total_population, random_seed=None, rng=self.rng)
     geo_details = geos(geo_specs=params.geo_specs, universal_scale=params.universal_scale, count=params.count)
 
     mmm_df = distribute_to_geos(
         mmm_input=mmm_df,
         geo_details=geo_details,
+        rng=self.rng,
         dist_spec=params.dist_spec,
         media_cost_spec=params.media_cost_spec,
         perf_spec=params.perf_spec
