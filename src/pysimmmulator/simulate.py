@@ -67,6 +67,7 @@ class Simulate(Visualize):
     - Trend: Linear growth over the period (total growth of trend_p)
     - Seasonality: Modeled via a sine function (height temp_var) scaled by a random
       importance coefficient (mean temp_coef_mean, std temp_coef_sd)
+    - Exogenous Factors: Holidays or shocks applied as multipliers or additions.
     - Error: Gaussian noise (std error_std)
 
     If the combined terms result in negative sales, they are clamped to zero.
@@ -86,21 +87,50 @@ class Simulate(Visualize):
     temp = self.baseline_params.temp_var * np.sin(days * 3.14 / 182.5)
     seasonality = self.rng.normal(loc=self.baseline_params.temp_coef_mean, scale=self.baseline_params.temp_coef_sd, size=1) * temp
 
+    # Calculate Exogenous Impacts
+    multiplier_impact = np.ones(len(days))
+    additive_impact = np.zeros(len(days))
+
+    if self.baseline_params.exogenous_factors:
+      date_backbone = pd.Series(pd.date_range(start=self.basic_params.start_date, periods=len(days), freq="D"))
+      for factor in self.baseline_params.exogenous_factors:
+        impact = factor.get("impact", 0.0)
+        f_type = factor.get("type", "multiplier")
+
+        # Identify target indices
+        mask = np.zeros(len(days), dtype=bool)
+        if "dates" in factor:
+          event_dates = pd.to_datetime(factor["dates"])
+          mask = date_backbone.isin(event_dates)
+        elif "start_date" in factor and "end_date" in factor:
+          start = pd.to_datetime(factor["start_date"])
+          end = pd.to_datetime(factor["end_date"])
+          mask = (date_backbone >= start) & (date_backbone <= end)
+
+        if f_type == "multiplier":
+          multiplier_impact[mask] *= impact
+        else:
+          additive_impact[mask] += impact
+
     error = self._truncated_normal(loc=0, scale=self.baseline_params.error_std, size=self.basic_params.years * 365, low=-np.inf)
 
-    baseline_sales = base + trend + seasonality + error
+    baseline_sales = (base + trend + seasonality) * multiplier_impact + additive_impact + error
     if np.any(baseline_sales < 0):
       baseline_sales = np.where(baseline_sales < 0, 0, baseline_sales)
 
     return pd.DataFrame({
       "days": days,
+      "date": date_backbone if self.baseline_params.exogenous_factors is not None else pd.date_range(start=self.basic_params.start_date, periods=len(days), freq="D"),
       "baseline_sales": baseline_sales,
       "base": base,
       "trend": trend,
       "temp": temp,
       "seasonality": seasonality,
+      "multiplier_impact": multiplier_impact,
+      "additive_impact": additive_impact,
       "error": error,
     })
+
   def simulate_ad_spend( self, baseline_sales_df: pd.DataFrame, params: AdSpendParameters) -> pd.DataFrame:
     """Simulation of ad spend based on normal distribution parameters for campaign spend.
     Overall campaign spend is then divided amongst each channel based on passed
