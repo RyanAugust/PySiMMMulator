@@ -140,12 +140,14 @@ def distribute_to_geos(
   geo_dataframes = []
   total_population: int = sum(geo_details.values())
   rng = rng if rng is not None else np.random.default_rng(seed=random_seed)
-  media_cols = [w for w in mmm_input.columns if "impressions" in w or "clicks" in w]
+  media_cols = [w for w in mmm_input.columns if "impressions" in w or "clicks" in w or "reach" in w]
+  count_cols = [w for w in mmm_input.columns if any(x in w for x in ["impressions", "clicks", "reach", "spend", "revenue", "conversions"])]
+
   for geo_name, geo_pop in geo_details.items():
     pop_pct = geo_pop / total_population
     geo_prop = pop_pct * (1 + abs(rng.normal(loc=pop_pct * dist_spec[0], scale=dist_spec[1])))
     geo_dataframe = mmm_input.copy()
-    geo_dataframe *= geo_prop
+    geo_dataframe[count_cols] *= geo_prop
     if any(media_cost_spec) != 0.0: geo_dataframe[media_cols] *= ( 1 + abs(rng.normal(loc=pop_pct * media_cost_spec[0], scale=media_cost_spec[1])))
     if any(perf_spec) != 0.0: geo_dataframe["total_revenue"] *= ( 1 + abs(rng.normal(loc=pop_pct * perf_spec[0], scale=perf_spec[1])))
     geo_dataframe["geo_name"] = geo_name
