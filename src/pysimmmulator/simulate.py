@@ -275,6 +275,7 @@ class Simulate(Visualize):
         if "frequency" in rf_config:
           freq = rf_config["frequency"]
           spend_df.loc[channel_idx, "lifetime_frequency"] = freq
+          # reach = impressions / frequency. Since frequency >= 1, reach <= impressions.
           spend_df.loc[channel_idx, "lifetime_reach"] = np.round(spend_df.loc[channel_idx, "lifetime_impressions"] / freq, 0)
         elif "reach" in rf_config:
           reach_val = rf_config["reach"]
@@ -288,8 +289,17 @@ class Simulate(Visualize):
           else:
             reach_count = reach_val
 
-          spend_df.loc[channel_idx, "lifetime_reach"] = np.round(reach_count, 0)
-          spend_df.loc[channel_idx, "lifetime_frequency"] = spend_df.loc[channel_idx, "lifetime_impressions"] / np.maximum(spend_df.loc[channel_idx, "lifetime_reach"], 1)
+          # Cap reach at impressions to ensure frequency >= 1
+          spend_df.loc[channel_idx, "lifetime_reach"] = np.minimum(np.round(reach_count, 0), spend_df.loc[channel_idx, "lifetime_impressions"])
+          # Avoid division by zero
+          denom = np.maximum(spend_df.loc[channel_idx, "lifetime_reach"], 1)
+          spend_df.loc[channel_idx, "lifetime_frequency"] = spend_df.loc[channel_idx, "lifetime_impressions"] / denom
+        
+        # Final pass to ensure frequency is at least 1 if impressions > 0
+        mask = (spend_df["channel"] == channel) & (spend_df["lifetime_impressions"] > 0)
+        spend_df.loc[mask, "lifetime_frequency"] = np.maximum(spend_df.loc[mask, "lifetime_frequency"], 1.0)
+        # Re-calculate reach if we adjusted frequency to 1.0
+        spend_df.loc[mask, "lifetime_reach"] = np.minimum(spend_df.loc[mask, "lifetime_reach"], spend_df.loc[mask, "lifetime_impressions"])
 
     spend_df["daily_spend"] = np.round( spend_df["spend_channel"] / self.basic_params.frequency_of_campaigns, 2)
     spend_df["daily_impressions"] = np.round( spend_df["lifetime_impressions"] / self.basic_params.frequency_of_campaigns, 0,)
