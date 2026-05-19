@@ -244,13 +244,13 @@ class Simulate(Visualize):
         **params.noisy_cpm_cpc[channel],
         low=-min(params.true_cpm.get(channel, np.inf), params.true_cpc.get(channel, np.inf)))
 
-      channel_true_cpm_value = (params.true_cpm[channel] if channel in params.true_cpm.keys() else np.nan)
-      channel_noisy_cpm_value = (params.true_cpm[channel] + channel_noise if channel in params.true_cpm.keys() else np.nan)
+      channel_true_cpm_value = (params.true_cpm[channel] if channel in params.true_cpm.keys() else 1e10) # Default to very high CPM
+      channel_noisy_cpm_value = (channel_true_cpm_value + channel_noise if channel in params.true_cpm.keys() else 1e10)
       spend_df.loc[channel_idx, "true_cpm"] = channel_true_cpm_value
       spend_df.loc[channel_idx, "noisy_cpm"] = channel_noisy_cpm_value
 
-      channel_true_cpc_value = (params.true_cpc[channel] if channel in params.true_cpc.keys() else np.nan)
-      channel_noisy_cpc_value = (params.true_cpc[channel] + channel_noise if channel in params.true_cpc.keys() else np.nan)
+      channel_true_cpc_value = (params.true_cpc[channel] if channel in params.true_cpc.keys() else 1e10) # Default to very high CPC
+      channel_noisy_cpc_value = (channel_true_cpc_value + channel_noise if channel in params.true_cpc.keys() else 1e10)
       spend_df.loc[channel_idx, "true_cpc"] = channel_true_cpc_value
       spend_df.loc[channel_idx, "noisy_cpc"] = channel_noisy_cpc_value
 
@@ -262,12 +262,17 @@ class Simulate(Visualize):
 
     spend_df["lifetime_impressions"] = np.round( spend_df["spend_channel"] / spend_df["noisy_cpm"] * 1000, 0)
     spend_df["lifetime_clicks"] = np.round( spend_df["spend_channel"] / spend_df["noisy_cpc"], 0)
+    # CTR cannot exceed 100%
+    # Handle NaN for clicks (some channels might only have impressions)
+    mask = ~np.isnan(spend_df["lifetime_clicks"]) & ~np.isnan(spend_df["lifetime_impressions"])
+    spend_df.loc[mask, "lifetime_clicks"] = np.minimum(spend_df.loc[mask, "lifetime_clicks"], spend_df.loc[mask, "lifetime_impressions"])
 
     # Reach and Frequency calculation
     spend_df["lifetime_reach"] = np.nan
     spend_df["lifetime_frequency"] = np.nan
 
     if params.true_reach_frequency:
+      population = getattr(self, "total_population", None)
       for channel in params.reach_frequency_channels:
         channel_idx = spend_df[spend_df["channel"] == channel].index
         rf_config = params.true_reach_frequency[channel]
@@ -276,11 +281,13 @@ class Simulate(Visualize):
           freq = rf_config["frequency"]
           spend_df.loc[channel_idx, "lifetime_frequency"] = freq
           # reach = impressions / frequency. Since frequency >= 1, reach <= impressions.
-          spend_df.loc[channel_idx, "lifetime_reach"] = np.round(spend_df.loc[channel_idx, "lifetime_impressions"] / freq, 0)
+          reach_count = np.round(spend_df.loc[channel_idx, "lifetime_impressions"] / freq, 0)
+          if population is not None:
+            reach_count = np.minimum(reach_count, population)
+          spend_df.loc[channel_idx, "lifetime_reach"] = reach_count
         elif "reach" in rf_config:
           reach_val = rf_config["reach"]
           if reach_val <= 1.0:
-            population = getattr(self, "total_population", None)
             if population is None:
               logger.warning(f"Reach for {channel} is <= 1.0 but no total_population found. Treating as absolute reach count.")
               reach_count = reach_val
@@ -290,7 +297,12 @@ class Simulate(Visualize):
             reach_count = reach_val
 
           # Cap reach at impressions to ensure frequency >= 1
-          spend_df.loc[channel_idx, "lifetime_reach"] = np.minimum(np.round(reach_count, 0), spend_df.loc[channel_idx, "lifetime_impressions"])
+          reach_count = np.minimum(np.round(reach_count, 0), spend_df.loc[channel_idx, "lifetime_impressions"])
+          # Reach cannot exceed total population
+          if population is not None:
+            reach_count = np.minimum(reach_count, population)
+          
+          spend_df.loc[channel_idx, "lifetime_reach"] = reach_count
           # Avoid division by zero
           denom = np.maximum(spend_df.loc[channel_idx, "lifetime_reach"], 1)
           spend_df.loc[channel_idx, "lifetime_frequency"] = spend_df.loc[channel_idx, "lifetime_impressions"] / denom
@@ -527,11 +539,15 @@ class Simulate(Visualize):
       pd.DataFrame: Finalized output DataFrame"""
     metric_cols = [f"{channel}_impressions" for channel in self.basic_params.channels_impressions]
     [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
-    for channel in self.basic_params.channels_impressions:
+    for channel in self.basic_params.all_channels:
       if f"{channel}_reach" in mmm_df.columns:
         metric_cols.append(f"{channel}_reach")
       if f"{channel}_frequency" in mmm_df.columns:
         metric_cols.append(f"{channel}_frequency")
+      if f"{channel}_impressions" in mmm_df.columns and f"{channel}_impressions" not in metric_cols:
+        metric_cols.append(f"{channel}_impressions")
+      if f"{channel}_clicks" in mmm_df.columns and f"{channel}_clicks" not in metric_cols:
+        metric_cols.append(f"{channel}_clicks")
     spend_cols = []
     [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
