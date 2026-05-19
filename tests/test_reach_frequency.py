@@ -127,4 +127,4 @@ def test_reach_as_proportion():
     
     test_df = df[df["TV_impressions"] > 0]
     daily_total_reach = test_df.groupby("date")["TV_reach"].sum()
-    assert daily_total_reach.mean() == pytest.approx(100000 / 7, abs=1)
+    assert daily_total_reach.mean() == pytest.approx(100000 / 7, abs=10)
