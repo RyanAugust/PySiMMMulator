@@ -263,9 +263,39 @@ class Simulate(Visualize):
     spend_df["lifetime_impressions"] = np.round( spend_df["spend_channel"] / spend_df["noisy_cpm"] * 1000, 0)
     spend_df["lifetime_clicks"] = np.round( spend_df["spend_channel"] / spend_df["noisy_cpc"], 0)
 
+    # Reach and Frequency calculation
+    spend_df["lifetime_reach"] = np.nan
+    spend_df["lifetime_frequency"] = np.nan
+
+    if params.true_reach_frequency:
+      for channel in params.reach_frequency_channels:
+        channel_idx = spend_df[spend_df["channel"] == channel].index
+        rf_config = params.true_reach_frequency[channel]
+
+        if "frequency" in rf_config:
+          freq = rf_config["frequency"]
+          spend_df.loc[channel_idx, "lifetime_frequency"] = freq
+          spend_df.loc[channel_idx, "lifetime_reach"] = np.round(spend_df.loc[channel_idx, "lifetime_impressions"] / freq, 0)
+        elif "reach" in rf_config:
+          reach_val = rf_config["reach"]
+          if reach_val <= 1.0:
+            population = getattr(self, "total_population", None)
+            if population is None:
+              logger.warning(f"Reach for {channel} is <= 1.0 but no total_population found. Treating as absolute reach count.")
+              reach_count = reach_val
+            else:
+              reach_count = reach_val * population
+          else:
+            reach_count = reach_val
+
+          spend_df.loc[channel_idx, "lifetime_reach"] = np.round(reach_count, 0)
+          spend_df.loc[channel_idx, "lifetime_frequency"] = spend_df.loc[channel_idx, "lifetime_impressions"] / np.maximum(spend_df.loc[channel_idx, "lifetime_reach"], 1)
+
     spend_df["daily_spend"] = np.round( spend_df["spend_channel"] / self.basic_params.frequency_of_campaigns, 2)
     spend_df["daily_impressions"] = np.round( spend_df["lifetime_impressions"] / self.basic_params.frequency_of_campaigns, 0,)
     spend_df["daily_clicks"] = np.round( spend_df["lifetime_clicks"] / self.basic_params.frequency_of_campaigns, 0,)
+    spend_df["daily_reach"] = np.round( spend_df["lifetime_reach"] / self.basic_params.frequency_of_campaigns, 0)
+    spend_df["daily_frequency"] = spend_df["lifetime_frequency"]
 
     logger.info("You have completed running step 3: Simulating media.")
     return spend_df
@@ -305,7 +335,7 @@ class Simulate(Visualize):
     mmm_df = pd.DataFrame({"date": date_backbone, "id_map": campaign_id_to_date_map})
     mmm_df.set_index("id_map", inplace=True)
 
-    agg_media_df = spend_df.groupby(["channel", "campaign_id"]).sum()[["daily_impressions", "daily_clicks", "daily_spend", "noisy_cvr" ]]
+    agg_media_df = spend_df.groupby(["channel", "campaign_id"]).sum()[["daily_impressions", "daily_clicks", "daily_spend", "noisy_cvr", "daily_reach", "daily_frequency" ]]
     agg_media_df = agg_media_df.unstack(level=0)
     joined_columns = []
     for _metric, _channel in agg_media_df.columns:
@@ -315,6 +345,10 @@ class Simulate(Visualize):
     agg_media_df.columns = joined_columns
 
     mmm_df = mmm_df.join(agg_media_df)
+    # Fill NAs for reach and frequency if they weren't generated for all channels
+    reach_cols = [c for c in mmm_df.columns if "_reach" in c]
+    freq_cols = [c for c in mmm_df.columns if "_frequency" in c]
+    mmm_df[reach_cols + freq_cols] = mmm_df[reach_cols + freq_cols].fillna(0.0)
 
     logger.info("You have completed running step 5a: pivoting the data frame to an MMM format.")
     return mmm_df
@@ -441,6 +475,11 @@ class Simulate(Visualize):
       for channel in self.basic_params.channels_impressions
     ]
     [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
+    for channel in self.basic_params.channels_impressions:
+      if f"{channel}_reach" in mmm_df.columns:
+        metric_cols.append(f"{channel}_reach")
+      if f"{channel}_frequency" in mmm_df.columns:
+        metric_cols.append(f"{channel}_frequency")
     spend_cols = []
     [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
     conv_cols = []
@@ -478,6 +517,11 @@ class Simulate(Visualize):
       pd.DataFrame: Finalized output DataFrame"""
     metric_cols = [f"{channel}_impressions" for channel in self.basic_params.channels_impressions]
     [metric_cols.append(f"{channel}_clicks") for channel in self.basic_params.channels_clicks]
+    for channel in self.basic_params.channels_impressions:
+      if f"{channel}_reach" in mmm_df.columns:
+        metric_cols.append(f"{channel}_reach")
+      if f"{channel}_frequency" in mmm_df.columns:
+        metric_cols.append(f"{channel}_frequency")
     spend_cols = []
     [spend_cols.append(f"{channel}_spend") for channel in self.basic_params.all_channels]
 
@@ -519,6 +563,7 @@ class Simulate(Visualize):
     from .load_parameters import create_all_parameters
     params = create_all_parameters(config)
     self.basic_params = params["basic_params"]
+    self.total_population = params["geo_params"].total_population if "geo_params" in params else None
 
     baseline_sales_df = self.simulate_baseline(params["baseline_params"])
     spend_df = self.simulate_ad_spend(baseline_sales_df=baseline_sales_df, params=params["ad_spend_params"])

@@ -133,26 +133,34 @@ def distribute_to_geos(
     perf_spec (tuple[float, float]): Parameters to control the normal distribution function for allocation of performance across geographies
   Returns:
     (pd.DataFrame): simulated MMM data divided into geographies as specified"""
-  mmm_input = mmm_input.dropna()
   if "date" in mmm_input.columns:
     mmm_input = mmm_input.set_index("date")
 
   geo_dataframes = []
   total_population: int = sum(geo_details.values())
   rng = rng if rng is not None else np.random.default_rng(seed=random_seed)
-  media_cols = [w for w in mmm_input.columns if "impressions" in w or "clicks" in w]
+  media_cols = [w for w in mmm_input.columns if "impressions" in w or "clicks" in w or "reach" in w]
+  count_cols = [w for w in mmm_input.columns if any(x in w for x in ["impressions", "clicks", "reach", "spend", "revenue", "conversions"])]
+
   for geo_name, geo_pop in geo_details.items():
     pop_pct = geo_pop / total_population
     geo_prop = pop_pct * (1 + abs(rng.normal(loc=pop_pct * dist_spec[0], scale=dist_spec[1])))
     geo_dataframe = mmm_input.copy()
-    geo_dataframe *= geo_prop
-    if any(media_cost_spec) != 0.0: geo_dataframe[media_cols] *= ( 1 + abs(rng.normal(loc=pop_pct * media_cost_spec[0], scale=media_cost_spec[1])))
-    if any(perf_spec) != 0.0: geo_dataframe["total_revenue"] *= ( 1 + abs(rng.normal(loc=pop_pct * perf_spec[0], scale=perf_spec[1])))
+    if count_cols:
+      geo_dataframe[count_cols] *= geo_prop
+    if any(media_cost_spec) != 0.0 and media_cols:
+      geo_dataframe[media_cols] *= ( 1 + abs(rng.normal(loc=pop_pct * media_cost_spec[0], scale=media_cost_spec[1])))
+    if any(perf_spec) != 0.0 and "total_revenue" in geo_dataframe.columns:
+      geo_dataframe["total_revenue"] *= ( 1 + abs(rng.normal(loc=pop_pct * perf_spec[0], scale=perf_spec[1])))
     geo_dataframe["geo_name"] = geo_name
     geo_dataframes.append(geo_dataframe)
   final = pd.concat(geo_dataframes, axis=0)
   final = final.reset_index().set_index(["geo_name", "date"])
-  final[media_cols] *= mmm_input[media_cols].sum() / final[media_cols].fillna(0.0).sum()
-  final["total_revenue"] *= mmm_input["total_revenue"].sum() / final["total_revenue"].sum()
-  final[["total_revenue"] + media_cols] = final[["total_revenue"] + media_cols].round(0)
-  return final.dropna()
+  if media_cols:
+    final[media_cols] *= mmm_input[media_cols].sum() / final[media_cols].fillna(0.0).sum()
+  if "total_revenue" in final.columns:
+    final["total_revenue"] *= mmm_input["total_revenue"].sum() / final["total_revenue"].sum()
+    final["total_revenue"] = final["total_revenue"].round(0)
+  if media_cols:
+    final[media_cols] = final[media_cols].round(0)
+  return final

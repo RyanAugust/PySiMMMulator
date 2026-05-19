@@ -144,15 +144,18 @@ class MediaParameters:
   Args:
     true_cpm (dict): Specifies the true Cost per Impression (CPM) of each channel (noise will be added to this to simulate number of impressions)
     true_cpc (dict): Specifies the true Cost per Click (CPC) of each channel (noise will be added to this to simulate number of clicks)
-    noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel."""
+    noisy_cpm_cpc (dict): Specifies the bias and scale of noise added to the true value CPM or CPC for each channel.
+    true_reach_frequency (Optional[dict]): Specifies the true reach or frequency of each channel. If reach is provided, frequency is calculated, and vice versa."""
 
   true_cpm: dict
   true_cpc: dict
   noisy_cpm_cpc: dict
+  true_reach_frequency: Optional[dict] = None
 
   def __post_init__(self):
     self.true_cpmcpc_channels = list(self.true_cpm.keys()) + list(self.true_cpc.keys())
     self.noise_channels = list(self.noisy_cpm_cpc.keys())
+    self.reach_frequency_channels = list(self.true_reach_frequency.keys()) if self.true_reach_frequency else []
 
   def check(self, basic_params: BasicParameters):
     """Validates media parameters parameters agianst previously constructed basic
@@ -174,6 +177,15 @@ class MediaParameters:
     assert sorted(self.noise_channels) == sorted(
       basic_params.all_channels
     ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
+
+    if self.true_reach_frequency:
+      for channel, config in self.true_reach_frequency.items():
+        assert channel in basic_params.all_channels, f"Channel {channel} in true_reach_frequency not found in basic_params"
+        assert ("reach" in config or "frequency" in config), f"Either 'reach' or 'frequency' must be specified for channel {channel} in true_reach_frequency"
+        if "reach" in config:
+          assert config["reach"] > 0, f"Reach for channel {channel} must be greater than 0"
+        if "frequency" in config:
+          assert config["frequency"] >= 1, f"Frequency for channel {channel} must be at least 1"
 
 @dataclass
 class CVRParameters:

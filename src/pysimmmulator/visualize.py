@@ -42,6 +42,30 @@ class Visualize:
     plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='_clicks')
     return self._plot_majors(plot_frame, columns=plot_cols)
 
+  def plot_reach(self, df: pd.DataFrame, agg: str = None):
+    """Plot simulated reach data based on a passed date-wise aggregation
+
+    Args:
+      df (pd.DataFrame): DataFrame containing simulated data
+      agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
+    assert agg in self._valid_agg_levels, f"""Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level.
+      {agg} is an invalid selection."""
+    plot_frame = self._plot_frame_overhead(df, agg_level=agg)
+    plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='_reach')
+    return self._plot_majors(plot_frame, columns=plot_cols)
+
+  def plot_frequency(self, df: pd.DataFrame, agg: str = None):
+    """Plot simulated frequency data based on a passed date-wise aggregation
+
+    Args:
+      df (pd.DataFrame): DataFrame containing simulated data
+      agg (str): pick from ['daily', 'weekly', 'monthly', 'yearly'] to aggregate simulated data by"""
+    assert agg in self._valid_agg_levels, f"""Please select [{', '.join(self._valid_agg_levels)}] for your aggregation level.
+      {agg} is an invalid selection."""
+    plot_frame = self._plot_frame_overhead(df, agg_level=agg)
+    plot_cols = self._filter_columns(columns=plot_frame.columns.tolist(), filter_string='_frequency')
+    return self._plot_majors(plot_frame, columns=plot_cols)
+
   def plot_revenue(self, df: pd.DataFrame, agg: str = None):
     """Plot simulated revenue data based on a passed date-wise aggregation
 
@@ -70,28 +94,26 @@ class Visualize:
     return plot_frame
 
   def _aggregator(self, plot_frame: pd.DataFrame, agg_level: str) -> pd.DataFrame:
+    # Identify frequency columns to use mean instead of sum
+    freq_cols = [c for c in plot_frame.columns if "frequency" in c]
+    agg_dict = {c: ("mean" if c in freq_cols else "sum") for c in plot_frame.columns if c not in ["date", "week_start", "month_start", "year_start"]}
+
     if agg_level == 'daily':
-      plot_frame = plot_frame.groupby("date").sum()
+      plot_frame = plot_frame.groupby("date").agg(agg_dict)
 
     elif agg_level == 'weekly':
       plot_frame["week_start"] = plot_frame["date"] - pd.to_timedelta(plot_frame["date"].dt.weekday, unit="D")
-      if "date" in plot_frame.columns:
-        del plot_frame["date"]
-      plot_frame = plot_frame.groupby("week_start").sum()
+      plot_frame = plot_frame.groupby("week_start").agg(agg_dict)
 
     elif agg_level == 'monthly':
       plot_frame["month_start"] = plot_frame["date"] - pd.to_timedelta(
         plot_frame["date"].dt.day - 1, unit="D")
-      if "date" in plot_frame.columns:
-        del plot_frame["date"]
-      plot_frame = plot_frame.groupby("month_start").sum()
+      plot_frame = plot_frame.groupby("month_start").agg(agg_dict)
 
     elif agg_level == 'yearly':
       plot_frame["year_start"] = plot_frame["date"] - pd.to_timedelta(
         plot_frame["date"].dt.dayofyear - 1, unit="D")
-      if "date" in plot_frame.columns:
-        del plot_frame["date"]
-      plot_frame = plot_frame.groupby("year_start").sum()
+      plot_frame = plot_frame.groupby("year_start").agg(agg_dict)
 
     return plot_frame
 
