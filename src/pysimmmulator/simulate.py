@@ -301,12 +301,12 @@ class Simulate(Visualize):
           # Reach cannot exceed total population
           if population is not None:
             reach_count = np.minimum(reach_count, population)
-          
+
           spend_df.loc[channel_idx, "lifetime_reach"] = reach_count
           # Avoid division by zero
           denom = np.maximum(spend_df.loc[channel_idx, "lifetime_reach"], 1)
           spend_df.loc[channel_idx, "lifetime_frequency"] = spend_df.loc[channel_idx, "lifetime_impressions"] / denom
-        
+
         # Final pass to ensure frequency is at least 1 if impressions > 0
         mask = (spend_df["channel"] == channel) & (spend_df["lifetime_impressions"] > 0)
         spend_df.loc[mask, "lifetime_frequency"] = np.maximum(spend_df.loc[mask, "lifetime_frequency"], 1.0)
