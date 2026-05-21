@@ -174,4 +174,4 @@ def test_reproducibility():
     result2 = sim2.run_with_config(config)
 
     pd.testing.assert_frame_equal(result1.df, result2.df)
-    assert result1.channel_roi == result2.channel_roi
+    pd.testing.assert_series_equal(pd.Series(result1.channel_roi), pd.Series(result2.channel_roi))

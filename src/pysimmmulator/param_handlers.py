@@ -39,7 +39,7 @@ class BasicParameters:
         > 0), "You entered less than 1 year. Must generate more than a years worth of data"
     if self.true_cvr is not None:
       assert len(self.true_cvr.keys()) == len(
-        self.all_channels
+        set(self.all_channels)
       ), "True CVR must have equal number of entries as channel impressions and channel clicks"
       for cvr in self.true_cvr.values():
         assert (
@@ -164,8 +164,8 @@ class MediaParameters:
     Args:
       basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class """
 
-    assert sorted(self.true_cpmcpc_channels) == sorted(
-      basic_params.all_channels
+    assert sorted(set(self.true_cpmcpc_channels)) == sorted(
+      set(basic_params.all_channels)
     ), "Channels declared within true_cpm & true_cpc must be the same as original base channel input"
     for val in self.true_cpm.values():
       assert isinstance(val, float), "cpm values must be of type float"
@@ -174,8 +174,8 @@ class MediaParameters:
       assert isinstance(val, float), "cpc values must be of type float"
       assert val > 0, "CPC values must be greater than 0"
 
-    assert sorted(self.noise_channels) == sorted(
-      basic_params.all_channels
+    assert sorted(set(self.noise_channels)) == sorted(
+      set(basic_params.all_channels)
     ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
 
     if self.true_reach_frequency:
@@ -215,8 +215,8 @@ class CVRParameters:
     Args:
       basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
     """
-    assert sorted(self.noise_channels) == sorted(
-      basic_params.all_channels
+    assert sorted(set(self.noise_channels)) == sorted(
+      set(basic_params.all_channels)
     ), "Channels declared within noisy_cpm_cpc must be the same as original base channel input"
 
 @dataclass
@@ -250,11 +250,11 @@ class AdstockParameters:
       basic_params (basic_parameters): Previously submitted parameters as required by the simmmulate class
     """
     assert sorted(list(self.adstock.keys())) == sorted(
-      basic_params.all_channels
+      set(basic_params.all_channels)
     ), "Channels declared within adstock must be the same as original base channel input"
 
     assert sorted(list(self.saturation.keys())) == sorted(
-      basic_params.all_channels
+      set(basic_params.all_channels)
     ), "Channels declared within saturation must be the same as original base channel input"
 
 @dataclass

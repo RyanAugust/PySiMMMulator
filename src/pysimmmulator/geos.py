@@ -153,6 +153,12 @@ def distribute_to_geos(
     if any(perf_spec) != 0.0 and "total_revenue" in geo_dataframe.columns:
       geo_dataframe["total_revenue"] *= ( 1 + abs(rng.normal(loc=pop_pct * perf_spec[0], scale=perf_spec[1])))
     geo_dataframe["geo_name"] = geo_name
+
+    # Ensure reach in geo does not exceed geo population
+    geo_reach_cols = [c for c in geo_dataframe.columns if "reach" in c]
+    if geo_reach_cols:
+      geo_dataframe[geo_reach_cols] = np.minimum(geo_dataframe[geo_reach_cols], geo_pop)
+
     geo_dataframes.append(geo_dataframe)
   final = pd.concat(geo_dataframes, axis=0)
   final = final.reset_index().set_index(["geo_name", "date"])
